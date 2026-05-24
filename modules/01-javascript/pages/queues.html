@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Filas (Queue) — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="queues"></nav>
+
+<div class="hero">
+  <div class="hero-badge">FIFO — First In, First Out</div>
+  <h1>Filas (Queue)</h1>
+  <p>O primeiro a entrar é o primeiro a sair — como uma fila de banco. Entra no fim (<code>enqueue</code>), sai pela frente (<code>dequeue</code>).</p>
+</div>
+
+<section id="conceito">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-blue">01</div>
+    <h2>Conceito</h2>
+    <span class="tag">Entra atrás, sai na frente</span>
+  </div>
+
+  <p class="prose">
+    Usada em: filas de impressão, processamento de mensagens, busca em largura (BFS), agendamento de
+    tarefas. Mantendo ponteiros para <strong>front</strong> e <strong>rear</strong>, ambas as operações
+    são O(1).
+  </p>
+
+  <div class="info-grid">
+    <div class="info-card blue"><div class="ic-label">enqueue (fim)</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card blue"><div class="ic-label">dequeue (início)</div><div class="ic-value">O(1)* / O(n)**</div></div>
+    <div class="info-card blue"><div class="ic-label">peek</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card blue"><div class="ic-label">Buscar</div><div class="ic-value">O(n)</div></div>
+  </div>
+  <div style="font-size: 12px; color: var(--muted); margin-bottom: 1.5rem; padding-left: 4px;">
+    * LinkedList &nbsp;&nbsp; ** Array com shift()
+  </div>
+
+  <p class="prose">
+    <strong>Experimente:</strong> enfileire (<code>enqueue</code>) novos itens no fim e remova
+    (<code>dequeue</code>) pela frente. Veja os rótulos <code>front</code> e <code>rear</code> se moverem.
+  </p>
+  <div class="viz" data-viz="queue" data-initial="10,20,30"></div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">fila.js</span>
+      <button class="run-btn" onclick="runCode('ex1')">▶ Executar</button>
+    </div>
+    <pre id="ex1-code"><span class="cmt">// FILA com LinkedList: ponteiros front e rear
+//   front → quem sai a seguir | rear → onde entram novos
+// Sem rear, cada enqueue seria O(n).</span>
+<span class="kw">class</span> <span class="fn">Node</span> {
+  <span class="fn">constructor</span>(v) { <span class="kw">this</span><span class="prop">.valor</span> <span class="op">=</span> v; <span class="kw">this</span><span class="prop">.proximo</span> <span class="op">=</span> <span class="kw">null</span>; }
+}
+
+<span class="kw">class</span> <span class="fn">Queue</span> {
+  <span class="fn">constructor</span>() { <span class="kw">this</span><span class="prop">.front</span> <span class="op">=</span> <span class="kw">null</span>; <span class="kw">this</span><span class="prop">.rear</span> <span class="op">=</span> <span class="kw">null</span>; <span class="kw">this</span><span class="prop">.size</span> <span class="op">=</span> <span class="num">0</span>; }
+
+  <span class="fn">enqueue</span>(v) {        <span class="cmt">// entra no fim — O(1)</span>
+    <span class="kw">const</span> n <span class="op">=</span> <span class="kw">new</span> <span class="fn">Node</span>(v);
+    <span class="kw">if</span> (<span class="op">!</span><span class="kw">this</span><span class="prop">.rear</span>) { <span class="kw">this</span><span class="prop">.front</span> <span class="op">=</span> n; <span class="kw">this</span><span class="prop">.rear</span> <span class="op">=</span> n; }
+    <span class="kw">else</span> { <span class="kw">this</span><span class="prop">.rear</span><span class="prop">.proximo</span> <span class="op">=</span> n; <span class="kw">this</span><span class="prop">.rear</span> <span class="op">=</span> n; }
+    <span class="kw">this</span><span class="prop">.size</span><span class="op">++</span>;
+  }
+
+  <span class="fn">dequeue</span>() {        <span class="cmt">// sai pela frente — O(1)</span>
+    <span class="kw">if</span> (<span class="op">!</span><span class="kw">this</span><span class="prop">.front</span>) <span class="kw">return</span> <span class="kw">null</span>;
+    <span class="kw">const</span> v <span class="op">=</span> <span class="kw">this</span><span class="prop">.front</span><span class="prop">.valor</span>;
+    <span class="kw">this</span><span class="prop">.front</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.front</span><span class="prop">.proximo</span>;
+    <span class="kw">if</span> (<span class="op">!</span><span class="kw">this</span><span class="prop">.front</span>) <span class="kw">this</span><span class="prop">.rear</span> <span class="op">=</span> <span class="kw">null</span>;
+    <span class="kw">this</span><span class="prop">.size</span><span class="op">--</span>;
+    <span class="kw">return</span> v;
+  }
+
+  <span class="fn">peek</span>() { <span class="kw">return</span> <span class="kw">this</span><span class="prop">.front</span> <span class="op">?</span> <span class="kw">this</span><span class="prop">.front</span><span class="prop">.valor</span> <span class="op">:</span> <span class="kw">null</span>; }
+}
+
+<span class="kw">const</span> fila <span class="op">=</span> <span class="kw">new</span> <span class="fn">Queue</span>();
+fila.<span class="fn">enqueue</span>(<span class="num">10</span>); fila.<span class="fn">enqueue</span>(<span class="num">20</span>); fila.<span class="fn">enqueue</span>(<span class="num">30</span>);
+console.<span class="fn">log</span>(<span class="str">"peek:"</span>, fila.<span class="fn">peek</span>());       <span class="cmt">// 10</span>
+console.<span class="fn">log</span>(<span class="str">"dequeue:"</span>, fila.<span class="fn">dequeue</span>()); <span class="cmt">// 10</span>
+console.<span class="fn">log</span>(<span class="str">"dequeue:"</span>, fila.<span class="fn">dequeue</span>()); <span class="cmt">// 20</span></pre>
+    <div class="console" id="ex1-console"></div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠ Cuidado com Queue só com Array</strong>
+    É tentador usar <code>arr.push()</code> e <code>arr.shift()</code>, mas <code>shift()</code> é
+    <strong>O(n)</strong> (desloca todos). Para filas grandes, prefira LinkedList ou um índice de cabeça.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section id="exercicios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">02</div>
+    <h2>Exercício</h2>
+    <span class="tag">Pratique aqui</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">A</span><span class="ex-title">Simulação de Atendimento</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Processe a fila de atendimento completamente. Para cada cliente, imprima quando começou e terminou (em minutos), e ao final o tempo total.</p>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exA-editor">// Array como fila: .push (enqueue) e .shift (dequeue)
+const fila = [
+  { nome: "Ana",   tempo: 5 },
+  { nome: "Bruno", tempo: 3 },
+  { nome: "Carla", tempo: 8 },
+  { nome: "Diego", tempo: 2 },
+];
+
+// Processe a fila</textarea>
+        <div class="ex-output" id="exA-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solA')">Ver solução</button>
+      <div class="solution-block" id="solA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_A.js</span></div>
+          <pre><span class="kw">let</span> relogio <span class="op">=</span> <span class="num">0</span>;
+<span class="kw">while</span> (fila<span class="prop">.length</span> <span class="op">></span> <span class="num">0</span>) {
+  <span class="kw">const</span> cliente <span class="op">=</span> fila.<span class="fn">shift</span>(); <span class="cmt">// dequeue</span>
+  <span class="kw">const</span> inicio <span class="op">=</span> relogio;
+  relogio <span class="op">+=</span> cliente<span class="prop">.tempo</span>;
+  console.<span class="fn">log</span>(<span class="str">`${cliente.nome.padEnd(6)} ${inicio}min → ${relogio}min`</span>);
+}
+console.<span class="fn">log</span>(<span class="str">`Tempo total: ${relogio} minutos`</span>);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">B</span><span class="ex-title">Batata Quente (Hot Potato)</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Simule o jogo da batata quente: uma fila circular onde, a cada rodada, os primeiros <code>k-1</code> participantes são reenfileirados e o <code>k</code>-ésimo é eliminado. O último restante vence.</p>
+      <ul>
+        <li>Use <code>.push()</code> e <code>.shift()</code> para simular a fila circular</li>
+        <li>A cada rodada: passe <code>k-1</code> participantes para o fim da fila, elimine o k-ésimo</li>
+        <li>Repita até restar apenas um nome</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exB')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exB-editor">function batataquente(nomes, k) {
+  const fila = [...nomes];
+
+  while (fila.length > 1) {
+    // 1. Passe k-1 participantes para o fim da fila
+    // 2. Elimine o k-ésimo (fila.shift()) e imprima quem saiu
+  }
+
+  return fila[0]; // vencedor
+}
+
+const vencedor = batataquente(
+  ["Alice", "Bruno", "Carlos", "Diana", "Eva"],
+  3
+);
+console.log("Vencedor:", vencedor);</textarea>
+        <div class="ex-output" id="exB-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solB')">Ver solução</button>
+      <div class="solution-block" id="solB">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_B.js</span></div>
+          <pre><span class="kw">function</span> <span class="fn">batataquente</span>(nomes, k) {
+  <span class="kw">const</span> fila <span class="op">=</span> [...nomes];
+  <span class="kw">while</span> (fila<span class="prop">.length</span> <span class="op">></span> <span class="num">1</span>) {
+    <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> k <span class="op">-</span> <span class="num">1</span>; i<span class="op">++</span>) {
+      fila.<span class="fn">push</span>(fila.<span class="fn">shift</span>()); <span class="cmt">// passa a batata</span>
+    }
+    <span class="kw">const</span> eliminado <span class="op">=</span> fila.<span class="fn">shift</span>();
+    console.<span class="fn">log</span>(<span class="str">`Eliminado: ${eliminado}`</span>);
+  }
+  <span class="kw">return</span> fila[<span class="num">0</span>];
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">C</span><span class="ex-title">Números Binários com Fila</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Use uma fila para gerar os <code>n</code> primeiros números em binário. Esta é uma aplicação clássica de BFS implícito: cada número gera seus dois "filhos" adicionando <code>"0"</code> e <code>"1"</code> ao fim.</p>
+      <ul>
+        <li>Comece com <code>"1"</code> na fila</li>
+        <li>A cada iteração: desenfileire o atual, adicione ao resultado, enfileire <code>atual+"0"</code> e <code>atual+"1"</code></li>
+        <li>Repita <code>n</code> vezes</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exC')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exC-editor">function binariosComFila(n) {
+  const fila = ["1"];
+  const resultado = [];
+
+  while (resultado.length < n) {
+    const atual = fila.shift(); // dequeue
+    resultado.push(atual);
+    // Enfileire os dois "filhos"
+  }
+
+  return resultado;
+}
+
+console.log(binariosComFila(8));
+// ["1","10","11","100","101","110","111","1000"]</textarea>
+        <div class="ex-output" id="exC-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solC')">Ver solução</button>
+      <div class="solution-block" id="solC">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_C.js</span></div>
+          <pre><span class="kw">function</span> <span class="fn">binariosComFila</span>(n) {
+  <span class="kw">const</span> fila <span class="op">=</span> [<span class="str">"1"</span>];
+  <span class="kw">const</span> resultado <span class="op">=</span> [];
+  <span class="kw">while</span> (resultado<span class="prop">.length</span> <span class="op">&lt;</span> n) {
+    <span class="kw">const</span> atual <span class="op">=</span> fila.<span class="fn">shift</span>();
+    resultado.<span class="fn">push</span>(atual);
+    fila.<span class="fn">push</span>(atual <span class="op">+</span> <span class="str">"0"</span>);
+    fila.<span class="fn">push</span>(atual <span class="op">+</span> <span class="str">"1"</span>);
+  }
+  <span class="kw">return</span> resultado;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<footer>JavaScript puro · <strong>Filas</strong> · FIFO</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script>
+window.demos = {
+  ex1: () => {
+    class Node { constructor(v) { this.valor = v; this.proximo = null; } }
+    class Queue {
+      constructor() { this.front = null; this.rear = null; this.size = 0; }
+      enqueue(v) {
+        const n = new Node(v);
+        if (!this.rear) { this.front = n; this.rear = n; }
+        else { this.rear.proximo = n; this.rear = n; }
+        this.size++;
+      }
+      dequeue() {
+        if (!this.front) return null;
+        const v = this.front.valor;
+        this.front = this.front.proximo;
+        if (!this.front) this.rear = null;
+        this.size--;
+        return v;
+      }
+      peek() { return this.front ? this.front.valor : null; }
+    }
+    const fila = new Queue();
+    fila.enqueue(10); fila.enqueue(20); fila.enqueue(30);
+    console.log("peek:", fila.peek());
+    console.log("dequeue:", fila.dequeue());
+    console.log("dequeue:", fila.dequeue());
+  }
+};
+</script>
+</body>
+</html>

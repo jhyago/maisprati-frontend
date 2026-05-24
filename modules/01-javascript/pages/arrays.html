@@ -1,0 +1,530 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arrays, for...of & forEach — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="arrays"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Sequências indexadas</div>
+  <h1>Arrays, for...of<br>&amp; forEach</h1>
+  <p>Arrays guardam valores em sequência, acessados por índice. E os laços feitos para percorrê-los (e a outros iteráveis) são o <code>for...of</code> e o <code>forEach</code> — que entregam o valor diretamente.</p>
+</div>
+
+<!-- ══════ ARRAYS ══════ -->
+<section id="arrays">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>Arrays</h2>
+    <span class="tag">Memória contígua</span>
+  </div>
+
+  <p class="prose">
+    Um <strong>array</strong> é uma sequência de elementos em <strong>posições contíguas de memória</strong>.
+    Cada elemento tem um <strong>índice</strong> numérico (começando em 0), o que permite acesso direto em
+    <code>O(1)</code> — para chegar na posição 5, basta <code>arr[5]</code>, sem percorrer nada.
+  </p>
+
+  <div class="diagram-wrapper">
+    <div class="diagram-title">Array de 5 elementos — memória contígua</div>
+    <div class="array-visual">
+      <div class="array-cells">
+        <div class="array-cell" data-idx="[0]">10</div>
+        <div class="array-cell" data-idx="[1]">25</div>
+        <div class="array-cell" data-idx="[2]">42</div>
+        <div class="array-cell" data-idx="[3]">7</div>
+        <div class="array-cell" data-idx="[4]">88</div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top: 2rem; color: var(--muted); font-size: 13px;">
+      Acesso: <code style="color:var(--accent2)">arr[3]</code> = 7 (instantâneo, sem percurso).
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card purple"><div class="ic-label">Acesso por índice</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card teal"><div class="ic-label">Push (fim)</div><div class="ic-value">O(1) amortizado</div></div>
+    <div class="info-card orange"><div class="ic-label">Shift (início)</div><div class="ic-value">O(n)</div></div>
+    <div class="info-card pink"><div class="ic-label">Busca por valor</div><div class="ic-value">O(n)</div></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">01_arrays_basico.js</span>
+      <button class="run-btn" onclick="runCode('ex1')">▶ Executar</button>
+    </div>
+    <pre id="ex1-code"><span class="kw">const</span> numeros <span class="op">=</span> [<span class="num">10</span>, <span class="num">25</span>, <span class="num">42</span>, <span class="num">7</span>, <span class="num">88</span>];
+
+<span class="cmt">// Acesso por índice — O(1)</span>
+console.<span class="fn">log</span>(<span class="str">"Primeiro:"</span>, numeros[<span class="num">0</span>]);
+console.<span class="fn">log</span>(<span class="str">"Último:"</span>, numeros[numeros<span class="prop">.length</span> <span class="op">-</span> <span class="num">1</span>]);
+
+<span class="cmt">// Métodos que MODIFICAM o array</span>
+numeros.<span class="fn">push</span>(<span class="num">99</span>);     <span class="cmt">// fim    → O(1)</span>
+numeros.<span class="fn">unshift</span>(<span class="num">5</span>);   <span class="cmt">// início → O(n) (desloca tudo)</span>
+
+<span class="cmt">// Métodos que retornam NOVO array</span>
+<span class="kw">const</span> dobrados <span class="op">=</span> numeros.<span class="fn">map</span>(n <span class="op">=></span> n <span class="op">*</span> <span class="num">2</span>);
+<span class="kw">const</span> pares <span class="op">=</span> numeros.<span class="fn">filter</span>(n <span class="op">=></span> n <span class="op">%</span> <span class="num">2</span> <span class="op">===</span> <span class="num">0</span>);
+<span class="kw">const</span> soma <span class="op">=</span> numeros.<span class="fn">reduce</span>((acc, n) <span class="op">=></span> acc <span class="op">+</span> n, <span class="num">0</span>);
+
+console.<span class="fn">log</span>(<span class="str">"Array:"</span>, numeros);
+console.<span class="fn">log</span>(<span class="str">"Dobrados:"</span>, dobrados);
+console.<span class="fn">log</span>(<span class="str">"Pares:"</span>, pares);
+console.<span class="fn">log</span>(<span class="str">"Soma:"</span>, soma);</pre>
+    <div class="console" id="ex1-console"></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Por que push/pop são O(1) mas shift/unshift são O(n)?</strong>
+    Adicionar no <em>fim</em> só ocupa a próxima posição livre. Mas adicionar no <em>início</em> obriga o JS
+    a deslocar TODOS os elementos uma posição — quanto mais elementos, mais lento.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ FOR...OF ══════ -->
+<section id="forof">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>for...of</h2>
+    <span class="tag">Iteráveis → Valores</span>
+  </div>
+
+  <p class="prose">
+    O <code>for...of</code> <strong>itera sobre os valores de qualquer iterável</strong>: arrays, strings,
+    Sets, Maps. Diferente do <code>for...in</code> (que dá as chaves), o <code>for...of</code> entrega
+    diretamente cada valor — e aceita <code>break</code>/<code>continue</code>.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">02_for_of_arrays.js</span>
+      <button class="run-btn" onclick="runCode('ex2')">▶ Executar</button>
+    </div>
+    <pre id="ex2-code"><span class="cmt">// FOR...OF com ARRAYS — a variável recebe CADA VALOR</span>
+<span class="kw">const</span> frutas <span class="op">=</span> [<span class="str">"maçã"</span>, <span class="str">"banana"</span>, <span class="str">"laranja"</span>];
+<span class="kw">for</span> (<span class="kw">const</span> fruta <span class="kw">of</span> frutas) console.<span class="fn">log</span>(<span class="str">"Fruta:"</span>, fruta);
+
+console.<span class="fn">log</span>(<span class="str">"---"</span>);
+
+<span class="cmt">// Com índice via entries() → [índice, valor]</span>
+<span class="kw">for</span> (<span class="kw">const</span> [i, fruta] <span class="kw">of</span> frutas.<span class="fn">entries</span>()) {
+  console.<span class="fn">log</span>(<span class="str">`[${i}] → ${fruta}`</span>);
+}
+
+console.<span class="fn">log</span>(<span class="str">"---"</span>);
+
+<span class="cmt">// Array de objetos com break</span>
+<span class="kw">const</span> alunos <span class="op">=</span> [
+  { nome<span class="op">:</span> <span class="str">"Carlos"</span>, nota<span class="op">:</span> <span class="num">8.5</span> },
+  { nome<span class="op">:</span> <span class="str">"Beatriz"</span>, nota<span class="op">:</span> <span class="num">9.2</span> },
+  { nome<span class="op">:</span> <span class="str">"Diego"</span>, nota<span class="op">:</span> <span class="num">5.0</span> },
+];
+<span class="kw">for</span> (<span class="kw">const</span> aluno <span class="kw">of</span> alunos) {
+  <span class="kw">if</span> (aluno<span class="prop">.nota</span> <span class="op">&lt;</span> <span class="num">6</span>) { console.<span class="fn">log</span>(<span class="str">"Parou em reprovado:"</span>, aluno<span class="prop">.nome</span>); <span class="kw">break</span>; }
+  console.<span class="fn">log</span>(aluno<span class="prop">.nome</span>, <span class="str">"aprovado"</span>);
+}</pre>
+    <div class="console" id="ex2-console"></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">03_for_of_outros.js</span>
+      <button class="run-btn" onclick="runCode('ex3')">▶ Executar</button>
+    </div>
+    <pre id="ex3-code"><span class="cmt">// FOR...OF funciona com QUALQUER iterável</span>
+
+<span class="cmt">// String → caractere por caractere</span>
+<span class="kw">let</span> juntas <span class="op">=</span> <span class="str">""</span>;
+<span class="kw">for</span> (<span class="kw">const</span> letra <span class="kw">of</span> <span class="str">"Código"</span>) juntas <span class="op">+=</span> letra <span class="op">+</span> <span class="str">"-"</span>;
+console.<span class="fn">log</span>(<span class="str">"Letras:"</span>, juntas);
+
+<span class="cmt">// Set → valores únicos (ignora duplicatas)</span>
+<span class="kw">const</span> ids <span class="op">=</span> <span class="kw">new</span> <span class="fn">Set</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>]);
+<span class="kw">for</span> (<span class="kw">const</span> id <span class="kw">of</span> ids) console.<span class="fn">log</span>(<span class="str">"ID:"</span>, id);
+
+<span class="cmt">// Map → pares chave/valor preservando a ordem</span>
+<span class="kw">const</span> capitais <span class="op">=</span> <span class="kw">new</span> <span class="fn">Map</span>([[<span class="str">"Brasil"</span>, <span class="str">"Brasília"</span>], [<span class="str">"Japão"</span>, <span class="str">"Tóquio"</span>]]);
+<span class="kw">for</span> (<span class="kw">const</span> [pais, capital] <span class="kw">of</span> capitais) console.<span class="fn">log</span>(<span class="str">`${pais} → ${capital}`</span>);</pre>
+    <div class="console" id="ex3-console"></div>
+  </div>
+
+  <div class="callout callout-danger">
+    <strong>🚫 for...of NÃO funciona com objetos simples!</strong>
+    Objetos <code>{ }</code> não são iteráveis. <code>for (x of { a: 1 })</code> lança <strong>TypeError</strong>.
+    Para iterar objetos, use <code>for...in</code> (página de Objetos) ou converta com
+    <code>Object.entries(obj)</code> — exemplo abaixo.
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">04_for_of_objeto.js</span>
+      <button class="run-btn" onclick="runCode('ex4')">▶ Executar</button>
+    </div>
+    <pre id="ex4-code"><span class="cmt">// for...of + Object.entries() → iterar chave+valor de objetos</span>
+<span class="kw">const</span> precos <span class="op">=</span> { arroz<span class="op">:</span> <span class="num">8.50</span>, feijao<span class="op">:</span> <span class="num">7.20</span>, azeite<span class="op">:</span> <span class="num">22.90</span> };
+
+<span class="kw">let</span> total <span class="op">=</span> <span class="num">0</span>;
+<span class="kw">for</span> (<span class="kw">const</span> [produto, preco] <span class="kw">of</span> Object.<span class="fn">entries</span>(precos)) {
+  total <span class="op">+=</span> preco;
+  console.<span class="fn">log</span>(<span class="str">`${produto.padEnd(8)}: R$ ${preco.toFixed(2)}`</span>);
+}
+console.<span class="fn">log</span>(<span class="str">`Total: R$ ${total.toFixed(2)}`</span>);</pre>
+    <div class="console" id="ex4-console"></div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ FOREACH ══════ -->
+<section id="foreach">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>forEach</h2>
+    <span class="tag">Arrays → Callback</span>
+  </div>
+
+  <p class="prose">
+    O <code>forEach</code> é um <strong>método de array</strong> que executa uma função (callback) para cada
+    elemento. É expressivo e legível, ideal para efeitos colaterais (imprimir, acumular, atualizar).
+  </p>
+
+  <div class="callout callout-warn">
+    <strong>⚠ forEach não para no meio — e não tem retorno!</strong>
+    Diferente de <code>for...of</code>, o <code>forEach</code> <strong>não aceita <code>break</code></strong>.
+    Se precisar interromper, use <code>for...of</code>. E para <em>transformar</em> dados, prefira
+    <code>.map()</code> (forEach sempre retorna <code>undefined</code>).
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">05_foreach.js</span>
+      <button class="run-btn" onclick="runCode('ex5')">▶ Executar</button>
+    </div>
+    <pre id="ex5-code"><span class="cmt">// forEach((elemento, índice, array) => { ... })</span>
+<span class="kw">const</span> numeros <span class="op">=</span> [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>];
+
+numeros.<span class="fn">forEach</span>((num, idx, arr) <span class="op">=></span> {
+  <span class="kw">const</span> ultimo <span class="op">=</span> idx <span class="op">===</span> arr<span class="prop">.length</span> <span class="op">-</span> <span class="num">1</span>;
+  console.<span class="fn">log</span>(<span class="str">`[${idx}] ${num}${ultimo ? " ← último" : ""}`</span>);
+});
+
+<span class="cmt">// Acumulando em variável externa</span>
+<span class="kw">let</span> soma <span class="op">=</span> <span class="num">0</span>;
+numeros.<span class="fn">forEach</span>(n <span class="op">=></span> { soma <span class="op">+=</span> n; });
+console.<span class="fn">log</span>(<span class="str">"Soma:"</span>, soma);</pre>
+    <div class="console" id="ex5-console"></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">06_foreach_objetos.js</span>
+      <button class="run-btn" onclick="runCode('ex6')">▶ Executar</button>
+    </div>
+    <pre id="ex6-code"><span class="cmt">// forEach com array de objetos — caso real (nota fiscal)</span>
+<span class="kw">const</span> pedidos <span class="op">=</span> [
+  { produto<span class="op">:</span> <span class="str">"Teclado"</span>, preco<span class="op">:</span> <span class="num">350</span>, qtd<span class="op">:</span> <span class="num">2</span> },
+  { produto<span class="op">:</span> <span class="str">"Mouse"</span>, preco<span class="op">:</span> <span class="num">120</span>, qtd<span class="op">:</span> <span class="num">1</span> },
+  { produto<span class="op">:</span> <span class="str">"Monitor"</span>, preco<span class="op">:</span> <span class="num">1800</span>, qtd<span class="op">:</span> <span class="num">1</span> },
+];
+
+<span class="kw">let</span> total <span class="op">=</span> <span class="num">0</span>;
+pedidos.<span class="fn">forEach</span>(({ produto, preco, qtd }) <span class="op">=></span> {
+  <span class="kw">const</span> sub <span class="op">=</span> preco <span class="op">*</span> qtd;
+  total <span class="op">+=</span> sub;
+  console.<span class="fn">log</span>(<span class="str">`${produto.padEnd(10)} x${qtd} = R$ ${sub.toFixed(2)}`</span>);
+});
+console.<span class="fn">log</span>(<span class="str">`TOTAL: R$ ${total.toFixed(2)}`</span>);</pre>
+    <div class="console" id="ex6-console"></div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ COMPARATIVO ══════ -->
+<section id="comparativo">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Comparativo de Laços</h2>
+    <span class="tag">Quando usar cada um</span>
+  </div>
+
+  <table class="compare-table">
+    <thead>
+      <tr><th>Laço</th><th>Itera sobre</th><th>Recebe</th><th>break/continue</th><th>Quando usar</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>for...in</code></td>
+        <td>Objetos</td>
+        <td>Chaves (strings)</td>
+        <td><span class="badge badge-green">✓ sim</span></td>
+        <td>Iterar propriedades de um objeto</td>
+      </tr>
+      <tr>
+        <td><code>for...of</code></td>
+        <td>Iteráveis (array, string, Set, Map)</td>
+        <td>Valores</td>
+        <td><span class="badge badge-green">✓ sim</span></td>
+        <td>Arrays quando precisa de <code>break</code>/<code>await</code></td>
+      </tr>
+      <tr>
+        <td><code>forEach</code></td>
+        <td>Arrays</td>
+        <td>Valor + Índice + Array</td>
+        <td><span class="badge badge-red">✗ não</span></td>
+        <td>Efeito colateral para cada item, sem parar</td>
+      </tr>
+      <tr>
+        <td><code>for</code> clássico</td>
+        <td>Qualquer</td>
+        <td>Índice</td>
+        <td><span class="badge badge-green">✓ sim</span></td>
+        <td>Controle fino de índices, passos, loops inversos</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">07_comparativo.js</span>
+      <button class="run-btn" onclick="runCode('ex7')">▶ Executar</button>
+    </div>
+    <pre id="ex7-code"><span class="cmt">// Mesmo dado, laços diferentes</span>
+<span class="kw">const</span> notas <span class="op">=</span> { maria<span class="op">:</span> <span class="num">9</span>, joao<span class="op">:</span> <span class="num">7</span>, ana<span class="op">:</span> <span class="num">6</span> };
+<span class="kw">const</span> array <span class="op">=</span> [<span class="num">9</span>, <span class="num">7</span>, <span class="num">6</span>];
+
+console.<span class="fn">log</span>(<span class="str">"─ for...in (chaves do objeto) ─"</span>);
+<span class="kw">for</span> (<span class="kw">const</span> aluno <span class="kw">in</span> notas) console.<span class="fn">log</span>(aluno, <span class="str">"→"</span>, notas[aluno]);
+
+console.<span class="fn">log</span>(<span class="str">"─ for...of + entries (objeto) ─"</span>);
+<span class="kw">for</span> (<span class="kw">const</span> [aluno, nota] <span class="kw">of</span> Object.<span class="fn">entries</span>(notas)) console.<span class="fn">log</span>(aluno, <span class="str">"→"</span>, nota);
+
+console.<span class="fn">log</span>(<span class="str">"─ forEach (array) ─"</span>);
+array.<span class="fn">forEach</span>((nota, i) <span class="op">=></span> console.<span class="fn">log</span>(<span class="str">`[${i}] ${nota}`</span>));</pre>
+    <div class="console" id="ex7-console"></div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ EXERCÍCIOS ══════ -->
+<section id="exercicios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">05</div>
+    <h2>Exercícios</h2>
+    <span class="tag">Pratique aqui</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">A</span><span class="ex-title">Estatísticas de um Array</span>
+      <span class="ex-diff diff-easy">● Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Dado o array de números, calcule a soma, a média, o maior e o menor valor, e um novo array só com os valores acima da média.</p>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exA-editor">const numeros = [15, 8, 23, 42, 7, 19, 35, 11];
+
+// Escreva seu código aqui</textarea>
+        <div class="ex-output" id="exA-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solA')">Ver solução</button>
+      <div class="solution-block" id="solA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_A.js</span></div>
+          <pre><span class="kw">const</span> soma <span class="op">=</span> numeros.<span class="fn">reduce</span>((a, n) <span class="op">=></span> a <span class="op">+</span> n, <span class="num">0</span>);
+<span class="kw">const</span> media <span class="op">=</span> soma <span class="op">/</span> numeros<span class="prop">.length</span>;
+console.<span class="fn">log</span>(<span class="str">"Soma:"</span>, soma);
+console.<span class="fn">log</span>(<span class="str">`Média: ${media.toFixed(2)}`</span>);
+console.<span class="fn">log</span>(<span class="str">"Maior:"</span>, Math.<span class="fn">max</span>(<span class="op">...</span>numeros), <span class="str">"| Menor:"</span>, Math.<span class="fn">min</span>(<span class="op">...</span>numeros));
+console.<span class="fn">log</span>(<span class="str">"Acima da média:"</span>, numeros.<span class="fn">filter</span>(n <span class="op">=></span> n <span class="op">></span> media));</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">B</span><span class="ex-title">Temperaturas com for...of</span>
+      <span class="ex-diff diff-easy">● Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Use <code>for...of</code> para calcular a soma, a média, a máxima e a mínima das temperaturas.</p>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exB')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exB-editor">const temperaturas = [23.5, 27.1, 19.8, 31.4, 25.0, 22.6];
+
+// Use for...of</textarea>
+        <div class="ex-output" id="exB-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solB')">Ver solução</button>
+      <div class="solution-block" id="solB">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_B.js</span></div>
+          <pre><span class="kw">let</span> soma <span class="op">=</span> <span class="num">0</span>, max <span class="op">=</span> -Infinity, min <span class="op">=</span> Infinity;
+<span class="kw">for</span> (<span class="kw">const</span> t <span class="kw">of</span> temperaturas) {
+  soma <span class="op">+=</span> t;
+  <span class="kw">if</span> (t <span class="op">></span> max) max <span class="op">=</span> t;
+  <span class="kw">if</span> (t <span class="op">&lt;</span> min) min <span class="op">=</span> t;
+}
+console.<span class="fn">log</span>(<span class="str">`Soma: ${soma.toFixed(1)} | Média: ${(soma/temperaturas.length).toFixed(1)}`</span>);
+console.<span class="fn">log</span>(<span class="str">`Máxima: ${max} | Mínima: ${min}`</span>);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">C</span><span class="ex-title">Folha de Pagamento com forEach</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Use <code>forEach</code> para imprimir cada funcionário, dar 10% de aumento a quem ganha menos de R$ 3.000, e calcular a folha total.</p>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exC')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exC-editor">const funcionarios = [
+  { nome: "Lena",   salario: 2500 },
+  { nome: "Rafael", salario: 4200 },
+  { nome: "Camila", salario: 1800 },
+  { nome: "Priya",  salario: 2900 },
+];
+
+// Use forEach</textarea>
+        <div class="ex-output" id="exC-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solC')">Ver solução</button>
+      <div class="solution-block" id="solC">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_C.js</span></div>
+          <pre><span class="kw">let</span> folha <span class="op">=</span> <span class="num">0</span>;
+funcionarios.<span class="fn">forEach</span>(f <span class="op">=></span> {
+  <span class="kw">if</span> (f<span class="prop">.salario</span> <span class="op">&lt;</span> <span class="num">3000</span>) f<span class="prop">.salario</span> <span class="op">*=</span> <span class="num">1.1</span>;
+  folha <span class="op">+=</span> f<span class="prop">.salario</span>;
+  console.<span class="fn">log</span>(<span class="str">`${f.nome.padEnd(8)}: R$ ${f.salario.toFixed(2)}`</span>);
+});
+console.<span class="fn">log</span>(<span class="str">`Folha total: R$ ${folha.toFixed(2)}`</span>);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  JavaScript puro · Nenhuma biblioteca externa ·
+  <strong>Arrays</strong> &nbsp;|&nbsp; <strong>for...of</strong> &nbsp;|&nbsp; <strong>forEach</strong>
+</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script>
+window.demos = {
+  ex1: () => {
+    const numeros = [10, 25, 42, 7, 88];
+    console.log("Primeiro:", numeros[0]);
+    console.log("Último:", numeros[numeros.length - 1]);
+    numeros.push(99); numeros.unshift(5);
+    const dobrados = numeros.map(n => n * 2);
+    const pares = numeros.filter(n => n % 2 === 0);
+    const soma = numeros.reduce((acc, n) => acc + n, 0);
+    console.log("Array:", numeros);
+    console.log("Dobrados:", dobrados);
+    console.log("Pares:", pares);
+    console.log("Soma:", soma);
+  },
+  ex2: () => {
+    const frutas = ["maçã", "banana", "laranja"];
+    for (const fruta of frutas) console.log("Fruta:", fruta);
+    console.log("---");
+    for (const [i, fruta] of frutas.entries()) console.log(`[${i}] → ${fruta}`);
+    console.log("---");
+    const alunos = [{nome:"Carlos",nota:8.5},{nome:"Beatriz",nota:9.2},{nome:"Diego",nota:5.0}];
+    for (const aluno of alunos) {
+      if (aluno.nota < 6) { console.log("Parou em reprovado:", aluno.nome); break; }
+      console.log(aluno.nome, "aprovado");
+    }
+  },
+  ex3: () => {
+    let juntas = "";
+    for (const letra of "Código") juntas += letra + "-";
+    console.log("Letras:", juntas);
+    const ids = new Set([1, 2, 2, 3, 3]);
+    for (const id of ids) console.log("ID:", id);
+    const capitais = new Map([["Brasil","Brasília"],["Japão","Tóquio"]]);
+    for (const [pais, capital] of capitais) console.log(`${pais} → ${capital}`);
+  },
+  ex4: () => {
+    const precos = { arroz:8.50, feijao:7.20, azeite:22.90 };
+    let total = 0;
+    for (const [produto, preco] of Object.entries(precos)) {
+      total += preco;
+      console.log(`${produto.padEnd(8)}: R$ ${preco.toFixed(2)}`);
+    }
+    console.log(`Total: R$ ${total.toFixed(2)}`);
+  },
+  ex5: () => {
+    const numeros = [10, 20, 30, 40];
+    numeros.forEach((num, idx, arr) => {
+      const ultimo = idx === arr.length - 1;
+      console.log(`[${idx}] ${num}${ultimo ? " ← último" : ""}`);
+    });
+    let soma = 0;
+    numeros.forEach(n => { soma += n; });
+    console.log("Soma:", soma);
+  },
+  ex6: () => {
+    const pedidos = [
+      { produto:"Teclado", preco:350, qtd:2 },
+      { produto:"Mouse", preco:120, qtd:1 },
+      { produto:"Monitor", preco:1800, qtd:1 },
+    ];
+    let total = 0;
+    pedidos.forEach(({ produto, preco, qtd }) => {
+      const sub = preco * qtd; total += sub;
+      console.log(`${produto.padEnd(10)} x${qtd} = R$ ${sub.toFixed(2)}`);
+    });
+    console.log(`TOTAL: R$ ${total.toFixed(2)}`);
+  },
+  ex7: () => {
+    const notas = { maria:9, joao:7, ana:6 };
+    const array = [9, 7, 6];
+    console.log("─ for...in (chaves do objeto) ─");
+    for (const aluno in notas) console.log(aluno, "→", notas[aluno]);
+    console.log("─ for...of + entries (objeto) ─");
+    for (const [aluno, nota] of Object.entries(notas)) console.log(aluno, "→", nota);
+    console.log("─ forEach (array) ─");
+    array.forEach((nota, i) => console.log(`[${i}] ${nota}`));
+  }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Matrizes — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="matrices"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Arrays bidimensionais</div>
+  <h1>Matrizes</h1>
+  <p>Uma matriz é um array de arrays: duas dimensões com linhas e colunas. Acessar um elemento exige dois índices — <code>m[linha][coluna]</code>.</p>
+</div>
+
+<section id="matrizes">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">01</div>
+    <h2>O que é uma Matriz</h2>
+    <span class="tag">Linhas × Colunas</span>
+  </div>
+
+  <p class="prose">
+    Útil para representar tabuleiros, imagens (pixels), tabelas e grafos. Por convenção, o índice da
+    <strong>linha</strong> vem primeiro, depois o da <strong>coluna</strong>.
+  </p>
+
+  <div class="diagram-wrapper">
+    <div class="diagram-title">Matriz 3×4 — linhas e colunas</div>
+
+    <div class="matrix-wrap">
+      <!-- Rótulos de linha -->
+      <div class="matrix-row-labels" style="grid-template-rows: repeat(3, 56px);">
+        <div class="matrix-row-idx">[0][·]</div>
+        <div class="matrix-row-idx">[1][·]</div>
+        <div class="matrix-row-idx">[2][·]</div>
+      </div>
+
+      <!-- Grade + rótulos de coluna -->
+      <div class="matrix-body">
+        <div class="matrix-grid" style="grid-template-columns: repeat(4, 64px); grid-template-rows: repeat(3, 56px);">
+          <!-- Linha 0 -->
+          <div class="mcell">1</div>
+          <div class="mcell">2</div>
+          <div class="mcell">3</div>
+          <div class="mcell no-r">4</div>
+          <!-- Linha 1 -->
+          <div class="mcell">5</div>
+          <div class="mcell">6</div>
+          <div class="mcell">7</div>
+          <div class="mcell no-r">8</div>
+          <!-- Linha 2 (última — sem borda inferior) -->
+          <div class="mcell no-b">9</div>
+          <div class="mcell no-b">10</div>
+          <div class="mcell no-b">11</div>
+          <div class="mcell no-r no-b">12</div>
+        </div>
+
+        <!-- Rótulos de coluna -->
+        <div class="matrix-col-labels" style="grid-template-columns: repeat(4, 64px);">
+          <div class="matrix-col-idx">[·][0]</div>
+          <div class="matrix-col-idx">[·][1]</div>
+          <div class="matrix-col-idx">[·][2]</div>
+          <div class="matrix-col-idx">[·][3]</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top: 1.75rem; color: var(--muted); font-size: 13px;">
+      Acesso: <code style="color:var(--accent2); font-family:'JetBrains Mono',monospace;">m[1][2]</code> = 7 &nbsp;(linha 1, coluna 2)
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">matrizes.js</span>
+      <button class="run-btn" onclick="runCode('ex1')">▶ Executar</button>
+    </div>
+    <pre id="ex1-code"><span class="cmt">// 3 linhas × 4 colunas</span>
+<span class="kw">const</span> matriz <span class="op">=</span> [
+  [<span class="num">1</span>,  <span class="num">2</span>,  <span class="num">3</span>,  <span class="num">4</span>],
+  [<span class="num">5</span>,  <span class="num">6</span>,  <span class="num">7</span>,  <span class="num">8</span>],
+  [<span class="num">9</span>, <span class="num">10</span>, <span class="num">11</span>, <span class="num">12</span>]
+];
+
+console.<span class="fn">log</span>(<span class="str">"m[1][2] ="</span>, matriz[<span class="num">1</span>][<span class="num">2</span>]); <span class="cmt">// 7</span>
+
+<span class="cmt">// Percorrer: loop externo = linhas, interno = colunas</span>
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> matriz<span class="prop">.length</span>; i<span class="op">++</span>) {
+  <span class="kw">let</span> linha <span class="op">=</span> <span class="str">""</span>;
+  <span class="kw">for</span> (<span class="kw">let</span> j <span class="op">=</span> <span class="num">0</span>; j <span class="op">&lt;</span> matriz[i]<span class="prop">.length</span>; j<span class="op">++</span>) {
+    linha <span class="op">+=</span> matriz[i][j].<span class="fn">toString</span>().<span class="fn">padStart</span>(<span class="num">3</span>) <span class="op">+</span> <span class="str">" "</span>;
+  }
+  console.<span class="fn">log</span>(linha);
+}
+
+<span class="cmt">// Matriz identidade 4×4 (diagonal = 1)</span>
+<span class="kw">const</span> n <span class="op">=</span> <span class="num">4</span>, identidade <span class="op">=</span> [];
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> n; i<span class="op">++</span>) {
+  identidade[i] <span class="op">=</span> [];
+  <span class="kw">for</span> (<span class="kw">let</span> j <span class="op">=</span> <span class="num">0</span>; j <span class="op">&lt;</span> n; j<span class="op">++</span>) identidade[i][j] <span class="op">=</span> (i <span class="op">===</span> j) <span class="op">?</span> <span class="num">1</span> <span class="op">:</span> <span class="num">0</span>;
+}
+console.<span class="fn">log</span>(<span class="str">"Identidade:"</span>);
+identidade.<span class="fn">forEach</span>(l <span class="op">=></span> console.<span class="fn">log</span>(l.<span class="fn">join</span>(<span class="str">" "</span>)));</pre>
+    <div class="console" id="ex1-console"></div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📐 Convenção</strong>
+    Em <code>m[2][3]</code>: vá à linha 2 e depois à coluna 3 dentro dessa linha. "Ande N linhas para baixo,
+    depois M colunas para a direita."
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section id="exercicios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">02</div>
+    <h2>Exercício</h2>
+    <span class="tag">Pratique aqui</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">A</span><span class="ex-title">Soma das Diagonais</span>
+      <span class="ex-diff diff-easy">● Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Numa matriz quadrada 4×4, some a <strong>diagonal principal</strong> (linha == coluna) e a <strong>diagonal secundária</strong> (linha + coluna == n − 1).</p>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exA-editor">const m = [
+  [ 1,  2,  3,  4],
+  [ 5,  6,  7,  8],
+  [ 9, 10, 11, 12],
+  [13, 14, 15, 16]
+];
+
+// Calcule as duas diagonais</textarea>
+        <div class="ex-output" id="exA-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solA')">Ver solução</button>
+      <div class="solution-block" id="solA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_A.js</span></div>
+          <pre><span class="kw">const</span> n <span class="op">=</span> m<span class="prop">.length</span>;
+<span class="kw">let</span> principal <span class="op">=</span> <span class="num">0</span>, secundaria <span class="op">=</span> <span class="num">0</span>;
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> n; i<span class="op">++</span>) {
+  principal  <span class="op">+=</span> m[i][i];
+  secundaria <span class="op">+=</span> m[i][n <span class="op">-</span> <span class="num">1</span> <span class="op">-</span> i];
+}
+console.<span class="fn">log</span>(<span class="str">"Principal:"</span>, principal);   <span class="cmt">// 34</span>
+console.<span class="fn">log</span>(<span class="str">"Secundária:"</span>, secundaria); <span class="cmt">// 34</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>JavaScript puro · <strong>Matrizes</strong> · arrays bidimensionais</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script>
+window.demos = {
+  ex1: () => {
+    const matriz = [[1,2,3,4],[5,6,7,8],[9,10,11,12]];
+    console.log("m[1][2] =", matriz[1][2]);
+    for (let i = 0; i < matriz.length; i++) {
+      let linha = "";
+      for (let j = 0; j < matriz[i].length; j++) linha += matriz[i][j].toString().padStart(3) + " ";
+      console.log(linha);
+    }
+    const n = 4, identidade = [];
+    for (let i = 0; i < n; i++) { identidade[i] = []; for (let j = 0; j < n; j++) identidade[i][j] = (i === j) ? 1 : 0; }
+    console.log("Identidade:");
+    identidade.forEach(l => console.log(l.join(" ")));
+  }
+};
+</script>
+</body>
+</html>

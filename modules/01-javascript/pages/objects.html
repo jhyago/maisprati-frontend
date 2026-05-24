@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Objetos & for...in — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="objects"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Coleções chave→valor</div>
+  <h1>Objetos &amp; for...in</h1>
+  <p>O objeto é a estrutura mais versátil do JavaScript. E como ele guarda pares <code>chave: valor</code>, o laço feito sob medida para percorrê-lo é o <code>for...in</code>, que itera sobre as chaves.</p>
+</div>
+
+<!-- ══════ OBJETOS ══════ -->
+<section id="objetos">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>Objetos</h2>
+    <span class="tag">Fundamento</span>
+  </div>
+
+  <p class="prose">
+    Um <strong>objeto</strong> é uma coleção de pares <code>chave: valor</code> (também chamados de
+    <em>propriedade: valor</em>). É usado para representar qualquer coisa: usuários, produtos, configurações.
+  </p>
+
+  <div class="info-grid">
+    <div class="info-card purple"><div class="ic-label">Sintaxe</div><div class="ic-value">{ chave: valor }</div></div>
+    <div class="info-card teal"><div class="ic-label">Acesso por ponto</div><div class="ic-value">obj.chave</div></div>
+    <div class="info-card orange"><div class="ic-label">Acesso por colchete</div><div class="ic-value">obj["chave"]</div></div>
+    <div class="info-card pink"><div class="ic-label">Tipo</div><div class="ic-value">typeof → "object"</div></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">01_criando_objeto.js</span>
+      <button class="run-btn" onclick="runCode('ex1')">▶ Executar</button>
+    </div>
+    <pre id="ex1-code"><span class="cmt">// CRIANDO UM OBJETO COM NOTAÇÃO LITERAL
+// Cada "propriedade" é um par chave: valor separado por vírgula.</span>
+
+<span class="kw">const</span> pessoa <span class="op">=</span> {
+  nome<span class="op">:</span>   <span class="str">"Ana Silva"</span>,     <span class="cmt">// string</span>
+  idade<span class="op">:</span>  <span class="num">28</span>,             <span class="cmt">// number</span>
+  ativa<span class="op">:</span>  <span class="bool">true</span>,           <span class="cmt">// boolean</span>
+  hobbies<span class="op">:</span> [<span class="str">"leitura"</span>, <span class="str">"código"</span>], <span class="cmt">// array como valor</span>
+
+  <span class="cmt">// Método: uma função dentro do objeto</span>
+  <span class="fn">apresentar</span><span class="op">:</span> <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="str">`Olá, sou ${</span><span class="kw">this</span><span class="prop">.nome</span><span class="str">} e tenho ${</span><span class="kw">this</span><span class="prop">.idade</span><span class="str">} anos.`</span>;
+  }
+};
+
+<span class="cmt">// ── ACESSANDO PROPRIEDADES ──</span>
+console.<span class="fn">log</span>(pessoa<span class="prop">.nome</span>);       <span class="cmt">// ponto → chave fixa</span>
+console.<span class="fn">log</span>(pessoa<span class="prop">.hobbies</span>[<span class="num">0</span>]);
+
+<span class="kw">const</span> chave <span class="op">=</span> <span class="str">"idade"</span>;
+console.<span class="fn">log</span>(pessoa[chave]);      <span class="cmt">// colchete → chave dinâmica</span>
+console.<span class="fn">log</span>(pessoa.<span class="fn">apresentar</span>());
+
+<span class="cmt">// ── ADICIONAR / MODIFICAR / REMOVER ──</span>
+pessoa<span class="prop">.email</span> <span class="op">=</span> <span class="str">"ana@email.com"</span>;
+pessoa<span class="prop">.idade</span> <span class="op">=</span> <span class="num">29</span>;
+<span class="kw">delete</span> pessoa<span class="prop">.ativa</span>;
+
+console.<span class="fn">log</span>(pessoa);</pre>
+    <div class="console" id="ex1-console"></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">02_metodos_objeto.js</span>
+      <button class="run-btn" onclick="runCode('ex2')">▶ Executar</button>
+    </div>
+    <pre id="ex2-code"><span class="cmt">// MÉTODOS ESTÁTICOS DO OBJECT
+// Object.keys()   → array com as CHAVES
+// Object.values() → array com os VALORES
+// Object.entries()→ array de [chave, valor]</span>
+
+<span class="kw">const</span> produto <span class="op">=</span> { nome<span class="op">:</span> <span class="str">"Notebook"</span>, preco<span class="op">:</span> <span class="num">3500</span>, estoque<span class="op">:</span> <span class="num">12</span> };
+
+console.<span class="fn">log</span>(<span class="str">"Chaves:"</span>, Object.<span class="fn">keys</span>(produto));
+console.<span class="fn">log</span>(<span class="str">"Valores:"</span>, Object.<span class="fn">values</span>(produto));
+console.<span class="fn">log</span>(<span class="str">"Entradas:"</span>, Object.<span class="fn">entries</span>(produto));
+
+<span class="cmt">// Clonar/mesclar com spread (...)</span>
+<span class="kw">const</span> atualizado <span class="op">=</span> { <span class="op">...</span>produto, preco<span class="op">:</span> <span class="num">3100</span>, cor<span class="op">:</span> <span class="str">"Prata"</span> };
+console.<span class="fn">log</span>(<span class="str">"Atualizado:"</span>, atualizado);
+console.<span class="fn">log</span>(<span class="str">"Original intacto:"</span>, produto<span class="prop">.preco</span>);</pre>
+    <div class="console" id="ex2-console"></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Desestruturação de objetos</strong>
+    Forma elegante de extrair propriedades: <code>const { nome, idade } = pessoa</code> — cria variáveis
+    locais com os mesmos nomes das propriedades, sem repetir <code>pessoa.</code>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ FOR...IN ══════ -->
+<section id="forin">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>for...in</h2>
+    <span class="tag">Objetos → Chaves</span>
+  </div>
+
+  <p class="prose">
+    O <code>for...in</code> <strong>itera sobre as chaves (propriedades enumeráveis)</strong> de um objeto.
+    A cada volta, a variável recebe o <em>nome</em> de uma chave — não o valor. Para obter o valor,
+    acesse <code>objeto[chave]</code>.
+  </p>
+
+  <div class="callout callout-warn">
+    <strong>⚠ Atenção — for...in com arrays</strong>
+    Funciona em arrays (as chaves são os índices <code>0, 1, 2…</code>), mas é <strong>não recomendado</strong>:
+    pode iterar propriedades herdadas do protótipo e não garante a ordem. Para arrays, use
+    <code>for...of</code> ou <code>forEach</code> (na página de Arrays).
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">03_for_in.js</span>
+      <button class="run-btn" onclick="runCode('ex3')">▶ Executar</button>
+    </div>
+    <pre id="ex3-code"><span class="cmt">// FOR...IN — Itera sobre as CHAVES de um objeto
+// Sintaxe: for (chave in objeto) { ... }</span>
+
+<span class="kw">const</span> carro <span class="op">=</span> { marca<span class="op">:</span> <span class="str">"Toyota"</span>, modelo<span class="op">:</span> <span class="str">"Corolla"</span>, ano<span class="op">:</span> <span class="num">2022</span>, km<span class="op">:</span> <span class="num">15000</span> };
+
+<span class="kw">for</span> (<span class="kw">const</span> chave <span class="kw">in</span> carro) {
+  console.<span class="fn">log</span>(<span class="str">`${chave}: ${carro[chave]}`</span>); <span class="cmt">// valor via colchete</span>
+}
+
+console.<span class="fn">log</span>(<span class="str">"---"</span>);
+
+<span class="cmt">// Filtrando por tipo do valor</span>
+<span class="kw">const</span> config <span class="op">=</span> { host<span class="op">:</span> <span class="str">"localhost"</span>, porta<span class="op">:</span> <span class="num">3000</span>, debug<span class="op">:</span> <span class="bool">true</span> };
+<span class="kw">for</span> (<span class="kw">const</span> prop <span class="kw">in</span> config) {
+  <span class="kw">if</span> (<span class="kw">typeof</span> config[prop] <span class="op">===</span> <span class="str">"string"</span>) {
+    console.<span class="fn">log</span>(<span class="str">`[string] ${prop} = "${config[prop]}"`</span>);
+  }
+}
+
+console.<span class="fn">log</span>(<span class="str">"---"</span>);
+
+<span class="cmt">// hasOwnProperty: garante que a chave é do próprio objeto</span>
+<span class="kw">for</span> (<span class="kw">const</span> prop <span class="kw">in</span> config) {
+  <span class="kw">if</span> (config.<span class="fn">hasOwnProperty</span>(prop)) console.<span class="fn">log</span>(<span class="str">"Própria:"</span>, prop);
+}</pre>
+    <div class="console" id="ex3-console"></div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ EXERCÍCIOS ══════ -->
+<section id="exercicios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">03</div>
+    <h2>Exercícios</h2>
+    <span class="tag">Pratique aqui</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">A</span>
+      <span class="ex-title">Inspecionando um Objeto</span>
+      <span class="ex-diff diff-easy">● Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Use <code>for...in</code> para imprimir cada propriedade do objeto <code>livro</code> no formato <code>"propriedade: valor"</code>. Depois imprima quantas propriedades ele tem.</p>
+      <ul>
+        <li>Use <code>for...in</code> para iterar</li>
+        <li>Use <code>Object.keys(livro).length</code> para contar</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exA-editor">const livro = {
+  titulo: "O Senhor dos Anéis",
+  autor: "J.R.R. Tolkien",
+  ano: 1954,
+  paginas: 1178,
+  genero: "Fantasia"
+};
+
+// Escreva seu código aqui:</textarea>
+        <div class="ex-output" id="exA-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solA')">Ver solução</button>
+      <div class="solution-block" id="solA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_A.js</span></div>
+          <pre><span class="kw">for</span> (<span class="kw">const</span> prop <span class="kw">in</span> livro) {
+  console.<span class="fn">log</span>(<span class="str">`${prop}: ${livro[prop]}`</span>);
+}
+console.<span class="fn">log</span>(<span class="str">"Total de propriedades:"</span>, Object.<span class="fn">keys</span>(livro).<span class="prop">length</span>);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">B</span>
+      <span class="ex-title">Inventário de Loja (Desafio)</span>
+      <span class="ex-diff diff-hard">■ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Dado o objeto <code>estoque</code>, use <code>for...in</code> para gerar um relatório:</p>
+      <ul>
+        <li>Liste cada produto com quantidade e preço</li>
+        <li>Calcule o valor total de cada produto (qtd × preco)</li>
+        <li>Marque os produtos com estoque crítico (qtd &lt; 5)</li>
+        <li>Some o valor total do inventário</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exB')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exB-editor">const estoque = {
+  caneta:    { qtd: 120, preco: 2.50 },
+  caderno:   { qtd:  15, preco: 18.90 },
+  borracha:  { qtd:   3, preco: 1.20 },
+  compasso:  { qtd:   2, preco: 22.00 },
+};
+
+// Gere o relatório usando for...in</textarea>
+        <div class="ex-output" id="exB-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solB')">Ver solução</button>
+      <div class="solution-block" id="solB">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_B.js</span></div>
+          <pre><span class="kw">let</span> total <span class="op">=</span> <span class="num">0</span>;
+<span class="kw">for</span> (<span class="kw">const</span> produto <span class="kw">in</span> estoque) {
+  <span class="kw">const</span> { qtd, preco } <span class="op">=</span> estoque[produto];
+  <span class="kw">const</span> valor <span class="op">=</span> qtd <span class="op">*</span> preco;
+  total <span class="op">+=</span> valor;
+  <span class="kw">const</span> alerta <span class="op">=</span> qtd <span class="op">&lt;</span> <span class="num">5</span> <span class="op">?</span> <span class="str">" ⚠ CRÍTICO"</span> <span class="op">:</span> <span class="str">""</span>;
+  console.<span class="fn">log</span>(<span class="str">`${produto.padEnd(10)} qtd:${qtd} → R$ ${valor.toFixed(2)}${alerta}`</span>);
+}
+console.<span class="fn">log</span>(<span class="str">`Total do inventário: R$ ${total.toFixed(2)}`</span>);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  JavaScript puro · Nenhuma biblioteca externa ·
+  <strong>Objetos</strong> &nbsp;|&nbsp; <strong>for...in</strong>
+</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script>
+window.demos = {
+  ex1: () => {
+    const pessoa = { nome:"Ana Silva", idade:28, ativa:true, hobbies:["leitura","código"],
+      apresentar() { return `Olá, sou ${this.nome} e tenho ${this.idade} anos.`; } };
+    console.log(pessoa.nome);
+    console.log(pessoa.hobbies[0]);
+    const chave = "idade";
+    console.log(pessoa[chave]);
+    console.log(pessoa.apresentar());
+    pessoa.email = "ana@email.com";
+    pessoa.idade = 29;
+    delete pessoa.ativa;
+    console.log(pessoa);
+  },
+  ex2: () => {
+    const produto = { nome:"Notebook", preco:3500, estoque:12 };
+    console.log("Chaves:", Object.keys(produto));
+    console.log("Valores:", Object.values(produto));
+    console.log("Entradas:", Object.entries(produto));
+    const atualizado = { ...produto, preco:3100, cor:"Prata" };
+    console.log("Atualizado:", atualizado);
+    console.log("Original intacto:", produto.preco);
+  },
+  ex3: () => {
+    const carro = { marca:"Toyota", modelo:"Corolla", ano:2022, km:15000 };
+    for (const chave in carro) console.log(`${chave}: ${carro[chave]}`);
+    console.log("---");
+    const config = { host:"localhost", porta:3000, debug:true };
+    for (const prop in config) if (typeof config[prop]==="string") console.log(`[string] ${prop} = "${config[prop]}"`);
+    console.log("---");
+    for (const prop in config) if (config.hasOwnProperty(prop)) console.log("Própria:", prop);
+  }
+};
+</script>
+</body>
+</html>

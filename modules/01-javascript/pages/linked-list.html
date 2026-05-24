@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lista Simplesmente Encadeada — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="linked-list"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Nós conectados por ponteiros</div>
+  <h1>Lista Simplesmente<br>Encadeada</h1>
+  <p>Nós espalhados pela memória, cada um guardando um valor e um ponteiro para o próximo. O último aponta para <code>null</code>, sinalizando o fim da corrente.</p>
+</div>
+
+<section id="conceito">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">01</div>
+    <h2>Conceito</h2>
+    <span class="tag">head → ... → null</span>
+  </div>
+
+  <p class="prose">
+    Diferente do array, os nós <strong>não</strong> ficam em posições contíguas. Por isso não há acesso por
+    índice em O(1): para chegar ao 3º nó, é preciso seguir os ponteiros desde o <code>head</code>. Em
+    compensação, inserir no início é O(1) — basta criar o nó e apontar.
+  </p>
+
+  <div class="diagram-wrapper">
+    <div class="diagram-title">Lista Simplesmente Encadeada — apenas próximo</div>
+    <div class="node-chain">
+      <div class="ptr-slot" style="margin-right: 12px;">
+        <div style="text-align:center; color: var(--accent4); font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700;">head</div>
+        <div style="color: var(--accent4); font-size: 22px; text-align:center;">↓</div>
+      </div>
+      <div class="node"><div class="node-value">40</div><div class="node-next">next →</div></div>
+      <span class="arrow">→</span>
+      <div class="node"><div class="node-value">30</div><div class="node-next">next →</div></div>
+      <span class="arrow">→</span>
+      <div class="node"><div class="node-value">20</div><div class="node-next">next →</div></div>
+      <span class="arrow">→</span>
+      <div class="null-node">null</div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card purple"><div class="ic-label">Inserir início</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card teal"><div class="ic-label">Inserir fim</div><div class="ic-value">O(n)</div></div>
+    <div class="info-card orange"><div class="ic-label">Remover início</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card pink"><div class="ic-label">Acesso por índice</div><div class="ic-value">O(n)</div></div>
+  </div>
+
+  <p class="prose" style="margin-top:1.5rem;">
+    <strong>Experimente:</strong> insira e remova nós e veja os ponteiros se religando. Note como inserir
+    no início é instantâneo, mas inserir no fim precisa percorrer a corrente.
+  </p>
+  <div class="viz" data-viz="linked-list" data-initial="30,20,10"></div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">lista_simples.js</span>
+      <button class="run-btn" onclick="runCode('ex1')">▶ Executar</button>
+    </div>
+    <pre id="ex1-code"><span class="kw">class</span> <span class="fn">Node</span> {
+  <span class="fn">constructor</span>(valor) {
+    <span class="kw">this</span><span class="prop">.valor</span> <span class="op">=</span> valor;   <span class="cmt">// dado</span>
+    <span class="kw">this</span><span class="prop">.proximo</span> <span class="op">=</span> <span class="kw">null</span>;  <span class="cmt">// ponteiro p/ o próximo</span>
+  }
+}
+
+<span class="kw">class</span> <span class="fn">LinkedList</span> {
+  <span class="fn">constructor</span>() { <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> <span class="kw">null</span>; <span class="kw">this</span><span class="prop">.length</span> <span class="op">=</span> <span class="num">0</span>; }
+
+  <span class="cmt">// O(1) — só troca ponteiros</span>
+  <span class="fn">inserirInicio</span>(valor) {
+    <span class="kw">const</span> novoNo <span class="op">=</span> <span class="kw">new</span> <span class="fn">Node</span>(valor);
+    novoNo<span class="prop">.proximo</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.head</span>;
+    <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> novoNo;
+    <span class="kw">this</span><span class="prop">.length</span><span class="op">++</span>;
+  }
+
+  <span class="cmt">// O(n) — percorre até o último nó</span>
+  <span class="fn">inserirFim</span>(valor) {
+    <span class="kw">const</span> novoNo <span class="op">=</span> <span class="kw">new</span> <span class="fn">Node</span>(valor);
+    <span class="kw">if</span> (<span class="op">!</span><span class="kw">this</span><span class="prop">.head</span>) { <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> novoNo; }
+    <span class="kw">else</span> {
+      <span class="kw">let</span> atual <span class="op">=</span> <span class="kw">this</span><span class="prop">.head</span>;
+      <span class="kw">while</span> (atual<span class="prop">.proximo</span>) atual <span class="op">=</span> atual<span class="prop">.proximo</span>;
+      atual<span class="prop">.proximo</span> <span class="op">=</span> novoNo;
+    }
+    <span class="kw">this</span><span class="prop">.length</span><span class="op">++</span>;
+  }
+
+  <span class="fn">imprimir</span>() {
+    <span class="kw">let</span> atual <span class="op">=</span> <span class="kw">this</span><span class="prop">.head</span>, res <span class="op">=</span> <span class="str">""</span>;
+    <span class="kw">while</span> (atual) { res <span class="op">+=</span> atual<span class="prop">.valor</span> <span class="op">+</span> <span class="str">" → "</span>; atual <span class="op">=</span> atual<span class="prop">.proximo</span>; }
+    console.<span class="fn">log</span>(res <span class="op">+</span> <span class="str">"null"</span>);
+  }
+}
+
+<span class="kw">const</span> lista <span class="op">=</span> <span class="kw">new</span> <span class="fn">LinkedList</span>();
+lista.<span class="fn">inserirInicio</span>(<span class="num">10</span>);
+lista.<span class="fn">inserirInicio</span>(<span class="num">20</span>);
+lista.<span class="fn">inserirInicio</span>(<span class="num">30</span>);
+lista.<span class="fn">imprimir</span>();      <span class="cmt">// 30 → 20 → 10 → null</span>
+lista.<span class="fn">inserirFim</span>(<span class="num">5</span>);
+lista.<span class="fn">imprimir</span>();      <span class="cmt">// 30 → 20 → 10 → 5 → null</span></pre>
+    <div class="console" id="ex1-console"></div>
+  </div>
+
+  <div class="subhead" style="color: var(--accent3);">Fluxo de inserirInicio(valor)</div>
+  <div class="flow">
+    <div class="flow-step start">🚀 inserirInicio(valor)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step action">novoNo = new Node(valor)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step action">novoNo.proximo = this.head</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step action">this.head = novoNo</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step action">this.length++</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step end">✅ inserção concluída</div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🔑 Por que inserir no início é O(1)?</strong>
+    Não há percurso — três operações: criar o nó, apontar seu <code>proximo</code> para o head atual, e
+    mover o head. Independe do tamanho. Num array, isso seria O(n) (deslocaria todos os elementos).
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section id="exercicios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">02</div>
+    <h2>Exercício</h2>
+    <span class="tag">Pratique aqui</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">A</span><span class="ex-title">Inverter a Lista</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Implemente <code>inverter()</code> que reverte a ordem dos nós <strong>sem criar nós novos</strong> — apenas re-religando os ponteiros.</p>
+      <ul>
+        <li>Antes: <code>10 → 20 → 30 → null</code></li>
+        <li>Depois: <code>30 → 20 → 10 → null</code></li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exA-editor">class Node {
+  constructor(v) { this.valor = v; this.proximo = null; }
+}
+class LinkedList {
+  constructor() { this.head = null; }
+  inserirFim(v) {
+    const n = new Node(v);
+    if (!this.head) { this.head = n; return; }
+    let a = this.head;
+    while (a.proximo) a = a.proximo;
+    a.proximo = n;
+  }
+  imprimir() {
+    let a = this.head, s = "";
+    while (a) { s += a.valor + " → "; a = a.proximo; }
+    console.log(s + "null");
+  }
+
+  // ⬇ Implemente inverter() aqui
+  inverter() {
+
+  }
+}
+
+const l = new LinkedList();
+[10, 20, 30, 40].forEach(v => l.inserirFim(v));
+l.imprimir();   // 10 → 20 → 30 → 40 → null
+l.inverter();
+l.imprimir();   // 40 → 30 → 20 → 10 → null</textarea>
+        <div class="ex-output" id="exA-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solA')">Ver solução</button>
+      <div class="solution-block" id="solA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_A.js</span></div>
+          <pre><span class="fn">inverter</span>() {
+  <span class="kw">let</span> anterior <span class="op">=</span> <span class="kw">null</span>;
+  <span class="kw">let</span> atual <span class="op">=</span> <span class="kw">this</span><span class="prop">.head</span>;
+  <span class="kw">while</span> (atual) {
+    <span class="kw">const</span> proximo <span class="op">=</span> atual<span class="prop">.proximo</span>; <span class="cmt">// guarda próximo</span>
+    atual<span class="prop">.proximo</span> <span class="op">=</span> anterior;       <span class="cmt">// inverte ponteiro</span>
+    anterior <span class="op">=</span> atual;                <span class="cmt">// avança anterior</span>
+    atual <span class="op">=</span> proximo;                  <span class="cmt">// avança atual</span>
+  }
+  <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> anterior;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>JavaScript puro · <strong>Lista Simplesmente Encadeada</strong></footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script>
+window.demos = {
+  ex1: () => {
+    class Node { constructor(v) { this.valor = v; this.proximo = null; } }
+    class LinkedList {
+      constructor() { this.head = null; this.length = 0; }
+      inserirInicio(v) { const n = new Node(v); n.proximo = this.head; this.head = n; this.length++; }
+      inserirFim(v) {
+        const n = new Node(v);
+        if (!this.head) this.head = n;
+        else { let a = this.head; while (a.proximo) a = a.proximo; a.proximo = n; }
+        this.length++;
+      }
+      imprimir() {
+        let a = this.head, r = "";
+        while (a) { r += a.valor + " → "; a = a.proximo; }
+        console.log(r + "null");
+      }
+    }
+    const lista = new LinkedList();
+    lista.inserirInicio(10); lista.inserirInicio(20); lista.inserirInicio(30);
+    lista.imprimir();
+    lista.inserirFim(5);
+    lista.imprimir();
+  }
+};
+</script>
+</body>
+</html>

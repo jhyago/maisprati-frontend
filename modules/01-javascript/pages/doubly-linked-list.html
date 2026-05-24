@@ -1,0 +1,432 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lista Duplamente Encadeada — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="doubly-linked-list"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Navegação bidirecional</div>
+  <h1>Lista Duplamente<br>Encadeada</h1>
+  <p>Cada nó conhece o anterior e o próximo; a lista guarda <code>head</code> e <code>tail</code>. Resultado: inserir/remover nas duas pontas em O(1) e percorrer nos dois sentidos.</p>
+</div>
+
+<!-- CONCEITO -->
+<section id="conceito">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">01</div>
+    <h2>Conceito</h2>
+    <span class="tag">anterior ⇄ próximo</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card pink"><div class="ic-label">Cada nó conhece</div><div class="ic-value">anterior + próximo</div></div>
+    <div class="info-card purple"><div class="ic-label">A lista conhece</div><div class="ic-value">head + tail</div></div>
+    <div class="info-card teal"><div class="ic-label">Inserir/remover pontas</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card orange"><div class="ic-label">Percorrer para trás</div><div class="ic-value">O(n) ✓</div></div>
+  </div>
+
+  <div class="diagram-wrapper">
+    <div class="diagram-title">Estrutura: anterior ⇄ próximo</div>
+    <div class="node-chain">
+      <div class="ptr-slot" style="margin-right: 12px;">
+        <div style="text-align:center; color: var(--accent4); font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700;">head</div>
+        <div style="color: var(--accent4); font-size: 22px; text-align:center;">↓</div>
+      </div>
+      <div class="null-node">null</div>
+      <span class="arrow bidir">⇄</span>
+      <div class="node pink"><div class="node-prev">← prev</div><div class="node-value">30</div><div class="node-next">next →</div></div>
+      <span class="arrow bidir">⇄</span>
+      <div class="node pink"><div class="node-prev">← prev</div><div class="node-value">20</div><div class="node-next">next →</div></div>
+      <span class="arrow bidir">⇄</span>
+      <div class="node pink"><div class="node-prev">← prev</div><div class="node-value">10</div><div class="node-next">next →</div></div>
+      <span class="arrow bidir">⇄</span>
+      <div class="null-node">null</div>
+      <div class="ptr-slot" style="margin-left: 12px;">
+        <div style="text-align:center; color: var(--accent4); font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700;">tail</div>
+        <div style="color: var(--accent4); font-size: 22px; text-align:center;">↑</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="prose" style="margin-top:1.5rem;">
+    <strong>Playground:</strong> opere a lista e acompanhe os ponteiros bidirecionais (⇄) e os rótulos
+    <code>head</code>/<code>tail</code> mudando. Cada ação mostra a complexidade na barra inferior.
+  </p>
+  <div class="viz" data-viz="linked-list" data-doubly="true" data-initial="30,20,10"></div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Onde aparece</strong>
+    Histórico do navegador (voltar/avançar), desfazer/refazer de editores, players com faixa
+    anterior/próxima — tudo que precisa navegar nos dois sentidos.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- NODE + INSERIR -->
+<section id="inserir">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">02</div>
+    <h2>Classe Node &amp; inserirInicio</h2>
+    <span class="tag">Inserir na frente — O(1)</span>
+  </div>
+
+  <p class="prose">
+    O nó guarda o valor e dois ponteiros (ambos <code>null</code> ao nascer). Ao inserir no início:
+    se a lista está vazia, o novo nó vira <code>head</code> e <code>tail</code>; senão, religamos os
+    ponteiros entre o novo nó e o head atual.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">lista_dupla.js</span>
+      <button class="run-btn" onclick="runCode('ex1')">▶ Executar</button>
+    </div>
+    <pre id="ex1-code"><span class="kw">class</span> <span class="fn">Node</span> {
+  <span class="fn">constructor</span>(valor) {
+    <span class="kw">this</span><span class="prop">.valor</span>    <span class="op">=</span> valor;
+    <span class="kw">this</span><span class="prop">.anterior</span> <span class="op">=</span> <span class="kw">null</span>;
+    <span class="kw">this</span><span class="prop">.proximo</span>  <span class="op">=</span> <span class="kw">null</span>;
+  }
+}
+
+<span class="kw">class</span> <span class="fn">DoublyLinkedList</span> {
+  <span class="fn">constructor</span>() { <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> <span class="kw">null</span>; <span class="kw">this</span><span class="prop">.tail</span> <span class="op">=</span> <span class="kw">null</span>; <span class="kw">this</span><span class="prop">.length</span> <span class="op">=</span> <span class="num">0</span>; }
+
+  <span class="fn">inserirInicio</span>(valor) {
+    <span class="kw">const</span> novoNo <span class="op">=</span> <span class="kw">new</span> <span class="fn">Node</span>(valor);
+    <span class="kw">if</span> (<span class="op">!</span><span class="kw">this</span><span class="prop">.head</span>) { <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> novoNo; <span class="kw">this</span><span class="prop">.tail</span> <span class="op">=</span> novoNo; }
+    <span class="kw">else</span> {
+      novoNo<span class="prop">.proximo</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.head</span>;
+      <span class="kw">this</span><span class="prop">.head</span><span class="prop">.anterior</span> <span class="op">=</span> novoNo;
+      <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> novoNo;
+    }
+    <span class="kw">this</span><span class="prop">.length</span><span class="op">++</span>;
+  }
+
+  <span class="fn">inserirFim</span>(valor) {
+    <span class="kw">const</span> novoNo <span class="op">=</span> <span class="kw">new</span> <span class="fn">Node</span>(valor);
+    <span class="kw">if</span> (<span class="op">!</span><span class="kw">this</span><span class="prop">.tail</span>) { <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> novoNo; <span class="kw">this</span><span class="prop">.tail</span> <span class="op">=</span> novoNo; }
+    <span class="kw">else</span> {
+      novoNo<span class="prop">.anterior</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.tail</span>;
+      <span class="kw">this</span><span class="prop">.tail</span><span class="prop">.proximo</span> <span class="op">=</span> novoNo;
+      <span class="kw">this</span><span class="prop">.tail</span> <span class="op">=</span> novoNo;
+    }
+    <span class="kw">this</span><span class="prop">.length</span><span class="op">++</span>;
+  }
+
+  <span class="fn">imprimir</span>() {
+    <span class="kw">let</span> a <span class="op">=</span> <span class="kw">this</span><span class="prop">.head</span>, r <span class="op">=</span> <span class="str">"null ⇄ "</span>;
+    <span class="kw">while</span> (a) { r <span class="op">+=</span> a<span class="prop">.valor</span> <span class="op">+</span> <span class="str">" ⇄ "</span>; a <span class="op">=</span> a<span class="prop">.proximo</span>; }
+    console.<span class="fn">log</span>(r <span class="op">+</span> <span class="str">"null"</span>);
+  }
+}
+
+<span class="kw">const</span> dll <span class="op">=</span> <span class="kw">new</span> <span class="fn">DoublyLinkedList</span>();
+dll.<span class="fn">inserirFim</span>(<span class="num">10</span>); dll.<span class="fn">inserirFim</span>(<span class="num">20</span>); dll.<span class="fn">inserirInicio</span>(<span class="num">5</span>);
+dll.<span class="fn">imprimir</span>(); <span class="cmt">// null ⇄ 5 ⇄ 10 ⇄ 20 ⇄ null</span></pre>
+    <div class="console" id="ex1-console"></div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step start">🚀 inserirInicio(valor)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step action">novoNo = new Node(valor)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step decision"><span>Lista vazia?</span></div>
+    <div class="flow-branches">
+      <div class="flow-branch">
+        <div class="branch-label yes">SIM</div>
+        <div class="flow-step action">head = novoNo</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step action">tail = novoNo</div>
+      </div>
+      <div class="flow-branch">
+        <div class="branch-label no">NÃO</div>
+        <div class="flow-step action">novoNo.proximo = head</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step action">head.anterior = novoNo</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step action">head = novoNo</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step action">this.length++</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step end">✅ inserção concluída</div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🔑 Por que religar os dois ponteiros?</strong>
+    Numa lista <em>simples</em> bastaria <code>novoNo.proximo = head</code>. Na <em>dupla</em>, o antigo head
+    também precisa saber quem é seu anterior — daí <code>head.anterior = novoNo</code>. Esquecer essa linha
+    é o erro mais comum: a lista parece certa indo para frente, mas quebra ao voltar.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- REMOVER -->
+<section id="remover">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">03</div>
+    <h2>Método removerEm(indice)</h2>
+    <span class="tag">Quatro casos a tratar</span>
+  </div>
+
+  <p class="prose">
+    Remover por índice exige cuidado com os <strong>casos de borda</strong>. Validamos o índice e separamos
+    em quatro situações — cada uma religa ponteiros diferentes.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">removerEm.js</span>
+    </div>
+<pre>removerEm(indice) {
+  <span class="kw">if</span> (indice <span class="op">&lt;</span> <span class="num">0</span> <span class="op">||</span> indice <span class="op">&gt;=</span> <span class="kw">this</span><span class="prop">.length</span>) {
+    <span class="kw">throw new</span> <span class="fn">RangeError</span>(<span class="str">"índice fora do intervalo"</span>);
+  }
+
+  <span class="kw">if</span> (<span class="kw">this</span><span class="prop">.length</span> <span class="op">===</span> <span class="num">1</span>) {       <span class="cmt">// único nó</span>
+    <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.tail</span> <span class="op">=</span> <span class="kw">null</span>;
+  } <span class="kw">else if</span> (indice <span class="op">===</span> <span class="num">0</span>) {     <span class="cmt">// remove head</span>
+    <span class="kw">this</span><span class="prop">.head</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.head</span><span class="prop">.proximo</span>;
+    <span class="kw">this</span><span class="prop">.head</span><span class="prop">.anterior</span> <span class="op">=</span> <span class="kw">null</span>;
+  } <span class="kw">else if</span> (indice <span class="op">===</span> <span class="kw">this</span><span class="prop">.length</span> <span class="op">-</span> <span class="num">1</span>) { <span class="cmt">// remove tail</span>
+    <span class="kw">this</span><span class="prop">.tail</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.tail</span><span class="prop">.anterior</span>;
+    <span class="kw">this</span><span class="prop">.tail</span><span class="prop">.proximo</span> <span class="op">=</span> <span class="kw">null</span>;
+  } <span class="kw">else</span> {                       <span class="cmt">// remove no meio</span>
+    <span class="kw">let</span> atual <span class="op">=</span> <span class="kw">this</span><span class="prop">.head</span>;
+    <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> indice; i<span class="op">++</span>) atual <span class="op">=</span> atual<span class="prop">.proximo</span>;
+    atual<span class="prop">.anterior</span><span class="prop">.proximo</span> <span class="op">=</span> atual<span class="prop">.proximo</span>;
+    atual<span class="prop">.proximo</span><span class="prop">.anterior</span> <span class="op">=</span> atual<span class="prop">.anterior</span>;
+  }
+
+  <span class="kw">this</span><span class="prop">.length</span><span class="op">--</span>;
+}</pre>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step start">🚀 removerEm(indice)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step decision"><span>Índice válido?</span></div>
+    <div class="flow-branches">
+      <div class="flow-branch">
+        <div class="branch-label no">NÃO</div>
+        <div class="flow-step err">throw RangeError</div>
+      </div>
+      <div class="flow-branch">
+        <div class="branch-label yes">SIM</div>
+        <div class="flow-step decision"><span>Qual caso?</span></div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-branches">
+      <div class="flow-branch">
+        <div class="branch-label" style="color:var(--accent)">length === 1</div>
+        <div class="flow-step action">head = tail = null</div>
+      </div>
+      <div class="flow-branch">
+        <div class="branch-label" style="color:var(--accent2)">indice === 0</div>
+        <div class="flow-step action">head = head.proximo</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step action">head.anterior = null</div>
+      </div>
+      <div class="flow-branch">
+        <div class="branch-label" style="color:var(--blue)">é o tail</div>
+        <div class="flow-step action">tail = tail.anterior</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step action">tail.proximo = null</div>
+      </div>
+      <div class="flow-branch">
+        <div class="branch-label" style="color:var(--accent3)">no meio</div>
+        <div class="flow-step action">percorre até o nó</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step action">religa vizinhos</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step action">this.length--</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step end">✅ remoção concluída</div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠ Remoção no meio é O(n)</strong>
+    Mesmo na lista dupla, remover por um índice no meio exige <em>percorrer</em> até lá. As pontas
+    (head/tail) é que são sempre O(1), pois já temos o ponteiro.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPLEXIDADE -->
+<section id="complexidade">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-blue">04</div>
+    <h2>Simples × Dupla</h2>
+    <span class="tag">Trade-offs</span>
+  </div>
+
+  <table class="compare-table">
+    <thead><tr><th>Operação</th><th>Lista Simples</th><th>Lista Dupla</th></tr></thead>
+    <tbody>
+      <tr><td>Inserir no início</td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-green">O(1)</span></td></tr>
+      <tr><td>Inserir no fim</td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-green">O(1)</span></td></tr>
+      <tr><td>Remover no fim</td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-green">O(1)</span></td></tr>
+      <tr><td>Percorrer para trás</td><td><span class="badge badge-red">impossível</span></td><td><span class="badge badge-green">O(n)</span></td></tr>
+      <tr><td>Memória por nó</td><td><span class="badge badge-yellow">1 ponteiro</span></td><td><span class="badge badge-red">2 ponteiros</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info">
+    <strong>🔎 Em uma frase</strong>
+    A lista dupla compra velocidade nas duas pontas e navegação reversa ao custo de um ponteiro extra por
+    nó. Se você só mexe no início, a simples já basta e gasta menos memória.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EXERCÍCIO -->
+<section id="exercicios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">05</div>
+    <h2>Exercício</h2>
+    <span class="tag">Pratique aqui</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">A</span><span class="ex-title">Histórico de Navegador</span>
+      <span class="ex-diff diff-hard">■ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Simule o histórico de um navegador com lista dupla. Implemente:</p>
+      <ul>
+        <li><code>visitar(url)</code> — nova página (descarta as à frente)</li>
+        <li><code>voltar()</code> — página anterior</li>
+        <li><code>avancar()</code> — próxima página</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exA-editor">class Pagina {
+  constructor(url) { this.url = url; this.anterior = null; this.proxima = null; }
+}
+class Historico {
+  constructor() { this.atual_no = null; }
+  visitar(url) {
+    // sua implementação
+  }
+  voltar() {
+    // sua implementação
+  }
+  avancar() {
+    // sua implementação
+  }
+  atual() { return this.atual_no ? this.atual_no.url : null; }
+}
+
+const h = new Historico();
+h.visitar("google.com");
+h.visitar("github.com");
+h.visitar("stackoverflow.com");
+console.log("Atual:", h.atual());     // stackoverflow.com
+console.log("Voltar:", h.voltar());    // github.com
+console.log("Voltar:", h.voltar());    // google.com
+console.log("Avançar:", h.avancar());  // github.com</textarea>
+        <div class="ex-output" id="exA-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solA')">Ver solução</button>
+      <div class="solution-block" id="solA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_A.js</span></div>
+          <pre><span class="fn">visitar</span>(url) {
+  <span class="kw">const</span> nova <span class="op">=</span> <span class="kw">new</span> <span class="fn">Pagina</span>(url);
+  <span class="kw">if</span> (<span class="kw">this</span><span class="prop">.atual_no</span>) {
+    nova<span class="prop">.anterior</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.atual_no</span>;
+    <span class="kw">this</span><span class="prop">.atual_no</span><span class="prop">.proxima</span> <span class="op">=</span> nova; <span class="cmt">// descarta o futuro</span>
+  }
+  <span class="kw">this</span><span class="prop">.atual_no</span> <span class="op">=</span> nova;
+  <span class="kw">return</span> url;
+}
+<span class="fn">voltar</span>() {
+  <span class="kw">if</span> (<span class="kw">this</span><span class="prop">.atual_no</span><span class="op">?.</span><span class="prop">anterior</span>) {
+    <span class="kw">this</span><span class="prop">.atual_no</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.atual_no</span><span class="prop">.anterior</span>;
+    <span class="kw">return</span> <span class="kw">this</span><span class="prop">.atual_no</span><span class="prop">.url</span>;
+  }
+  <span class="kw">return</span> <span class="kw">null</span>;
+}
+<span class="fn">avancar</span>() {
+  <span class="kw">if</span> (<span class="kw">this</span><span class="prop">.atual_no</span><span class="op">?.</span><span class="prop">proxima</span>) {
+    <span class="kw">this</span><span class="prop">.atual_no</span> <span class="op">=</span> <span class="kw">this</span><span class="prop">.atual_no</span><span class="prop">.proxima</span>;
+    <span class="kw">return</span> <span class="kw">this</span><span class="prop">.atual_no</span><span class="prop">.url</span>;
+  }
+  <span class="kw">return</span> <span class="kw">null</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>JavaScript puro · <strong>Lista Duplamente Encadeada</strong> · head ⇄ tail</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script>
+window.demos = {
+  ex1: () => {
+    class Node { constructor(valor) { this.valor = valor; this.anterior = null; this.proximo = null; } }
+    class DoublyLinkedList {
+      constructor() { this.head = null; this.tail = null; this.length = 0; }
+      inserirInicio(valor) {
+        const n = new Node(valor);
+        if (!this.head) { this.head = n; this.tail = n; }
+        else { n.proximo = this.head; this.head.anterior = n; this.head = n; }
+        this.length++;
+      }
+      inserirFim(valor) {
+        const n = new Node(valor);
+        if (!this.tail) { this.head = n; this.tail = n; }
+        else { n.anterior = this.tail; this.tail.proximo = n; this.tail = n; }
+        this.length++;
+      }
+      imprimir() {
+        let a = this.head, r = "null ⇄ ";
+        while (a) { r += a.valor + " ⇄ "; a = a.proximo; }
+        console.log(r + "null");
+      }
+    }
+    const dll = new DoublyLinkedList();
+    dll.inserirFim(10); dll.inserirFim(20); dll.inserirInicio(5);
+    dll.imprimir();
+    console.log("head =", dll.head.valor, "| tail =", dll.tail.valor, "| length =", dll.length);
+  }
+};
+</script>
+</body>
+</html>

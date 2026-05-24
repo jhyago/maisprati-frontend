@@ -1,0 +1,300 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pilhas (Stack) — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="stacks"></nav>
+
+<div class="hero">
+  <div class="hero-badge">LIFO — Last In, First Out</div>
+  <h1>Pilhas (Stack)</h1>
+  <p>O último elemento inserido é o primeiro a sair — como uma pilha de pratos. Operações no topo: <code>push</code>, <code>pop</code> e <code>peek</code>, todas em O(1).</p>
+</div>
+
+<section id="conceito">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">01</div>
+    <h2>Conceito</h2>
+    <span class="tag">Tudo no topo</span>
+  </div>
+
+  <p class="prose">
+    Usada em: Ctrl+Z (desfazer), a <em>call stack</em> de funções, verificação de parênteses, navegação
+    voltar/avançar. Só se mexe no <strong>topo</strong> — por isso todas as operações são O(1).
+  </p>
+
+  <div class="info-grid">
+    <div class="info-card yellow"><div class="ic-label">push (topo)</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card yellow"><div class="ic-label">pop (topo)</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card yellow"><div class="ic-label">peek</div><div class="ic-value">O(1) ✓</div></div>
+    <div class="info-card yellow"><div class="ic-label">Buscar elemento</div><div class="ic-value">O(n)</div></div>
+  </div>
+
+  <p class="prose" style="margin-top:1.5rem;">
+    <strong>Experimente:</strong> empilhe (<code>push</code>) e desempilhe (<code>pop</code>). O topo é
+    sempre a última peça colocada — só ela entra e sai. Use <code>peek</code> para espiar sem remover.
+  </p>
+  <div class="viz" data-viz="stack" data-initial="10,20,30"></div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">pilha.js</span>
+      <button class="run-btn" onclick="runCode('ex1')">▶ Executar</button>
+    </div>
+    <pre id="ex1-code"><span class="cmt">// PILHA com array: o fim do array é o TOPO</span>
+<span class="kw">class</span> <span class="fn">Stack</span> {
+  <span class="fn">constructor</span>() { <span class="kw">this</span><span class="prop">.items</span> <span class="op">=</span> []; }
+  <span class="fn">push</span>(v) { <span class="kw">this</span><span class="prop">.items</span>.<span class="fn">push</span>(v); }            <span class="cmt">// O(1)</span>
+  <span class="fn">pop</span>() { <span class="kw">return</span> <span class="kw">this</span><span class="prop">.items</span>.<span class="fn">pop</span>() <span class="op">??</span> <span class="kw">null</span>; } <span class="cmt">// O(1)</span>
+  <span class="fn">peek</span>() { <span class="kw">return</span> <span class="kw">this</span><span class="prop">.items</span>[<span class="kw">this</span><span class="prop">.items</span><span class="prop">.length</span> <span class="op">-</span> <span class="num">1</span>] <span class="op">??</span> <span class="kw">null</span>; }
+  <span class="fn">tamanho</span>() { <span class="kw">return</span> <span class="kw">this</span><span class="prop">.items</span><span class="prop">.length</span>; }
+}
+
+<span class="cmt">// Uso clássico: parênteses balanceados</span>
+<span class="kw">function</span> <span class="fn">balanceados</span>(expr) {
+  <span class="kw">const</span> p <span class="op">=</span> <span class="kw">new</span> <span class="fn">Stack</span>();
+  <span class="kw">for</span> (<span class="kw">const</span> ch <span class="kw">of</span> expr) {
+    <span class="kw">if</span> (ch <span class="op">===</span> <span class="str">"("</span>) p.<span class="fn">push</span>(ch);
+    <span class="kw">else if</span> (ch <span class="op">===</span> <span class="str">")"</span>) {
+      <span class="kw">if</span> (p.<span class="fn">tamanho</span>() <span class="op">===</span> <span class="num">0</span>) <span class="kw">return</span> <span class="bool">false</span>;
+      p.<span class="fn">pop</span>();
+    }
+  }
+  <span class="kw">return</span> p.<span class="fn">tamanho</span>() <span class="op">===</span> <span class="num">0</span>;
+}
+
+<span class="kw">const</span> p <span class="op">=</span> <span class="kw">new</span> <span class="fn">Stack</span>();
+p.<span class="fn">push</span>(<span class="num">10</span>); p.<span class="fn">push</span>(<span class="num">20</span>); p.<span class="fn">push</span>(<span class="num">30</span>);
+console.<span class="fn">log</span>(<span class="str">"peek:"</span>, p.<span class="fn">peek</span>()); <span class="cmt">// 30</span>
+console.<span class="fn">log</span>(<span class="str">"pop:"</span>, p.<span class="fn">pop</span>());   <span class="cmt">// 30</span>
+console.<span class="fn">log</span>(<span class="str">"((a+b)):"</span>, <span class="fn">balanceados</span>(<span class="str">"((a+b))"</span>)); <span class="cmt">// true</span>
+console.<span class="fn">log</span>(<span class="str">"((a+b):"</span>, <span class="fn">balanceados</span>(<span class="str">"((a+b)"</span>));   <span class="cmt">// false</span></pre>
+    <div class="console" id="ex1-console"></div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🔑 Array ou LinkedList para pilha?</strong>
+    Em JavaScript, o Array nativo costuma ser mais rápido (cache-friendly, sem overhead de ponteiros).
+    A LinkedList brilha quando se quer O(1) garantido sem custo amortizado de redimensionamento.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section id="exercicios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">02</div>
+    <h2>Exercício</h2>
+    <span class="tag">Pratique aqui</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">A</span><span class="ex-title">Palíndromo com Pilha</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Use uma pilha para verificar se uma palavra é palíndromo (igual lida de trás para frente).</p>
+      <ul>
+        <li>Empilhe cada caractere</li>
+        <li>Desempilhe comparando com a posição correspondente</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exA-editor">function ehPalindromo(palavra) {
+  const pilha = [];
+
+  // 1. Empilhe cada caractere
+  // 2. Desempilhe e compare
+  // 3. Retorne true ou false
+}
+
+console.log("arara:", ehPalindromo("arara"));       // true
+console.log("javascript:", ehPalindromo("javascript")); // false
+console.log("radar:", ehPalindromo("radar"));       // true</textarea>
+        <div class="ex-output" id="exA-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solA')">Ver solução</button>
+      <div class="solution-block" id="solA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_A.js</span></div>
+          <pre><span class="kw">function</span> <span class="fn">ehPalindromo</span>(palavra) {
+  <span class="kw">const</span> pilha <span class="op">=</span> [];
+  <span class="kw">for</span> (<span class="kw">const</span> ch <span class="kw">of</span> palavra) pilha.<span class="fn">push</span>(ch);
+  <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> palavra<span class="prop">.length</span>; i<span class="op">++</span>) {
+    <span class="kw">if</span> (palavra[i] <span class="op">!==</span> pilha.<span class="fn">pop</span>()) <span class="kw">return</span> <span class="bool">false</span>;
+  }
+  <span class="kw">return</span> <span class="bool">true</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">B</span><span class="ex-title">Inverter Array com Pilha</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Use uma pilha para inverter um array sem usar <code>.reverse()</code>. A ideia: empilhe todos os elementos e desempilhe em um novo array.</p>
+      <ul>
+        <li>Empilhe cada item do array original</li>
+        <li>Desempilhe tudo em um array resultado</li>
+        <li>Por que isso inverte? Porque a pilha é LIFO</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exB')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exB-editor">function inverter(arr) {
+  const pilha = [];
+  const resultado = [];
+
+  // 1. Empilhe cada elemento de arr
+  // 2. Desempilhe tudo para resultado
+  // 3. Retorne resultado
+
+  return resultado;
+}
+
+console.log(inverter([1, 2, 3, 4, 5]));   // [5, 4, 3, 2, 1]
+console.log(inverter(["a", "b", "c"]));    // ["c", "b", "a"]
+console.log(inverter([42]));               // [42]</textarea>
+        <div class="ex-output" id="exB-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solB')">Ver solução</button>
+      <div class="solution-block" id="solB">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_B.js</span></div>
+          <pre><span class="kw">function</span> <span class="fn">inverter</span>(arr) {
+  <span class="kw">const</span> pilha <span class="op">=</span> [];
+  <span class="kw">const</span> resultado <span class="op">=</span> [];
+  <span class="kw">for</span> (<span class="kw">const</span> item <span class="kw">of</span> arr) pilha.<span class="fn">push</span>(item);
+  <span class="kw">while</span> (pilha<span class="prop">.length</span> <span class="op">></span> <span class="num">0</span>) resultado.<span class="fn">push</span>(pilha.<span class="fn">pop</span>());
+  <span class="kw">return</span> resultado;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">C</span><span class="ex-title">MinStack — Mínimo em O(1)</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Implemente uma pilha que, além de <code>push</code>/<code>pop</code>/<code>peek</code>, oferece um método <code>min()</code> que retorna o menor valor atual em <strong>O(1)</strong>.</p>
+      <ul>
+        <li>A pilha auxiliar <code>mins</code> guarda o mínimo <em>acumulado</em> até cada ponto</li>
+        <li>Quando empilhar <code>v</code>: o novo mínimo é <code>Math.min(v, mins.peek())</code></li>
+        <li>Quando desempilhar: remova de ambas as pilhas simultaneamente</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exC')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exC-editor">class MinStack {
+  constructor() {
+    this.main = [];
+    this.mins = []; // pilha auxiliar de mínimos acumulados
+  }
+
+  push(v) {
+    this.main.push(v);
+    // Empilhe em mins o menor entre v e o mínimo atual
+  }
+
+  pop() {
+    this.mins.pop();
+    return this.main.pop() ?? null;
+  }
+
+  peek() { return this.main[this.main.length - 1] ?? null; }
+
+  min() {
+    // Retorne o topo de mins (mínimo atual em O(1))
+  }
+}
+
+const ms = new MinStack();
+ms.push(5); ms.push(3); ms.push(7); ms.push(2);
+console.log("min atual:", ms.min());   // 2
+ms.pop();
+console.log("min após pop:", ms.min()); // 3
+ms.pop();
+console.log("min após pop:", ms.min()); // 3
+ms.pop();
+console.log("min após pop:", ms.min()); // 5</textarea>
+        <div class="ex-output" id="exC-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solC')">Ver solução</button>
+      <div class="solution-block" id="solC">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_C.js</span></div>
+          <pre><span class="kw">class</span> <span class="fn">MinStack</span> {
+  <span class="fn">constructor</span>() { <span class="kw">this</span><span class="prop">.main</span> <span class="op">=</span> []; <span class="kw">this</span><span class="prop">.mins</span> <span class="op">=</span> []; }
+
+  <span class="fn">push</span>(v) {
+    <span class="kw">this</span><span class="prop">.main</span>.<span class="fn">push</span>(v);
+    <span class="kw">const</span> atual <span class="op">=</span> <span class="kw">this</span><span class="prop">.mins</span><span class="prop">.length</span> <span class="op">===</span> <span class="num">0</span>
+      <span class="op">?</span> v
+      <span class="op">:</span> Math.<span class="fn">min</span>(v, <span class="kw">this</span><span class="prop">.mins</span>[<span class="kw">this</span><span class="prop">.mins</span><span class="prop">.length</span> <span class="op">-</span> <span class="num">1</span>]);
+    <span class="kw">this</span><span class="prop">.mins</span>.<span class="fn">push</span>(atual);
+  }
+
+  <span class="fn">pop</span>() { <span class="kw">this</span><span class="prop">.mins</span>.<span class="fn">pop</span>(); <span class="kw">return</span> <span class="kw">this</span><span class="prop">.main</span>.<span class="fn">pop</span>() <span class="op">??</span> <span class="kw">null</span>; }
+  <span class="fn">peek</span>() { <span class="kw">return</span> <span class="kw">this</span><span class="prop">.main</span>[<span class="kw">this</span><span class="prop">.main</span><span class="prop">.length</span> <span class="op">-</span> <span class="num">1</span>] <span class="op">??</span> <span class="kw">null</span>; }
+  <span class="fn">min</span>() { <span class="kw">return</span> <span class="kw">this</span><span class="prop">.mins</span>[<span class="kw">this</span><span class="prop">.mins</span><span class="prop">.length</span> <span class="op">-</span> <span class="num">1</span>] <span class="op">??</span> <span class="kw">null</span>; }
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<footer>JavaScript puro · <strong>Pilhas</strong> · LIFO</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script>
+window.demos = {
+  ex1: () => {
+    class Stack {
+      constructor() { this.items = []; }
+      push(v) { this.items.push(v); }
+      pop() { return this.items.pop() ?? null; }
+      peek() { return this.items[this.items.length - 1] ?? null; }
+      tamanho() { return this.items.length; }
+    }
+    function balanceados(expr) {
+      const p = new Stack();
+      for (const ch of expr) {
+        if (ch === "(") p.push(ch);
+        else if (ch === ")") { if (p.tamanho() === 0) return false; p.pop(); }
+      }
+      return p.tamanho() === 0;
+    }
+    const p = new Stack();
+    p.push(10); p.push(20); p.push(30);
+    console.log("peek:", p.peek());
+    console.log("pop:", p.pop());
+    console.log("((a+b)):", balanceados("((a+b))"));
+    console.log("((a+b):", balanceados("((a+b)"));
+  }
+};
+</script>
+</body>
+</html>

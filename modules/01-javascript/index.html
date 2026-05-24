@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Estudos +PraTi — Guia de Estudos em JavaScript</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/index.html">Estudos <span>+</span>PraTi</a>
+  <a class="nav-home" href="/index.html">← Programa</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Material de Estudo</div>
+  <h1>Aprenda JavaScript<br>do jeito visual</h1>
+  <p>Guias interativos com exemplos executáveis, diagramas, visualizações animadas e exercícios práticos. Cada tópico em sua própria página — escolha por onde começar.</p>
+</div>
+
+<div class="hub">
+  <div class="hub-grid">
+
+    <a class="topic-card" href="pages/objects.html" style="--card-accent: var(--accent);">
+      <div class="tc-icon">🗂️</div>
+      <h3>Objetos</h3>
+      <p>Coleções <code>chave: valor</code> e o laço feito para elas: <code>for...in</code>, que percorre as chaves.</p>
+      <div class="tc-tags"><span class="tc-tag">objetos</span><span class="tc-tag">for...in</span><span class="tc-tag">métodos</span></div>
+      <div class="tc-go">Começar →</div>
+    </a>
+
+    <a class="topic-card" href="pages/arrays.html" style="--card-accent: var(--accent2);">
+      <div class="tc-icon">🔢</div>
+      <h3>Arrays</h3>
+      <p>Sequências indexadas e os laços de iteráveis: <code>for...of</code> e <code>forEach</code>, com comparativo.</p>
+      <div class="tc-tags"><span class="tc-tag">arrays</span><span class="tc-tag">for...of</span><span class="tc-tag">forEach</span></div>
+      <div class="tc-go">Começar →</div>
+    </a>
+
+    <a class="topic-card" href="pages/matrices.html" style="--card-accent: var(--accent3);">
+      <div class="tc-icon">🔲</div>
+      <h3>Matrizes</h3>
+      <p>Arrays bidimensionais: linhas e colunas, acesso por <code>m[i][j]</code> e percurso aninhado.</p>
+      <div class="tc-tags"><span class="tc-tag">2D</span><span class="tc-tag">linhas×colunas</span></div>
+      <div class="tc-go">Começar →</div>
+    </a>
+
+    <a class="topic-card" href="pages/linked-list.html" style="--card-accent: var(--accent2);">
+      <div class="tc-icon">🔗</div>
+      <h3>Lista Simples</h3>
+      <p>Nós ligados por um ponteiro <code>next</code>. Inserção no início O(1). Com <strong>visualizador animado</strong>.</p>
+      <div class="tc-tags"><span class="tc-tag">ponteiros</span><span class="tc-tag">head</span><span class="tc-tag">animado</span></div>
+      <div class="tc-go">Começar →</div>
+    </a>
+
+    <a class="topic-card" href="pages/doubly-linked-list.html" style="--card-accent: var(--accent4);">
+      <div class="tc-icon">⇄</div>
+      <h3>Lista Dupla</h3>
+      <p>Cada nó conhece anterior e próximo. Fluxogramas passo a passo e <strong>playground animado</strong>.</p>
+      <div class="tc-tags"><span class="tc-tag">head/tail</span><span class="tc-tag">O(1)</span><span class="tc-tag">animado</span></div>
+      <div class="tc-go">Começar →</div>
+    </a>
+
+    <a class="topic-card" href="pages/stacks.html" style="--card-accent: var(--accent5);">
+      <div class="tc-icon">📚</div>
+      <h3>Pilhas</h3>
+      <p>LIFO: o último a entrar é o primeiro a sair. <code>push</code>/<code>pop</code> com <strong>visualizador animado</strong>.</p>
+      <div class="tc-tags"><span class="tc-tag">LIFO</span><span class="tc-tag">push/pop</span><span class="tc-tag">animado</span></div>
+      <div class="tc-go">Começar →</div>
+    </a>
+
+    <a class="topic-card" href="pages/queues.html" style="--card-accent: var(--blue);">
+      <div class="tc-icon">🎫</div>
+      <h3>Filas</h3>
+      <p>FIFO: o primeiro a entrar é o primeiro a sair. <code>enqueue</code>/<code>dequeue</code> animados.</p>
+      <div class="tc-tags"><span class="tc-tag">FIFO</span><span class="tc-tag">front/rear</span><span class="tc-tag">animado</span></div>
+      <div class="tc-go">Começar →</div>
+    </a>
+
+    <a class="topic-card" href="pages/sorting.html" style="--card-accent: var(--accent3);">
+      <div class="tc-icon">📊</div>
+      <h3>Ordenação</h3>
+      <p>Bubble Sort e Selection Sort passo a passo. <strong>Barras animadas</strong> mostram cada comparação e troca.</p>
+      <div class="tc-tags"><span class="tc-tag">O(n²)</span><span class="tc-tag">bubble</span><span class="tc-tag">selection</span><span class="tc-tag">animado</span></div>
+      <div class="tc-go">Começar →</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- COMPARATIVO GERAL -->
+<section id="comparativo">
+<div class="section" style="max-width: 1000px;">
+  <div class="section-header">
+    <div class="section-num num-purple">★</div>
+    <h2>Comparativo Geral</h2>
+    <span class="tag">Quando usar cada estrutura</span>
+  </div>
+
+  <p class="prose">
+    Cada estrutura tem trade-offs. A tabela resume a complexidade das operações mais comuns para ajudar a
+    escolher a certa para cada cenário.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Operação</th><th>Array</th><th>Lista Simples</th><th>Lista Dupla</th><th>Pilha</th><th>Fila (LL)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Acesso por índice</td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-yellow">N/A</span></td><td><span class="badge badge-yellow">N/A</span></td></tr>
+      <tr><td>Inserir no início</td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-yellow">N/A</span></td><td><span class="badge badge-yellow">N/A</span></td></tr>
+      <tr><td>Inserir no fim</td><td><span class="badge badge-green">O(1)*</span></td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-green">O(1) push</span></td><td><span class="badge badge-green">O(1) enqueue</span></td></tr>
+      <tr><td>Remover do início</td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-yellow">N/A</span></td><td><span class="badge badge-green">O(1) dequeue</span></td></tr>
+      <tr><td>Remover do fim</td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-green">O(1)</span></td><td><span class="badge badge-green">O(1) pop</span></td><td><span class="badge badge-yellow">N/A</span></td></tr>
+      <tr><td>Buscar valor</td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-red">O(n)</span></td><td><span class="badge badge-red">O(n)</span></td></tr>
+      <tr><td>Memória extra/nó</td><td><span class="badge badge-green">mínima</span></td><td><span class="badge badge-yellow">1 ptr</span></td><td><span class="badge badge-red">2 ptrs</span></td><td><span class="badge badge-green">mín</span></td><td><span class="badge badge-yellow">1 ptr</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size: 12px; color: var(--muted); margin-top: -0.5rem;">* amortizado</p>
+</div>
+</section>
+
+<script src="/assets/js/nav.js"></script>
+
+<footer>
+  Material didático em JavaScript · Vite · Prism.js ·
+  <strong>Objetos</strong> · <strong>Arrays</strong> · <strong>Estruturas de Dados</strong> · <strong>Algoritmos de Ordenação</strong> · <strong>Visualizações Animadas</strong>
+</footer>
+
+</body>
+</html>

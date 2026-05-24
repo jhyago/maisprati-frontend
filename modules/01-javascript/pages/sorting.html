@@ -1,0 +1,607 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Algoritmos de Ordenação — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="sorting"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Algoritmos de Ordenação</div>
+  <h1>Ordenar para Conquistar</h1>
+  <p>Entenda como computadores organizam dados — passo a passo, comparação por comparação.
+     Do Bubble Sort O(n²) ao por que O(n log n) muda tudo.</p>
+</div>
+
+<!-- ════ SEÇÃO 01: CONCEITO ════ -->
+<section id="conceito">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>O que é Ordenação?</h2>
+    <span class="tag">Fundamentos</span>
+  </div>
+
+  <p class="prose">
+    Ordenar significa reorganizar uma sequência de elementos de acordo com uma <strong>relação de ordem</strong>
+    (crescente, decrescente, alfabética...). É uma das operações mais frequentes em computação: buscas binárias,
+    exibição de resultados, joins em banco de dados — todos dependem de dados ordenados.
+  </p>
+
+  <div class="info-grid">
+    <div class="info-card purple">
+      <div class="ic-label">Estável (stable)</div>
+      <div class="ic-value" style="font-size:12px; line-height:1.5">Elementos iguais mantêm<br>a ordem relativa original</div>
+    </div>
+    <div class="info-card teal">
+      <div class="ic-label">In-place</div>
+      <div class="ic-value" style="font-size:12px; line-height:1.5">Ordena no próprio array,<br>sem array auxiliar O(n)</div>
+    </div>
+    <div class="info-card orange">
+      <div class="ic-label">Baseado em comparação</div>
+      <div class="ic-value" style="font-size:12px; line-height:1.5">Limite teórico inferior:<br>Ω(n log n) comparações</div>
+    </div>
+    <div class="info-card yellow">
+      <div class="ic-label">Adaptive</div>
+      <div class="ic-value" style="font-size:12px; line-height:1.5">Mais rápido quando<br>já quase ordenado</div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📌 Por que começar pelo O(n²)?</strong>
+    Bubble Sort e Selection Sort são lentos para grandes volumes, mas <em>ensinam os fundamentos</em>:
+    laços aninhados, trocas, passes, e por que cada comparação importa. Eles são a base conceitual
+    para entender Quick Sort, Merge Sort e Heap Sort.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════ SEÇÃO 02: BUBBLE SORT ════ -->
+<section id="bubble-sort">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>Bubble Sort</h2>
+    <span class="tag">O(n²) · Estável · In-place</span>
+  </div>
+
+  <p class="prose">
+    Em cada <strong>passagem</strong>, percorremos o array comparando pares adjacentes. Se o da esquerda
+    for maior, eles trocam de lugar — o maior vai "borbulhando" até o final. Depois de <em>k</em> passagens,
+    os <em>k</em> maiores já estão no lugar certo e não precisam ser verificados novamente.
+  </p>
+
+  <p class="prose" style="margin-top:1.5rem;">
+    <strong>Experimente o visualizador:</strong> clique em <em>Passo</em> para avançar um a um e
+    ver exatamente qual comparação está sendo feita, ou em <em>Auto</em> para assistir a ordenação completa.
+    As barras amarelas são os elementos sendo comparados; as rosas indicam uma troca; as verdes já estão no lugar definitivo.
+  </p>
+
+  <div class="viz" data-viz="bubble-sort" data-initial="64,34,25,12,22,11,90"></div>
+
+  <div class="subhead">Implementação</div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">bubble-sort.js</span>
+      <button class="run-btn" onclick="runCode('ex1')">▶ Executar</button>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">function bubbleSort(arr) {
+  const n = arr.length;
+
+  for (let i = 0; i &lt; n - 1; i++) {
+    // Após cada passagem i, os últimos i elementos já estão no lugar
+    for (let j = 0; j &lt; n - 1 - i; j++) {
+      if (arr[j] &gt; arr[j + 1]) {
+        // Troca: borbulha o maior para a direita
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+      }
+    }
+  }
+
+  return arr;
+}
+
+// Com contagem de operações (versão didática)
+function bubbleSortDetalhado(arr) {
+  const n = arr.length;
+  let comparacoes = 0, trocas = 0;
+
+  for (let i = 0; i &lt; n - 1; i++) {
+    for (let j = 0; j &lt; n - 1 - i; j++) {
+      comparacoes++;
+      if (arr[j] &gt; arr[j + 1]) {
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+        trocas++;
+      }
+    }
+  }
+
+  return { arr, comparacoes, trocas };
+}
+
+const original = [64, 34, 25, 12, 22, 11, 90];
+console.log("Ordenado:", bubbleSort([...original]));
+
+const { arr, comparacoes, trocas } = bubbleSortDetalhado([...original]);
+console.log(`Comparações: ${comparacoes}, Trocas: ${trocas}`);</code></pre>
+    <div class="console" id="ex1-console"></div>
+  </div>
+
+  <div class="complexity-grid">
+    <div class="cx-card bad">
+      <div class="cx-op">Pior caso</div>
+      <div class="cx-val">O(n²)</div>
+    </div>
+    <div class="cx-card bad">
+      <div class="cx-op">Caso médio</div>
+      <div class="cx-val">O(n²)</div>
+    </div>
+    <div class="cx-card good">
+      <div class="cx-op">Melhor caso</div>
+      <div class="cx-val">O(n)</div>
+    </div>
+    <div class="cx-card good">
+      <div class="cx-op">Memória extra</div>
+      <div class="cx-val">O(1)</div>
+    </div>
+    <div class="cx-card good">
+      <div class="cx-op">Estável</div>
+      <div class="cx-val">Sim ✓</div>
+    </div>
+    <div class="cx-card good">
+      <div class="cx-op">In-place</div>
+      <div class="cx-val">Sim ✓</div>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Otimização: flag de troca</strong>
+    Se uma passagem inteira não realizar nenhuma troca, o array já está ordenado —
+    podemos parar mais cedo. Isso torna o Bubble Sort <strong>O(n) no melhor caso</strong>
+    (array já ordenado), tornando-o adaptativo. Implemente isso no Exercício B!
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════ SEÇÃO 03: SELECTION SORT ════ -->
+<section id="selection-sort">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>Selection Sort</h2>
+    <span class="tag">O(n²) · Instável · In-place</span>
+  </div>
+
+  <p class="prose">
+    A ideia é diferente: em vez de borbulhar o maior, <strong>procuramos o menor</strong> na parte
+    não ordenada e o movemos para o início. Após <em>i</em> passagens, os primeiros <em>i</em>
+    elementos estão definitivamente no lugar.
+  </p>
+
+  <div class="diagram-wrapper">
+    <div class="diagram-title">Selection Sort — uma passagem</div>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); text-align:center; line-height:2.5;">
+      <div>[<span style="color:var(--accent2)">11</span>, 34, 25, 12, 22, 64, 90] → mínimo encontrado: 11 → troca com posição 0</div>
+      <div>[11, <span style="color:var(--accent2)">12</span>, 25, 34, 22, 64, 90] → mínimo encontrado: 12 → troca com posição 1</div>
+      <div>[11, 12, <span style="color:var(--accent2)">22</span>, 34, 25, 64, 90] → mínimo encontrado: 22 → troca com posição 2</div>
+      <div style="color: var(--accent4)">... e assim por diante</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">selection-sort.js</span>
+      <button class="run-btn" onclick="runCode('ex2')">▶ Executar</button>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">function selectionSort(arr) {
+  const n = arr.length;
+
+  for (let i = 0; i &lt; n - 1; i++) {
+    // Encontra o índice do menor elemento na parte não ordenada
+    let minIdx = i;
+    for (let j = i + 1; j &lt; n; j++) {
+      if (arr[j] &lt; arr[minIdx]) minIdx = j;
+    }
+
+    // Troca o menor encontrado com o primeiro da parte não ordenada
+    if (minIdx !== i) {
+      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+    }
+  }
+
+  return arr;
+}
+
+const original = [64, 34, 25, 12, 22, 11, 90];
+console.log("Selection Sort:", selectionSort([...original]));
+
+// Contagem de comparações — sempre O(n²), independente da entrada
+function contarComparacoes(n) {
+  return (n * (n - 1)) / 2; // fórmula exata para selection sort
+}
+console.log(`Comparações para n=7: ${contarComparacoes(7)}`);
+console.log(`Comparações para n=100: ${contarComparacoes(100)}`);</code></pre>
+    <div class="console" id="ex2-console"></div>
+  </div>
+
+  <div class="complexity-grid">
+    <div class="cx-card bad">
+      <div class="cx-op">Pior caso</div>
+      <div class="cx-val">O(n²)</div>
+    </div>
+    <div class="cx-card bad">
+      <div class="cx-op">Caso médio</div>
+      <div class="cx-val">O(n²)</div>
+    </div>
+    <div class="cx-card bad">
+      <div class="cx-op">Melhor caso</div>
+      <div class="cx-val">O(n²)</div>
+    </div>
+    <div class="cx-card mid">
+      <div class="cx-op">Trocas</div>
+      <div class="cx-val">O(n)</div>
+    </div>
+    <div class="cx-card bad">
+      <div class="cx-op">Estável</div>
+      <div class="cx-val">Não ✗</div>
+    </div>
+    <div class="cx-card good">
+      <div class="cx-op">In-place</div>
+      <div class="cx-val">Sim ✓</div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠ Selection vs. Bubble — diferença chave</strong>
+    O Selection Sort faz <strong>menos trocas</strong> (no máximo n−1), enquanto o Bubble pode fazer O(n²) trocas.
+    Isso importa quando a troca é uma operação custosa. Porém, o Selection não é adaptativo:
+    ele faz o mesmo número de comparações mesmo se o array já estiver ordenado.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════ SEÇÃO 04: COMPARATIVO ════ -->
+<section id="comparativo">
+<div class="section" style="max-width: 960px;">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Comparativo de Algoritmos</h2>
+    <span class="tag">Quando usar cada um</span>
+  </div>
+
+  <p class="prose">
+    Os algoritmos O(n²) são práticos para arrays pequenos (n &lt; 50) ou quase ordenados.
+    Para volumes maiores, algoritmos O(n log n) são essenciais.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Algoritmo</th><th>Melhor</th><th>Médio</th><th>Pior</th><th>Trocas</th><th>Estável</th><th>Adaptativo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Bubble Sort</strong></td>
+        <td><span class="badge badge-green">O(n)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-green">Sim</span></td>
+        <td><span class="badge badge-green">Sim*</span></td>
+      </tr>
+      <tr>
+        <td><strong>Selection Sort</strong></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-green">O(n)</span></td>
+        <td><span class="badge badge-red">Não</span></td>
+        <td><span class="badge badge-red">Não</span></td>
+      </tr>
+      <tr>
+        <td><strong>Insertion Sort</strong></td>
+        <td><span class="badge badge-green">O(n)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-green">Sim</span></td>
+        <td><span class="badge badge-green">Sim</span></td>
+      </tr>
+      <tr>
+        <td><strong>Merge Sort</strong></td>
+        <td><span class="badge badge-purple">O(n log n)</span></td>
+        <td><span class="badge badge-purple">O(n log n)</span></td>
+        <td><span class="badge badge-purple">O(n log n)</span></td>
+        <td><span class="badge badge-yellow">O(n log n)</span></td>
+        <td><span class="badge badge-green">Sim</span></td>
+        <td><span class="badge badge-red">Não</span></td>
+      </tr>
+      <tr>
+        <td><strong>Quick Sort</strong></td>
+        <td><span class="badge badge-purple">O(n log n)</span></td>
+        <td><span class="badge badge-purple">O(n log n)</span></td>
+        <td><span class="badge badge-red">O(n²)</span></td>
+        <td><span class="badge badge-yellow">O(log n)</span></td>
+        <td><span class="badge badge-red">Não</span></td>
+        <td><span class="badge badge-red">Não</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size: 12px; color: var(--muted); margin-top: -0.5rem;">
+    * Bubble Sort é adaptativo apenas com a otimização da flag de troca.
+  </p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════ SEÇÃO 05: EXERCÍCIOS ════ -->
+<section id="exercicios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-blue">05</div>
+    <h2>Exercícios</h2>
+    <span class="tag">Pratique aqui</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">A</span><span class="ex-title">Implementar Bubble Sort</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Implemente a função <code>bubbleSort(arr)</code> do zero, sem olhar o exemplo acima.</p>
+      <ul>
+        <li>Dois laços aninhados: externo de <code>0</code> a <code>n-2</code>, interno de <code>0</code> a <code>n-2-i</code></li>
+        <li>Compare <code>arr[j]</code> e <code>arr[j+1]</code>; troque se necessário</li>
+        <li>Retorne o array ordenado (pode modificar in-place)</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exA-editor">function bubbleSort(arr) {
+  // Implemente aqui
+
+  return arr;
+}
+
+console.log(bubbleSort([64, 34, 25, 12, 22, 11, 90]));
+// Esperado: [11, 12, 22, 25, 34, 64, 90]
+
+console.log(bubbleSort([5, 1, 4, 2, 8]));
+// Esperado: [1, 2, 4, 5, 8]</textarea>
+        <div class="ex-output" id="exA-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solA')">Ver solução</button>
+      <div class="solution-block" id="solA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_A.js</span></div>
+          <pre class="language-javascript"><code class="language-javascript">function bubbleSort(arr) {
+  const n = arr.length;
+  for (let i = 0; i &lt; n - 1; i++) {
+    for (let j = 0; j &lt; n - 1 - i; j++) {
+      if (arr[j] &gt; arr[j + 1]) {
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+      }
+    }
+  }
+  return arr;
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">B</span><span class="ex-title">Bubble Sort com Flag de Otimização</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Adicione uma flag <code>trocou</code> que verifica se alguma troca ocorreu em cada passagem. Se nenhuma troca acontecer, o array já está ordenado — interrompa o laço externo mais cedo.</p>
+      <ul>
+        <li>Declare <code>let trocou</code> no início de cada passagem</li>
+        <li>Após a passagem interna, se <code>!trocou</code>, use <code>break</code></li>
+        <li>Teste com <code>[1, 2, 3, 4, 5]</code> — deveria fazer apenas 1 passagem (0 trocas)</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exB')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exB-editor">function bubbleSortOtimizado(arr) {
+  const n = arr.length;
+  let passagens = 0;
+
+  for (let i = 0; i &lt; n - 1; i++) {
+    passagens++;
+    let trocou = false;
+
+    for (let j = 0; j &lt; n - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+        trocou = true;
+      }
+    }
+
+    // Se nenhuma troca ocorreu, pare aqui!
+    // ...
+  }
+
+  console.log(`Passagens realizadas: ${passagens}`);
+  return arr;
+}
+
+console.log("Aleatório:", bubbleSortOtimizado([64, 34, 25, 12, 22, 11, 90]));
+console.log("Já ordenado:", bubbleSortOtimizado([1, 2, 3, 4, 5]));</textarea>
+        <div class="ex-output" id="exB-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solB')">Ver solução</button>
+      <div class="solution-block" id="solB">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_B.js</span></div>
+          <pre class="language-javascript"><code class="language-javascript">function bubbleSortOtimizado(arr) {
+  const n = arr.length;
+  let passagens = 0;
+
+  for (let i = 0; i &lt; n - 1; i++) {
+    passagens++;
+    let trocou = false;
+
+    for (let j = 0; j &lt; n - 1 - i; j++) {
+      if (arr[j] &gt; arr[j + 1]) {
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+        trocou = true;
+      }
+    }
+
+    if (!trocou) break; // já está ordenado
+  }
+
+  console.log(`Passagens realizadas: ${passagens}`);
+  return arr;
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">C</span><span class="ex-title">Implementar Selection Sort</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Implemente o Selection Sort: em cada passagem, encontre o <strong>menor</strong> elemento na parte não ordenada e troque-o com o elemento na posição <code>i</code>.</p>
+      <ul>
+        <li>Laço externo: <code>i</code> de <code>0</code> a <code>n-2</code> (posição de destino)</li>
+        <li>Laço interno: encontre <code>minIdx</code> entre <code>i+1</code> e <code>n-1</code></li>
+        <li>Troque <code>arr[i]</code> com <code>arr[minIdx]</code> apenas se <code>minIdx !== i</code></li>
+        <li>Compare o número de trocas com o Bubble Sort — deve ser bem menor</li>
+      </ul>
+      <div class="editor-area">
+        <div class="editor-label">Seu código <button class="run-ex-btn" onclick="runExercise('exC')">▶ Executar</button></div>
+        <textarea class="code-editor" id="exC-editor">function selectionSort(arr) {
+  const n = arr.length;
+  let trocas = 0;
+
+  for (let i = 0; i &lt; n - 1; i++) {
+    let minIdx = i;
+
+    // Encontre o índice do menor na parte arr[i+1..n-1]
+    // ...
+
+    if (minIdx !== i) {
+      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+      trocas++;
+    }
+  }
+
+  console.log(`Trocas realizadas: ${trocas}`);
+  return arr;
+}
+
+console.log(selectionSort([64, 34, 25, 12, 22, 11, 90]));
+// [11, 12, 22, 25, 34, 64, 90] · máximo n-1 = 6 trocas</textarea>
+        <div class="ex-output" id="exC-output"></div>
+      </div>
+      <button class="show-sol-btn" onclick="toggleSolution('solC')">Ver solução</button>
+      <div class="solution-block" id="solC">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução_C.js</span></div>
+          <pre class="language-javascript"><code class="language-javascript">function selectionSort(arr) {
+  const n = arr.length;
+  let trocas = 0;
+
+  for (let i = 0; i &lt; n - 1; i++) {
+    let minIdx = i;
+
+    for (let j = i + 1; j &lt; n; j++) {
+      if (arr[j] &lt; arr[minIdx]) minIdx = j;
+    }
+
+    if (minIdx !== i) {
+      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+      trocas++;
+    }
+  }
+
+  console.log(`Trocas realizadas: ${trocas}`);
+  return arr;
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<footer>JavaScript puro · Prism.js · <strong>Ordenação</strong> · Bubble Sort · Selection Sort</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<!-- Prism.js via CDN — tema personalizado definido em styles.css -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script>
+window.demos = {
+  ex1: () => {
+    function bubbleSort(arr) {
+      const n = arr.length;
+      let comparacoes = 0, trocas = 0;
+      for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - 1 - i; j++) {
+          comparacoes++;
+          if (arr[j] > arr[j + 1]) {
+            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            trocas++;
+          }
+        }
+      }
+      return { arr, comparacoes, trocas };
+    }
+    const original = [64, 34, 25, 12, 22, 11, 90];
+    const r = bubbleSort([...original]);
+    console.log("Ordenado:", JSON.stringify(r.arr));
+    console.log(`Comparações: ${r.comparacoes}, Trocas: ${r.trocas}`);
+  },
+
+  ex2: () => {
+    function selectionSort(arr) {
+      const n = arr.length;
+      for (let i = 0; i < n - 1; i++) {
+        let minIdx = i;
+        for (let j = i + 1; j < n; j++) {
+          if (arr[j] < arr[minIdx]) minIdx = j;
+        }
+        if (minIdx !== i) [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+      }
+      return arr;
+    }
+    const original = [64, 34, 25, 12, 22, 11, 90];
+    console.log("Selection Sort:", JSON.stringify(selectionSort([...original])));
+    const contarComparacoes = n => (n * (n - 1)) / 2;
+    console.log(`Comparações para n=7: ${contarComparacoes(7)}`);
+    console.log(`Comparações para n=100: ${contarComparacoes(100)}`);
+  },
+};
+</script>
+</body>
+</html>

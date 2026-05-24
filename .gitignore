@@ -1,0 +1,24 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+.vite/
+.claude
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/settings.json
+.idea/
+*.sublime-workspace
+*.suo
+*.ntvs*
+
+# Env
+.env
+.env.local
+*.local
