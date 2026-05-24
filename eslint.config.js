@@ -1,6 +1,6 @@
 export default [
   {
-    files: ['assets/js/**/*.js', 'modules/**/*.js'],
+    files: ['public/assets/js/**/*.js', 'modules/**/*.js'],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'script',

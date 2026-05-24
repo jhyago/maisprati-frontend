@@ -18,8 +18,9 @@ Cada módulo do programa tem sua própria área com: exemplos executáveis, diag
 maisprati-frontend/
 ├── index.html                        # Hub do programa (todos os módulos)
 ├── assets/
-│   ├── css/styles.css                # Design system compartilhado (tema escuro + light)
-│   └── js/
+│   └── css/styles.css                # Design system compartilhado (tema escuro + light)
+├── public/
+│   └── assets/js/                    # Scripts estáticos (copiados para dist/ sem processar)
 │       ├── nav.js                    # Navegação dinâmica + alternância de tema
 │       ├── runner.js                 # Motor de execução de exemplos
 │       └── viz.js                    # Visualizadores animados
