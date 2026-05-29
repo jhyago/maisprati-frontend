@@ -29,6 +29,13 @@
         { id: 'sorting',            label: 'Ordenação',     href: 'sorting.html' },
       ],
     },
+    '02-frontend': {
+      label: 'Frontend & Git',
+      hub: '/modules/02-frontend/index.html',
+      topics: [
+        { id: 'git-github', label: 'Git & GitHub', href: 'git-github.html' },
+      ],
+    },
   };
 
   // ── Theme helpers ────────────────────────────────────

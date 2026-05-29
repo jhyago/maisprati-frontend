@@ -19,8 +19,9 @@ export default defineConfig({
         'js-stacks':          resolve(__dirname, 'modules/01-javascript/pages/stacks.html'),
         'js-queues':          resolve(__dirname, 'modules/01-javascript/pages/queues.html'),
         'js-sorting':         resolve(__dirname, 'modules/01-javascript/pages/sorting.html'),
-        // Add future modules here:
-        // 'html-hub': resolve(__dirname, 'modules/02-html-css/index.html'),
+        // Module 02 — Frontend & Git
+        'fe-hub':             resolve(__dirname, 'modules/02-frontend/index.html'),
+        'fe-git':             resolve(__dirname, 'modules/02-frontend/pages/git-github.html'),
       },
     },
   },

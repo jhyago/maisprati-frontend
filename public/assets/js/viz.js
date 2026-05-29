@@ -435,11 +435,139 @@
     reset();
   }
 
+  // ─────────────────────────────────────────────────────────
+  //  GIT FLOW (the 4 areas a change travels through)
+  // ─────────────────────────────────────────────────────────
+  function gitFlow(root) {
+    // Areas left→right; `cmd` is the command that moves a change INTO this area.
+    const AREAS = [
+      { emoji: '📝', label: 'Working\nDirectory', cmd: '' },
+      { emoji: '➕', label: 'Staging\nArea',      cmd: 'git add' },
+      { emoji: '📦', label: 'Repositório\nLocal',  cmd: 'git commit' },
+      { emoji: '☁️', label: 'Remoto\n(GitHub)',    cmd: 'git push' },
+    ];
+    let pos = -1; // -1 = nada modificado (working tree limpo); 0..3 = área atual da mudança
+    let busy = false;
+
+    // Custom UI (no numeric input)
+    root.innerHTML = '';
+    const bar = el('div', 'viz-bar');
+    bar.appendChild(el('span', 'viz-title', 'Fluxo do Git — por onde um arquivo passa'));
+    const mk = (label, cls) => {
+      const b = el('button', 'viz-btn' + (cls ? ' ' + cls : ''), label);
+      bar.appendChild(b);
+      return b;
+    };
+    const bEdit   = mk('✏️ editar');
+    const bAdd    = mk('git add');
+    const bCommit = mk('git commit');
+    const bPush   = mk('git push');
+    const bUndo   = mk('↩ desfazer', 'pink');
+    const bReset  = mk('reset', 'ghost');
+
+    const stage = el('div', 'viz-stage');
+    const log   = el('div', 'viz-log', 'pronto.');
+    root.appendChild(bar);
+    root.appendChild(stage);
+    root.appendChild(log);
+
+    function say(m) { log.textContent = m; }
+
+    function render(animate) {
+      stage.innerHTML = '';
+      const wrap = el('div', 'git-areas');
+      AREAS.forEach((a, i) => {
+        if (i > 0) {
+          const arr = el('div', 'git-flow-arrow');
+          arr.appendChild(el('span', 'gfa-cmd', a.cmd));
+          arr.appendChild(el('span', 'gfa-tip', '→'));
+          wrap.appendChild(arr);
+        }
+        const col = el('div', 'git-area' + (i === pos ? ' active' : ''));
+        const box = el('div', 'git-area-box');
+        box.appendChild(el('div', 'git-area-emoji', a.emoji));
+        if (i === pos) box.appendChild(el('div', 'git-file' + (animate ? ' enter' : ''), 'app.js'));
+        col.appendChild(box);
+        const lbl = el('div', 'git-area-label');
+        lbl.innerHTML = a.label.replace('\n', '<br>');
+        col.appendChild(lbl);
+        wrap.appendChild(col);
+      });
+      stage.appendChild(wrap);
+      if (animate) {
+        const f = stage.querySelector('.git-file.enter');
+        if (f) { void f.offsetWidth; f.classList.remove('enter'); }
+      }
+    }
+
+    function updateButtons() {
+      bAdd.disabled    = busy || pos !== 0;
+      bCommit.disabled = busy || pos !== 1;
+      bPush.disabled   = busy || pos !== 2;
+      bUndo.disabled   = busy || pos < 0;
+      bEdit.disabled   = busy;
+      bReset.disabled  = busy;
+    }
+
+    async function move(to, msg) {
+      busy = true;
+      updateButtons();
+      pos = to;
+      render(to >= 0);
+      say(msg);
+      await wait(ANIM);
+      busy = false;
+      updateButtons();
+    }
+
+    bEdit.addEventListener('click', () => {
+      if (busy) return;
+      move(0, pos >= 1
+        ? 'Você editou app.js de novo → ele reaparece como "modified" no Working Directory.'
+        : 'Você criou/editou app.js → mudança "untracked/modified" no Working Directory.');
+    });
+    bAdd.addEventListener('click', () => {
+      if (busy || pos !== 0) return;
+      move(1, 'git add app.js → a mudança entra na Staging Area, pronta para o próximo commit.');
+    });
+    bCommit.addEventListener('click', () => {
+      if (busy || pos !== 1) return;
+      move(2, 'git commit -m "..." → cria um commit no Repositório Local. Stage fica limpo.');
+    });
+    bPush.addEventListener('click', () => {
+      if (busy || pos !== 2) return;
+      move(3, 'git push → envia os commits locais para o Remoto (GitHub). Agora todos veem.');
+    });
+    bUndo.addEventListener('click', () => {
+      if (busy || pos < 0) return;
+      const msgs = {
+        0: 'git restore app.js → descarta a edição e volta o arquivo ao último commit.',
+        1: 'git restore --staged app.js → tira do stage, mas mantém a edição no Working Directory.',
+        2: 'git reset --soft HEAD~1 → desfaz o commit e devolve as mudanças ao stage.',
+        3: 'Já está no remoto: use git revert <hash> (novo commit que desfaz) — não reescreva histórico público.',
+      };
+      if (pos === 3) { say(msgs[3]); return; } // não "volta" do remoto no modelo
+      move(pos - 1, msgs[pos]);
+    });
+    bReset.addEventListener('click', () => {
+      if (busy) return;
+      pos = -1;
+      render(false);
+      say('Working tree limpo. Clique em ✏️ editar para começar o ciclo.');
+      updateButtons();
+    });
+
+    render(false);
+    updateButtons();
+    say('Working tree limpo. Edite o arquivo e siga add → commit → push.');
+  }
+
   const builders = {
     'linked-list':  linkedList,
     'stack':        stack,
     'queue':        queue,
     'bubble-sort':  bubbleSortViz,
+    'git-flow':     gitFlow,
   };
 
   document.addEventListener('DOMContentLoaded', () => {

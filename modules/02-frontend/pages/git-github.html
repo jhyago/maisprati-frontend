@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Git &amp; GitHub — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="git-github" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Controle de Versão</div>
+  <h1>Git &amp; GitHub</h1>
+  <p>A ferramenta que você vai usar todos os dias da sua carreira. Aqui está o arcabouço dos comandos essenciais, o que cada conceito significa — <code>origin</code>, <code>upstream</code>, <em>staging</em>, <em>HEAD</em> — e um mapa para sair de qualquer enrascada.</p>
+</div>
+
+<!-- ════════════ 01 · CONCEITO ════════════ -->
+<section id="conceito">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>O modelo mental</h2>
+    <span class="tag">Git ≠ GitHub</span>
+  </div>
+
+  <p class="prose">
+    <strong>Git</strong> é o programa de controle de versão que roda no <em>seu computador</em> — ele guarda o
+    histórico do projeto. <strong>GitHub</strong> é um site que hospeda repositórios Git na nuvem, para
+    backup e colaboração. Você pode usar Git sem GitHub; o GitHub só faz sentido com Git.
+  </p>
+
+  <p class="prose">
+    A confusão inicial quase sempre vem de não enxergar que um arquivo passa por <strong>quatro áreas</strong>.
+    Cada comando do dia a dia só faz uma coisa: mover sua mudança de uma área para a próxima.
+    Brinque com o fluxo abaixo até ele ficar natural.
+  </p>
+
+  <div class="viz" data-viz="git-flow"></div>
+
+  <div class="info-grid">
+    <div class="info-card purple"><div class="ic-label">Working Directory</div><div class="ic-value">seus arquivos</div></div>
+    <div class="info-card teal"><div class="ic-label">Staging (git add)</div><div class="ic-value">próximo commit</div></div>
+    <div class="info-card orange"><div class="ic-label">Repo local (commit)</div><div class="ic-value">histórico .git</div></div>
+    <div class="info-card blue"><div class="ic-label">Remoto (push)</div><div class="ic-value">GitHub</div></div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🔑 HEAD, branch e commit</strong>
+    Um <strong>commit</strong> é uma foto do projeto num instante, com um identificador (hash) e um pai.
+    Uma <strong>branch</strong> (ex.: <code>main</code>) é só um ponteiro móvel para o último commit de uma linha de trabalho.
+    <strong>HEAD</strong> é "onde você está agora" — normalmente aponta para a branch atual.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · CONFIGURAÇÃO ════════════ -->
+<section id="config">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>Configuração inicial</h2>
+    <span class="tag">Faça uma vez por máquina</span>
+  </div>
+
+  <p class="prose">
+    Antes do primeiro commit, o Git precisa saber <strong>quem é você</strong> — esse nome e e-mail ficam
+    gravados em cada commit. Use o mesmo e-mail da sua conta do GitHub.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">configuração global</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash"># Identidade (aparece em cada commit) — use seu e-mail do GitHub
+git config --global user.name "Maria Silva"
+git config --global user.email "maria@email.com"
+
+# Nome padrão da branch inicial (o padrão moderno é "main")
+git config --global init.defaultBranch main
+
+# Editor padrão (ex.: VS Code esperando o arquivo fechar)
+git config --global core.editor "code --wait"
+
+# Deixar a saída colorida e legível
+git config --global color.ui auto
+
+# Conferir tudo o que está configurado (e de onde vem cada valor)
+git config --list --show-origin</code></pre>
+  </div>
+
+  <div class="subhead">Começando um repositório</div>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">init vs clone</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash"># A) Projeto novo, na sua máquina → vira um repositório Git
+cd meu-projeto
+git init
+
+# B) Projeto que já existe no GitHub → baixa uma cópia completa
+git clone https://github.com/usuario/projeto.git
+cd projeto</code></pre>
+  </div>
+
+  <div class="subhead">.gitignore — o que NÃO versionar</div>
+  <p class="prose">
+    Nem tudo deve entrar no histórico: dependências, segredos e arquivos gerados ficam de fora.
+    Crie um arquivo <code>.gitignore</code> na raiz <strong>antes</strong> do primeiro commit.
+  </p>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">.gitignore</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash">node_modules/      # dependências — reinstaláveis com npm install
+dist/              # build gerado
+.env               # SEGREDOS: senhas, tokens, chaves de API
+.DS_Store          # lixo do macOS
+*.log              # arquivos de log</code></pre>
+  </div>
+
+  <div class="callout callout-danger">
+    <strong>⚠️ Nunca versione segredos</strong>
+    Tokens, senhas e chaves de API em um commit ficam no histórico <em>para sempre</em> — mesmo que você
+    apague o arquivo depois. Coloque <code>.env</code> no <code>.gitignore</code> desde o início. Se já vazou,
+    o segredo precisa ser <strong>revogado/trocado</strong>, não basta apagar.
+  </div>
+
+  <div class="subhead">Autenticação no GitHub</div>
+  <p class="prose">
+    O GitHub <strong>não aceita mais sua senha</strong> no terminal. Escolha um dos dois caminhos:
+  </p>
+  <div class="info-grid">
+    <div class="info-card teal">
+      <div class="ic-label">HTTPS + Token (PAT)</div>
+      <div class="ic-value" style="font-size:13px; line-height:1.5;">URL <code>https://...</code>. Quando pedir senha, cole um <strong>Personal Access Token</strong> (Settings → Developer settings). Mais simples para começar.</div>
+    </div>
+    <div class="info-card blue">
+      <div class="ic-label">SSH (chave)</div>
+      <div class="ic-value" style="font-size:13px; line-height:1.5;">URL <code>git@github.com:...</code>. Gere uma chave com <code>ssh-keygen</code>, cole a <code>.pub</code> no GitHub. Não pede senha a cada push.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · CICLO BÁSICO ════════════ -->
+<section id="ciclo">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>O ciclo do dia a dia</h2>
+    <span class="tag">status → add → commit</span>
+  </div>
+
+  <p class="prose">
+    95% do seu uso de Git é este loop. Antes de qualquer coisa, <code>git status</code> — ele te diz
+    em que área cada arquivo está e te sugere o próximo comando. Rode-o o tempo todo.
+  </p>
+
+  <div class="flow">
+    <div class="flow-step start">você edita arquivos</div>
+    <div class="flow-arrow">▼</div>
+    <div class="flow-step action">git status &nbsp;·&nbsp; git diff</div>
+    <div class="flow-arrow">▼</div>
+    <div class="flow-step action">git add &lt;arquivo&gt;</div>
+    <div class="flow-arrow">▼</div>
+    <div class="flow-step action">git commit -m "mensagem"</div>
+    <div class="flow-arrow">▼</div>
+    <div class="flow-step action">git push</div>
+    <div class="flow-arrow">▼</div>
+    <div class="flow-step end">mudança publicada</div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">o ciclo completo</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash"># 1. O que mudou? Em que área está cada arquivo?
+git status
+
+# 2. Ver as linhas exatas que mudaram (ainda não no stage)
+git diff
+git diff --staged     # o que já está no stage, indo para o próximo commit
+
+# 3. Selecionar o que entra no commit (staging)
+git add arquivo.js          # um arquivo
+git add .                   # tudo na pasta atual
+git add -p                  # escolher pedaço por pedaço (interativo)
+
+# 4. Fotografar o que está no stage, com uma mensagem clara
+git commit -m "Adiciona validação no formulário de login"
+
+# Atalho: add (de arquivos já rastreados) + commit num passo só
+git commit -am "Corrige typo no rodapé"
+
+# 5. Enviar os commits para o GitHub
+git push</code></pre>
+  </div>
+
+  <div class="subhead">Lendo o histórico</div>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">git log</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash">git log                              # histórico completo, detalhado
+git log --oneline                    # um commit por linha (hash + mensagem)
+git log --oneline --graph --all      # desenho das branches no terminal
+git show &lt;hash&gt;                       # ver tudo o que um commit mudou</code></pre>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Boas mensagens de commit</strong>
+    Escreva no imperativo e descreva o <em>porquê</em>, não o óbvio: "Corrige cálculo do frete para CEPs do Norte"
+    é melhor que "ajustes" ou "mudei o código". Commits pequenos e focados são mais fáceis de revisar e reverter.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · BRANCHES ════════════ -->
+<section id="branches">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Branches &amp; colaboração</h2>
+    <span class="tag">trabalhar em paralelo</span>
+  </div>
+
+  <p class="prose">
+    Uma <strong>branch</strong> é uma linha de trabalho isolada. Você cria uma para cada tarefa/feature,
+    trabalha nela sem afetar a <code>main</code>, e depois junta (<em>merge</em>) o resultado. É a base do
+    fluxo colaborativo: ninguém comita direto na <code>main</code>.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">branches</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash">git branch                       # listar branches (* marca a atual)
+
+# Criar e já mudar para a nova branch (forma moderna)
+git switch -c feature/login
+# equivalente clássico:
+git checkout -b feature/login
+
+git switch main                  # voltar para a main
+git checkout main                # (equivalente clássico)
+
+# Depois de terminar e fazer merge, apagar a branch local
+git branch -d feature/login</code></pre>
+  </div>
+
+  <div class="subhead">Juntando o trabalho (merge)</div>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">merge</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash"># Estando na main, trazer o que foi feito na feature
+git switch main
+git merge feature/login</code></pre>
+  </div>
+
+  <div class="subhead">Tipos de merge — como o histórico fica</div>
+  <p class="prose">
+    "Mergear" não é uma coisa só: o Git tem <strong>estratégias diferentes</strong> e o resultado no histórico
+    muda bastante. Entender o grafo de commits ajuda a escolher a certa. Em todos os diagramas:
+    <span style="color:var(--accent)">●</span> são commits da <code>main</code>,
+    <span style="color:var(--accent2)">●</span> da <code>feature</code>.
+  </p>
+
+  <!-- 1. FAST-FORWARD -->
+  <div class="git-graph">
+    <svg viewBox="0 0 520 104" role="img" aria-label="Grafo fast-forward: histórico linear">
+      <line class="gg-edge gg-edge-main" x1="80" y1="62" x2="190" y2="62"/>
+      <line class="gg-edge gg-edge-main" x1="190" y1="62" x2="300" y2="62"/>
+      <line class="gg-edge gg-edge-main" x1="300" y1="62" x2="410" y2="62"/>
+      <circle class="gg-node gg-node-main" cx="80"  cy="62" r="13"/>
+      <circle class="gg-node gg-node-main" cx="190" cy="62" r="13"/>
+      <circle class="gg-node gg-node-feat" cx="300" cy="62" r="13"/>
+      <circle class="gg-node gg-node-feat" cx="410" cy="62" r="13"/>
+      <text class="gg-tag gg-tag-feat" x="410" y="22">feature</text>
+      <text class="gg-tag gg-tag-main" x="410" y="40">main</text>
+    </svg>
+  </div>
+  <p class="gg-caption">
+    <strong>Fast-forward (padrão quando dá)</strong> — a <code>main</code> não recebeu commits desde que a
+    feature nasceu, então o Git só "desliza" o ponteiro da <code>main</code> até o fim. Histórico linear,
+    <strong>sem commit de merge</strong>.
+  </p>
+
+  <!-- 2. MERGE COMMIT (3-WAY) -->
+  <div class="git-graph">
+    <svg viewBox="0 0 520 156" role="img" aria-label="Grafo de merge com commit de merge">
+      <line class="gg-edge gg-edge-main" x1="80"  y1="52" x2="190" y2="52"/>
+      <line class="gg-edge gg-edge-main" x1="190" y1="52" x2="330" y2="52"/>
+      <line class="gg-edge gg-edge-main" x1="330" y1="52" x2="440" y2="52"/>
+      <line class="gg-edge gg-edge-feat" x1="190" y1="52" x2="290" y2="124"/>
+      <line class="gg-edge gg-edge-feat" x1="290" y1="124" x2="380" y2="124"/>
+      <line class="gg-edge gg-edge-feat" x1="380" y1="124" x2="440" y2="52"/>
+      <circle class="gg-node gg-node-main" cx="80"  cy="52" r="13"/>
+      <circle class="gg-node gg-node-main" cx="190" cy="52" r="13"/>
+      <circle class="gg-node gg-node-main" cx="330" cy="52" r="13"/>
+      <circle class="gg-node gg-node-merge" cx="440" cy="52" r="14"/>
+      <circle class="gg-node gg-node-feat" cx="290" cy="124" r="13"/>
+      <circle class="gg-node gg-node-feat" cx="380" cy="124" r="13"/>
+      <text class="gg-tag gg-tag-main" x="440" y="24">main</text>
+      <text class="gg-tag gg-tag-feat" x="380" y="148">feature</text>
+      <text class="gg-note" x="300" y="20">merge commit (2 pais)</text>
+    </svg>
+  </div>
+  <p class="gg-caption">
+    <strong>Merge commit / 3-way (<code>--no-ff</code>)</strong> — quando as duas branches divergiram, o Git
+    cria um <span style="color:var(--purple)">commit de merge</span> com <strong>dois pais</strong>.
+    Preserva a ramificação e deixa claro "aqui entrou a feature X".
+  </p>
+
+  <!-- 3. SQUASH -->
+  <div class="git-graph">
+    <svg viewBox="0 0 520 156" role="img" aria-label="Grafo de squash merge">
+      <line class="gg-edge gg-edge-main" x1="80"  y1="52" x2="190" y2="52"/>
+      <line class="gg-edge gg-edge-main" x1="190" y1="52" x2="420" y2="52"/>
+      <line class="gg-edge gg-edge-feat ghost" x1="190" y1="52" x2="290" y2="124"/>
+      <line class="gg-edge gg-edge-feat ghost" x1="290" y1="124" x2="380" y2="124"/>
+      <line class="gg-edge gg-edge-feat ghost" x1="380" y1="124" x2="420" y2="52"/>
+      <circle class="gg-node gg-node-main" cx="80"  cy="52" r="13"/>
+      <circle class="gg-node gg-node-main" cx="190" cy="52" r="13"/>
+      <circle class="gg-node gg-node-squash" cx="420" cy="52" r="14"/>
+      <circle class="gg-node gg-node-feat ghost" cx="290" cy="124" r="13"/>
+      <circle class="gg-node gg-node-feat ghost" cx="380" cy="124" r="13"/>
+      <text class="gg-tag gg-tag-main" x="420" y="24">main</text>
+      <text class="gg-tag gg-tag-feat ghost" x="335" y="148">feature (descartada)</text>
+      <text class="gg-note" x="420" y="86">1 commit só</text>
+    </svg>
+  </div>
+  <p class="gg-caption">
+    <strong>Squash merge</strong> — junta <em>todos</em> os commits da feature em
+    <span style="color:var(--green)">um único commit</span> na <code>main</code>. Histórico limpo, mas você
+    perde os commits intermediários. Comum em PRs no GitHub ("Squash and merge").
+  </p>
+
+  <!-- 4. REBASE -->
+  <div class="git-graph">
+    <svg viewBox="0 0 520 116" role="img" aria-label="Grafo de rebase: commits reaplicados no topo">
+      <line class="gg-edge gg-edge-main" x1="80"  y1="56" x2="190" y2="56"/>
+      <line class="gg-edge gg-edge-main" x1="190" y1="56" x2="300" y2="56"/>
+      <line class="gg-edge gg-edge-feat" x1="300" y1="56" x2="410" y2="56"/>
+      <circle class="gg-node gg-node-main" cx="80"  cy="56" r="13"/>
+      <circle class="gg-node gg-node-main" cx="190" cy="56" r="13"/>
+      <circle class="gg-node gg-node-feat" cx="300" cy="56" r="13"/>
+      <circle class="gg-node gg-node-feat" cx="410" cy="56" r="13"/>
+      <text class="gg-tag gg-tag-main" x="190" y="22">main</text>
+      <text class="gg-tag gg-tag-feat" x="410" y="22">feature</text>
+      <text class="gg-note" x="355" y="92">C3' C4' — reaplicados</text>
+    </svg>
+  </div>
+  <p class="gg-caption">
+    <strong>Rebase</strong> — não é um merge: ele <em>reaplica</em> os commits da feature no topo da
+    <code>main</code> (vira <code>C3'</code>, <code>C4'</code> — cópias novas). Histórico linear e sem merge
+    commit, mas <strong>reescreve commits</strong>.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">as estratégias</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash">git merge feature/login            # fast-forward se possível, senão merge commit
+git merge --no-ff feature/login    # força um merge commit (preserva a ramificação)
+git merge --squash feature/login   # junta tudo; depois você dá 1 commit
+git rebase main                    # (na feature) reaplica seus commits no topo da main</code></pre>
+  </div>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Estratégia</th><th>Cria merge commit?</th><th>Histórico</th><th>Quando usar</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Fast-forward</td><td>Não</td><td>Linear</td><td>Branch curta, main parada — o caso mais simples</td></tr>
+      <tr><td>Merge commit (<code>--no-ff</code>)</td><td>Sim</td><td>Ramificado</td><td>Quer rastrear quando cada feature entrou (padrão em times)</td></tr>
+      <tr><td>Squash</td><td>Não (1 commit novo)</td><td>Linear e limpo</td><td>PR com muitos commits "wip" que não importam no histórico</td></tr>
+      <tr><td>Rebase</td><td>Não</td><td>Linear</td><td>Atualizar sua feature com a main sem poluir o histórico</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ A regra de ouro do rebase</strong>
+    Rebase reescreve commits — então <strong>nunca faça rebase de uma branch que já está compartilhada</strong>
+    (que outros já puxaram). Use rebase só na sua branch local, antes do push. Para o que já é público, use merge.
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🔀 O fluxo real no GitHub: Pull Request</strong>
+    Em equipe você não faz <code>merge</code> local na <code>main</code>. Você dá <code>push</code> da sua branch,
+    abre um <strong>Pull Request (PR)</strong> no GitHub, o time revisa, e o merge é feito pela interface.
+    Isso garante revisão de código e mantém a <code>main</code> sempre estável.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · REMOTOS ════════════ -->
+<section id="remotos">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-blue">05</div>
+    <h2>Remotos: origin &amp; upstream</h2>
+    <span class="tag">push · pull · fetch</span>
+  </div>
+
+  <p class="prose">
+    Um <strong>remoto</strong> é um apelido para a URL de um repositório na nuvem. <code>origin</code> é só o
+    <em>nome convencional</em> do "seu" remoto principal (criado automaticamente pelo <code>clone</code>) —
+    não é uma palavra mágica do Git. <code>upstream</code> é a convenção para o repositório <em>original</em>
+    quando você trabalha com um <strong>fork</strong>.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">remotos</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash">git remote -v                    # listar remotos e suas URLs
+
+# Conectar um repo local (criado com git init) a um do GitHub
+git remote add origin https://github.com/voce/projeto.git
+
+# Primeiro push: -u liga a branch local à do remoto (faz só uma vez)
+git push -u origin main
+# depois disso, basta:
+git push</code></pre>
+  </div>
+
+  <div class="subhead">push, pull e fetch</div>
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Comando</th><th>Direção</th><th>O que faz</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>git push</code></td><td>local → remoto</td><td>Envia seus commits para o GitHub</td></tr>
+      <tr><td><code>git fetch</code></td><td>remoto → local</td><td>Baixa novidades <strong>sem</strong> mexer no seu código (só atualiza o conhecimento do remoto)</td></tr>
+      <tr><td><code>git pull</code></td><td>remoto → local</td><td><code>fetch</code> + <code>merge</code>: baixa e já junta ao seu código</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Hábito que evita 90% das dores</strong>
+    Dê <code>git pull</code> <em>antes</em> de começar a trabalhar e <em>antes</em> de dar push. Assim você
+    sempre parte do código mais recente e evita o erro "rejected" (veja o mapa de debug). Prefira
+    <code>git pull --rebase</code> para um histórico mais linear.
+  </div>
+
+  <div class="subhead">Fluxo com fork (contribuir em projeto de terceiros)</div>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">origin (seu fork) vs upstream (original)</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash"># Você clonou o SEU fork → origin já aponta para ele
+# Adicione o repositório original como "upstream"
+git remote add upstream https://github.com/projeto-original/projeto.git
+
+git fetch upstream                 # baixar novidades do original
+git merge upstream/main            # atualizar sua branch com o original
+
+git push origin minha-feature      # seu trabalho vai para o SEU fork</code></pre>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 06 · DESFAZENDO ════════════ -->
+<section id="desfazer">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">06</div>
+    <h2>Desfazendo coisas</h2>
+    <span class="tag">restore · reset · revert · stash</span>
+  </div>
+
+  <p class="prose">
+    A pergunta certa é: <strong>"o que eu quero desfazer e em que área ele está?"</strong> A tabela mapeia
+    a intenção ao comando. A regra de ouro: <strong><code>revert</code> para o que já foi publicado</strong>
+    (não reescreve histórico) e <code>reset</code> para o que ainda é só seu/local.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Eu quero…</th><th>Comando</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Descartar edições de um arquivo (não comitadas)</td><td><code>git restore arquivo.js</code></td></tr>
+      <tr><td>Tirar um arquivo do stage (mas manter a edição)</td><td><code>git restore --staged arquivo.js</code></td></tr>
+      <tr><td>Corrigir a mensagem do último commit (não enviado)</td><td><code>git commit --amend</code></td></tr>
+      <tr><td>Desfazer o último commit, manter mudanças no stage</td><td><code>git reset --soft HEAD~1</code></td></tr>
+      <tr><td>Desfazer o último commit, mandar mudanças p/ Working Dir</td><td><code>git reset HEAD~1</code> (misto, padrão)</td></tr>
+      <tr><td>Apagar de vez o último commit e suas mudanças</td><td><span class="badge badge-red">cuidado</span> <code>git reset --hard HEAD~1</code></td></tr>
+      <tr><td>Desfazer um commit <strong>já publicado</strong></td><td><code>git revert &lt;hash&gt;</code></td></tr>
+      <tr><td>Guardar mudanças temporariamente, sem comitar</td><td><code>git stash</code></td></tr>
+      <tr><td>Recuperar o que foi guardado</td><td><code>git stash pop</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="subhead">reset: as três intensidades</div>
+  <div class="info-grid">
+    <div class="info-card teal"><div class="ic-label">--soft</div><div class="ic-value" style="font-size:13px;">desfaz o commit · mantém no stage</div></div>
+    <div class="info-card yellow"><div class="ic-label">--mixed (padrão)</div><div class="ic-value" style="font-size:13px;">desfaz commit + stage · guarda no Working Dir</div></div>
+    <div class="info-card pink"><div class="ic-label">--hard</div><div class="ic-value" style="font-size:13px;">apaga tudo · não tem volta fácil</div></div>
+  </div>
+
+  <div class="subhead">stash — "pausa, preciso trocar de tarefa"</div>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">git stash</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash"># Está no meio de algo e precisa mudar de branch sem comitar pela metade?
+git stash                 # guarda as mudanças e limpa o Working Directory
+git switch main           # agora você pode trocar de branch livremente
+
+git stash list            # ver o que está guardado
+git stash pop             # traz de volta a última pilha (e a remove)
+git stash apply           # traz de volta, mas mantém na lista</code></pre>
+  </div>
+
+  <div class="callout callout-danger">
+    <strong>⚠️ <code>--hard</code> e <code>push --force</code> são irreversíveis</strong>
+    <code>git reset --hard</code> joga fora mudanças não comitadas para sempre. <code>git push --force</code>
+    pode <strong>apagar o trabalho dos colegas</strong> no remoto. Se precisar mesmo, use
+    <code>--force-with-lease</code>, que recusa sobrescrever o que você ainda não viu.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 07 · MAPA DE DEBUG ════════════ -->
+<section id="debug">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">07</div>
+    <h2>Mapa de debug</h2>
+    <span class="tag">saindo das enrascadas</span>
+  </div>
+
+  <p class="prose">
+    Os erros mais comuns têm sempre a mesma causa e a mesma cura. Leia a <strong>mensagem do Git</strong> —
+    ela quase sempre sugere o comando certo. Abaixo, os problemas que todo aluno encontra.
+  </p>
+
+  <!-- 7.1 push rejected -->
+  <div class="subhead">① push "rejected / non-fast-forward"</div>
+  <p class="prose">
+    O remoto tem commits que você não tem localmente (um colega deu push antes). O Git recusa o push para
+    não apagar o trabalho dele.
+  </p>
+  <div class="flow">
+    <div class="flow-step err">! [rejected] ... (fetch first)</div>
+    <div class="flow-arrow">▼</div>
+    <div class="flow-step action">git pull --rebase</div>
+    <div class="flow-branches">
+      <div class="flow-branch">
+        <span class="branch-label yes">sem conflito</span>
+        <div class="flow-step action">git push</div>
+      </div>
+      <div class="flow-branch">
+        <span class="branch-label no">com conflito</span>
+        <div class="flow-step decision"><span>resolver → add → continue</span></div>
+      </div>
+    </div>
+    <div class="flow-arrow">▼</div>
+    <div class="flow-step end">push aceito</div>
+  </div>
+
+  <!-- 7.2 merge conflict -->
+  <div class="subhead">② Conflito de merge</div>
+  <p class="prose">
+    Dois lados mudaram a <em>mesma linha</em>. O Git marca o trecho no arquivo e espera você decidir.
+    Não entre em pânico: o conflito é local e nada foi perdido.
+  </p>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">como o conflito aparece no arquivo</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+const titulo = "Meu Projeto";        # ← sua versão (branch atual)
+=======
+const titulo = "Projeto Final";      # ← a versão que está chegando
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/titulo</code></pre>
+  </div>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">resolvendo</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash"># 1. Abra o arquivo, escolha o conteúdo certo e APAGUE as marcações
+#    (as linhas &lt;&lt;&lt;&lt;&lt;&lt;&lt;, ======= e &gt;&gt;&gt;&gt;&gt;&gt;&gt;)
+# 2. Marque como resolvido e finalize:
+git add arquivo.js
+git commit                 # (ou: git rebase --continue, se foi rebase)
+
+# Mudou de ideia e quer abortar tudo?
+git merge --abort</code></pre>
+  </div>
+
+  <!-- 7.3 detached HEAD -->
+  <div class="subhead">③ "You are in 'detached HEAD' state"</div>
+  <p class="prose">
+    Você fez <code>checkout</code> de um commit específico (um hash), não de uma branch. O HEAD está "solto":
+    commits feitos aqui podem se perder. Para sair, basta voltar para uma branch.
+  </p>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">saindo do detached HEAD</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash">git switch main                 # só descartar a exploração e voltar
+# OU, se você fez commits que quer manter aqui:
+git switch -c minha-branch      # cria uma branch a partir de onde está</code></pre>
+  </div>
+
+  <!-- 7.4 commit na branch errada -->
+  <div class="subhead">④ Comitei na branch errada (ainda não dei push)</div>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">movendo o commit</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash"># Estou na main e o último commit deveria estar numa feature:
+git switch -c feature/certa     # cria a branch certa COM o commit
+git switch main                 # volta para a main
+git reset --hard HEAD~1         # remove o commit da main (já está salvo na feature)</code></pre>
+  </div>
+
+  <!-- 7.5 erros de identidade / repo -->
+  <div class="subhead">⑤ Erros de mensagem direta</div>
+  <div class="callout callout-warn">
+    <strong>"Author identity unknown / Please tell me who you are"</strong>
+    Você ainda não configurou nome e e-mail. Rode os <code>git config --global user.name/email</code> da seção 02.
+  </div>
+  <div class="callout callout-warn">
+    <strong>"fatal: not a git repository"</strong>
+    Você está numa pasta que não é um repositório. Confira com <code>pwd</code> onde está; entre na pasta
+    do projeto ou rode <code>git init</code> se for um projeto novo.
+  </div>
+  <div class="callout callout-warn">
+    <strong>"Authentication failed" no push (HTTPS)</strong>
+    O GitHub não aceita senha. Gere um <strong>Personal Access Token</strong> e use-o no lugar da senha,
+    ou troque para SSH (seção 02).
+  </div>
+
+  <!-- 7.6 .gitignore tardio -->
+  <div class="subhead">⑥ Coloquei algo no .gitignore mas o Git ainda rastreia</div>
+  <p class="prose">
+    O <code>.gitignore</code> só ignora arquivos que o Git <em>ainda não conhece</em>. Se já foi comitado
+    (ex.: <code>node_modules/</code> ou <code>.env</code>), é preciso removê-lo do rastreamento — sem apagar do disco.
+  </p>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">parar de rastrear</span>
+    </div>
+    <pre class="language-bash"><code class="language-bash">git rm -r --cached node_modules     # tira do Git, mantém no disco
+git commit -m "Remove node_modules do versionamento"</code></pre>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>🛟 A rede de segurança: <code>git reflog</code></strong>
+    Acha que perdeu commits depois de um <code>reset --hard</code> ou rebase confuso? O <code>git reflog</code>
+    lista <em>todos</em> os lugares por onde o HEAD passou. Encontre o hash e recupere com
+    <code>git reset --hard &lt;hash&gt;</code> ou <code>git switch -c recuperado &lt;hash&gt;</code>. Quase nada se perde de verdade.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 08 · PRÁTICA + COLA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">08</div>
+    <h2>Pratique &amp; cola rápida</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">
+    Abra um terminal e siga o roteiro abaixo num projeto de teste. Pense na resposta antes de revelar.
+  </p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">Do zero ao GitHub</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você criou uma pasta <code>meu-site</code> com um <code>index.html</code>. Quais comandos levam isso
+      a um repositório novo no GitHub (já criado, vazio, em <code>https://github.com/voce/meu-site.git</code>)?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_1</span></div>
+          <pre class="language-bash"><code class="language-bash">git init
+git add .
+git commit -m "Primeira versão do site"
+git remote add origin https://github.com/voce/meu-site.git
+git push -u origin main</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">push recusado</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você dá <code>git push</code> e recebe <code>! [rejected] main -&gt; main (fetch first)</code>.
+      O que aconteceu e o que você faz?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_2</span></div>
+          <pre class="language-bash"><code class="language-bash"># O remoto tem commits que você não tem. Traga-os primeiro, depois suba:
+git pull --rebase
+# resolva conflitos se houver (editar → git add → git rebase --continue)
+git push</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">commit errado, não publicado</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você comitou com a mensagem "asdf" e ainda <strong>não</strong> deu push. Como corrigir a mensagem
+      sem criar um commit novo?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-bash"><code class="language-bash">git commit --amend -m "Mensagem correta e descritiva"
+# Só faça amend ANTES do push. Se já publicou, prefira um commit novo.</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subhead">Cola rápida</div>
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead><tr><th>Tarefa</th><th>Comando</th></tr></thead>
+    <tbody>
+      <tr><td>Ver o estado atual</td><td><code>git status</code></td></tr>
+      <tr><td>Ver o que mudou</td><td><code>git diff</code> · <code>git diff --staged</code></td></tr>
+      <tr><td>Preparar mudanças</td><td><code>git add .</code></td></tr>
+      <tr><td>Salvar no histórico</td><td><code>git commit -m "..."</code></td></tr>
+      <tr><td>Enviar / baixar</td><td><code>git push</code> · <code>git pull</code></td></tr>
+      <tr><td>Histórico resumido</td><td><code>git log --oneline --graph</code></td></tr>
+      <tr><td>Nova branch</td><td><code>git switch -c nome</code></td></tr>
+      <tr><td>Trocar de branch</td><td><code>git switch nome</code></td></tr>
+      <tr><td>Guardar p/ depois</td><td><code>git stash</code> · <code>git stash pop</code></td></tr>
+      <tr><td>Descartar edição local</td><td><code>git restore arquivo</code></td></tr>
+      <tr><td>Desfazer último commit local</td><td><code>git reset --soft HEAD~1</code></td></tr>
+      <tr><td>Desfazer commit publicado</td><td><code>git revert &lt;hash&gt;</code></td></tr>
+      <tr><td>Rede de segurança</td><td><code>git reflog</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>Git</strong> · <strong>GitHub</strong> · controle de versão · fluxos colaborativos</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+</body>
+</html>
