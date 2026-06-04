@@ -562,12 +562,84 @@
     say('Working tree limpo. Edite o arquivo e siga add → commit → push.');
   }
 
+  // ─────────────────────────────────────────────────────────
+  //  POSITION — how position:static/relative/absolute/sticky
+  //  behave inside a scrollable, positioned ancestor.
+  // ─────────────────────────────────────────────────────────
+  function positionViz(root) {
+    // top/left/right offsets applied to the target per mode + a plain explanation.
+    const MODES = {
+      static: {
+        css: {},
+        desc: 'static (padrão) — a caixa fica no fluxo normal. top/left/right são ignorados.',
+      },
+      relative: {
+        css: { position: 'relative', top: '20px', left: '28px' },
+        desc: 'relative — deslocada a partir da posição original; o espaço dela continua reservado (as irmãs não se movem).',
+      },
+      absolute: {
+        css: { position: 'absolute', top: '12px', right: '12px' },
+        desc: 'absolute — sai do fluxo (as irmãs sobem) e ancora no ancestral posicionado mais próximo: a moldura. Rola junto com o conteúdo dela.',
+      },
+      sticky: {
+        css: { position: 'sticky', top: '8px' },
+        desc: 'sticky — rola como uma caixa normal até encostar em top:8px e então gruda. Role a moldura para ver.',
+      },
+    };
+
+    root.innerHTML = '';
+    const bar = el('div', 'viz-bar');
+    bar.appendChild(el('span', 'viz-title', 'position — interativo'));
+    const stage = el('div', 'viz-stage pos-stage');
+
+    // The scrollable, positioned ancestor (the containing block for absolute).
+    const viewport = el('div', 'pos-viewport');
+    const content = el('div', 'pos-content');
+    // Normal-flow siblings + the target in the middle.
+    const before = ['#topo', 'caixa 1', 'caixa 2'];
+    const after = ['caixa 3', 'caixa 4', 'caixa 5', '#fim'];
+    before.forEach(t => content.appendChild(el('div', 'pos-box', t)));
+    const target = el('div', 'pos-box pos-target', '🎯 alvo');
+    content.appendChild(target);
+    after.forEach(t => content.appendChild(el('div', 'pos-box', t)));
+    viewport.appendChild(content);
+
+    const hint = el('div', 'pos-hint', '↕ a moldura rola — experimente com sticky e absolute');
+    const log = el('div', 'viz-log');
+
+    const buttons = {};
+    Object.keys(MODES).forEach(mode => {
+      const b = el('button', 'viz-btn', mode);
+      b.addEventListener('click', () => apply(mode));
+      bar.appendChild(b);
+      buttons[mode] = b;
+    });
+
+    function apply(mode) {
+      const { css, desc } = MODES[mode];
+      // Reset every positioning property, then set this mode's.
+      target.style.cssText = '';
+      Object.assign(target.style, css);
+      Object.keys(buttons).forEach(m => buttons[m].classList.toggle('teal', m === mode));
+      log.textContent = 'position: ' + mode + ' — ' + desc;
+      viewport.scrollTop = 0;
+    }
+
+    root.appendChild(bar);
+    stage.appendChild(viewport);
+    stage.appendChild(hint);
+    root.appendChild(stage);
+    root.appendChild(log);
+    apply('static');
+  }
+
   const builders = {
     'linked-list':  linkedList,
     'stack':        stack,
     'queue':        queue,
     'bubble-sort':  bubbleSortViz,
     'git-flow':     gitFlow,
+    'position':     positionViz,
   };
 
   document.addEventListener('DOMContentLoaded', () => {

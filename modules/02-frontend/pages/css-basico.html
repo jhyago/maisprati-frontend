@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>CSS Básico — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="css-basico" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Aparência &amp; Layout</div>
+  <h1>CSS Básico</h1>
+  <p>Se o HTML é o esqueleto, o CSS é a roupa. Com <strong>seletores</strong> você aponta para os elementos (usando aquelas etiquetas <code>id</code> e <code>class</code>) e, com <strong>propriedades</strong>, decide cor, espaçamento e posição. Aqui você entende o box model e domina os cinco tipos de <code>position</code>.</p>
+</div>
+
+<!-- ════════════ 01 · COMO APLICAR ════════════ -->
+<section id="aplicar">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>Como aplicar CSS &amp; anatomia de uma regra</h2>
+    <span class="tag">seletor { propriedade: valor }</span>
+  </div>
+
+  <p class="prose">
+    Uma regra de CSS tem sempre a mesma forma: um <strong>seletor</strong> (quem vou estilizar) seguido de um
+    bloco com <strong>declarações</strong> entre chaves. Cada declaração é um par
+    <code>propriedade: valor;</code>.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">anatomia</span>
+    </div>
+    <pre class="language-css"><code class="language-css">seletor {
+  propriedade: valor;   /* uma declaração */
+  color: #0062c0;       /* propriedade "color", valor "#0062c0" */
+  font-size: 18px;
+}</code></pre>
+  </div>
+
+  <p class="prose">Existem três lugares para colocar CSS — em ordem do pior para o melhor:</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">as três formas</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;!-- 1) Inline: no próprio elemento. Evite — não reaproveita. --&gt;
+&lt;p style="color: blue;"&gt;Texto azul&lt;/p&gt;
+
+&lt;!-- 2) Interno: no &lt;head&gt;, dentro de &lt;style&gt;. Serve uma página só. --&gt;
+&lt;style&gt;
+  p { color: blue; }
+&lt;/style&gt;
+
+&lt;!-- 3) Externo: arquivo .css separado. O jeito recomendado. --&gt;
+&lt;link rel="stylesheet" href="estilos.css" /&gt;</code></pre>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Prefira o CSS externo</strong>
+    Um arquivo <code>.css</code> separado mantém estrutura (HTML) e estilo (CSS) desacoplados, é reaproveitado
+    por todas as páginas e fica em cache no navegador. CSS inline só para um ajuste pontual; nunca como hábito.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · SELETORES ════════════ -->
+<section id="seletores">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>Seletores</h2>
+    <span class="tag">elemento · .classe · #id</span>
+  </div>
+
+  <p class="prose">
+    O seletor é a ponte entre CSS e HTML. Lembra do <code>id</code> e da <code>class</code> do tópico anterior?
+    É agora que eles brilham: <code>.classe</code> alcança um grupo, <code>#id</code> alcança um único elemento.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Seletor</th><th>Alcança</th><th>Exemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Elemento</td><td>Todas as tags daquele tipo</td><td><code>p { }</code> → todos os <code>&lt;p&gt;</code></td></tr>
+      <tr><td>Classe <code>.</code></td><td>Quem tem aquela <code>class</code></td><td><code>.botao { }</code></td></tr>
+      <tr><td>Id <code>#</code></td><td>O elemento com aquele <code>id</code></td><td><code>#topo { }</code></td></tr>
+      <tr><td>Agrupamento</td><td>Vários seletores de uma vez</td><td><code>h1, h2 { }</code></td></tr>
+      <tr><td>Descendente</td><td>Elementos dentro de outro</td><td><code>nav a { }</code> → links dentro de <code>nav</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">seletores em ação</span>
+    </div>
+    <pre class="language-css"><code class="language-css">p          { color: #334; }          /* todo parágrafo */
+.destaque  { font-weight: 700; }     /* quem tem class="destaque" */
+#aviso     { background: #fff4d6; }  /* o elemento id="aviso" */
+h2, .titulo { color: #0062c0; }      /* agrupamento */</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">resultado no navegador</div>
+    <div class="ld-stage">
+      <div class="d-sel">
+        <style>
+          .d-sel p { color:#334; margin:0 0 .4em; }
+          .d-sel .destaque { font-weight:700; color:#0062c0; }
+          .d-sel #aviso { background:#fff4d6; border-radius:6px; padding:8px 12px; }
+        </style>
+        <p>Parágrafo comum (seletor de elemento).</p>
+        <p class="destaque">Parágrafo com class="destaque".</p>
+        <p id="aviso">Parágrafo com id="aviso".</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>⚖️ Especificidade: quem ganha quando dois seletores brigam</strong>
+    Se duas regras mexem na mesma propriedade do mesmo elemento, vence a mais <strong>específica</strong>:
+    <code>#id</code> &gt; <code>.classe</code> &gt; <code>elemento</code>. Empatou? Vence a que vem por
+    <strong>último</strong> no arquivo. Fuja do <code>!important</code> — ele atropela tudo e vira uma dor de
+    cabeça para manter.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · BOX MODEL ════════════ -->
+<section id="box-model">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>O box model</h2>
+    <span class="tag">content · padding · border · margin</span>
+  </div>
+
+  <p class="prose">
+    No CSS, <strong>todo elemento é uma caixa retangular</strong>. Essa caixa tem quatro camadas, de dentro
+    para fora. Entender essas camadas resolve 90% das dúvidas de "por que tem esse espaço aqui?".
+  </p>
+
+  <div class="boxmodel">
+    <div class="bm-layer bm-margin">
+      <span class="bm-tag">margin — espaço POR FORA, separa de outros elementos</span>
+      <div class="bm-layer bm-border">
+        <span class="bm-tag">border — a borda</span>
+        <div class="bm-layer bm-padding">
+          <span class="bm-tag">padding — espaço interno</span>
+          <div class="bm-layer bm-content">content — o conteúdo (texto, imagem)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card blue"><div class="ic-label">content</div><div class="ic-value" style="font-size:13px;">o conteúdo em si</div></div>
+    <div class="info-card teal"><div class="ic-label">padding</div><div class="ic-value" style="font-size:13px;">respiro interno, dentro da borda</div></div>
+    <div class="info-card pink"><div class="ic-label">border</div><div class="ic-value" style="font-size:13px;">a linha da borda</div></div>
+    <div class="info-card yellow"><div class="ic-label">margin</div><div class="ic-value" style="font-size:13px;">distância para os vizinhos</div></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">controlando a caixa</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.card {
+  padding: 16px;            /* respiro interno nos 4 lados */
+  border: 2px solid #0062c0;
+  margin: 24px;             /* afasta dos vizinhos */
+  margin: 10px 20px;        /* atalho: 10 em cima/baixo, 20 nas laterais */
+}</code></pre>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ A pegadinha clássica: <code>box-sizing</code></strong>
+    Por padrão (<code>content-box</code>), <code>width</code> mede só o <em>conteúdo</em> — somar
+    <code>padding</code> e <code>border</code> deixa a caixa <strong>maior</strong> que o esperado. A solução
+    que todo projeto adota: <code>box-sizing: border-box;</code> faz o <code>width</code> já <strong>incluir</strong>
+    padding e borda. Os dois quadrados abaixo têm <code>width: 200px</code> e o mesmo padding:
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">content-box (padrão) vs border-box</div>
+    <div class="ld-stage">
+      <div class="d-bs">
+        <style>
+          .d-bs .b { width:200px; padding:20px; border:3px solid #0062c0; background:#e8f0fb; margin-bottom:12px; font-family:monospace; font-size:12px; }
+          .d-bs .cb { box-sizing:content-box; }
+          .d-bs .bb { box-sizing:border-box; }
+        </style>
+        <div class="b cb">content-box → ocupa 246px reais</div>
+        <div class="b bb">border-box → ocupa 200px reais</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · DISPLAY ════════════ -->
+<section id="display">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>display: block, inline, inline-block</h2>
+    <span class="tag">como as caixas se comportam</span>
+  </div>
+
+  <p class="prose">
+    Antes de posicionar, é preciso saber como cada caixa ocupa espaço no <strong>fluxo normal</strong> da
+    página. O <code>display</code> define isso.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead><tr><th>display</th><th>Quebra linha?</th><th>Aceita width/height?</th><th>Exemplos</th></tr></thead>
+    <tbody>
+      <tr><td><code>block</code></td><td>Sim — ocupa a linha toda</td><td>Sim</td><td><code>div</code>, <code>p</code>, <code>h1</code></td></tr>
+      <tr><td><code>inline</code></td><td>Não — fica na mesma linha</td><td>Não (ignora)</td><td><code>span</code>, <code>a</code>, <code>strong</code></td></tr>
+      <tr><td><code>inline-block</code></td><td>Não</td><td>Sim</td><td>botões lado a lado</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">resultado no navegador</div>
+    <div class="ld-stage">
+      <div class="d-disp">
+        <style>
+          .d-disp .blk { display:block; background:#e8f0fb; border:1px solid #0062c0; padding:6px; margin-bottom:6px; }
+          .d-disp .inl { background:#ffe7dc; border:1px solid #c84a20; padding:6px; }
+          .d-disp .ib  { display:inline-block; width:90px; background:#e3f7ee; border:1px solid #059669; padding:6px; text-align:center; }
+          .d-disp { font-family:monospace; font-size:12px; }
+        </style>
+        <span class="blk">block 1</span>
+        <span class="blk">block 2 (cada um numa linha)</span>
+        <p style="margin:8px 0 4px;"><span class="inl">inline A</span> <span class="inl">inline B</span> ficam lado a lado</p>
+        <span class="ib">ib 1</span> <span class="ib">ib 2</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📦 E o <code>flex</code> e o <code>grid</code>?</strong>
+    <code>display: flex</code> e <code>display: grid</code> são os layouts modernos para alinhar e distribuir
+    caixas — assunto do próximo nível. Por enquanto, dominar block/inline e o posicionamento já te leva longe.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · POSICIONAMENTO ════════════ -->
+<section id="posicionamento">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>Posicionamento</h2>
+    <span class="tag">static · relative · absolute · fixed · sticky</span>
+  </div>
+
+  <p class="prose">
+    Por padrão, todo elemento é <code>position: static</code> — ele fica no <strong>fluxo normal</strong>, um
+    depois do outro. Mudar a <code>position</code> libera as propriedades <code>top</code>, <code>right</code>,
+    <code>bottom</code> e <code>left</code> para deslocar a caixa. Brinque com o visualizador abaixo —
+    <strong>role a moldura</strong> para sentir a diferença entre <code>absolute</code> e <code>sticky</code>:
+  </p>
+
+  <div class="viz" data-viz="position"></div>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>position</th><th>Sai do fluxo?</th><th>Referência de <code>top/left</code></th><th>Uso típico</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>static</code></td><td>Não (padrão)</td><td>— (ignora offsets)</td><td>O comportamento normal</td></tr>
+      <tr><td><code>relative</code></td><td>Não (guarda o lugar)</td><td>A própria posição original</td><td>Ajuste fino + virar âncora do <code>absolute</code></td></tr>
+      <tr><td><code>absolute</code></td><td>Sim</td><td>Ancestral posicionado mais próximo</td><td>Selo "novo", tooltip, badge sobre um card</td></tr>
+      <tr><td><code>fixed</code></td><td>Sim</td><td>A janela do navegador</td><td>Cabeçalho/botão que não rola</td></tr>
+      <tr><td><code>sticky</code></td><td>Não, até "grudar"</td><td>O container que rola</td><td>Cabeçalho de seção que fixa ao rolar</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 O combo mais usado: <code>relative</code> + <code>absolute</code></strong>
+    Um elemento <code>absolute</code> se ancora no ancestral <strong>posicionado</strong> mais próximo. Então o
+    padrão é: dê <code>position: relative</code> ao pai (sem offsets, só para virar referência) e
+    <code>position: absolute</code> ao filho. Assim o filho se posiciona <em>dentro</em> do pai, e não na
+    página inteira. É exatamente como se prega um selo "NOVO" no canto de um card:
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">relative (pai) + absolute (selo)</div>
+    <div class="ld-stage">
+      <div class="d-badge">
+        <style>
+          .d-badge .card { position:relative; width:220px; padding:18px; border:1px solid #cdd8e6; border-radius:10px; background:#f6f9fd; }
+          .d-badge .selo { position:absolute; top:-10px; right:-10px; background:#be123c; color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:100px; }
+        </style>
+        <div class="card">
+          <span class="selo">NOVO</span>
+          <strong>Plano Pro</strong>
+          <p style="margin:6px 0 0;font-size:13px;">O selo está ancorado no canto deste card.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ <code>z-index</code> e a regra do <code>sticky</code></strong>
+    O <code>z-index</code> controla quem fica <em>na frente</em> quando caixas se sobrepõem — mas só funciona em
+    elementos <strong>posicionados</strong> (qualquer <code>position</code> diferente de <code>static</code>).
+    E <code>sticky</code> só "gruda" se você definir um lado (<code>top: 0</code>, por exemplo) <strong>e</strong>
+    o elemento estiver dentro de um container que rola.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 06 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">06</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">Quem vence?</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>O HTML é <code>&lt;p class="texto" id="intro"&gt;Olá&lt;/p&gt;</code>. O CSS tem
+      <code>.texto { color: green; }</code> e <code>#intro { color: red; }</code>. De que cor fica o texto?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;"><strong>Vermelho.</strong> O seletor de <code>#id</code> é mais
+        específico que o de <code>.classe</code>, então <code>#intro</code> ganha, independentemente da ordem no arquivo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">A caixa "estourou"</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você definiu <code>width: 300px</code> num card, adicionou <code>padding: 20px</code> e ele passou a
+      ocupar 340px, quebrando o layout. Como fazer o card respeitar os 300px sem tirar o padding?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_2</span></div>
+          <pre class="language-css"><code class="language-css">.card {
+  width: 300px;
+  padding: 20px;
+  box-sizing: border-box;   /* agora os 300px JÁ incluem o padding */
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">Selo no canto</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você quer um selo "-50%" colado no canto superior direito de um card. Coloca o selo como
+      <code>position: absolute</code>, mas ele vai parar no canto da <em>página</em>, não do card. Por quê, e como resolver?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">O <code>absolute</code> se ancora no ancestral
+        <strong>posicionado</strong> mais próximo; sem nenhum, ele usa a página. A correção é dar
+        <code>position: relative</code> ao card (o pai), tornando-o a referência:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-css"><code class="language-css">.card { position: relative; }                 /* vira a referência */
+.selo { position: absolute; top: -10px; right: -10px; }</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>CSS</strong> · seletores · box model · <strong>position</strong> · layout</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

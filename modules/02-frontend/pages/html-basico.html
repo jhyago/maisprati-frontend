@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>HTML Básico — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="html-basico" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Estrutura &amp; Conteúdo</div>
+  <h1>HTML Básico</h1>
+  <p>HTML é o esqueleto de toda página: ele define <strong>o que</strong> existe — títulos, parágrafos, imagens, tabelas, formulários — e <em>não</em> como aparece (isso é trabalho do CSS). Aqui você monta documentos do zero, identifica elementos com <code>id</code> e <code>class</code>, e estrutura dados em tabelas e formulários.</p>
+</div>
+
+<!-- ════════════ 01 · ANATOMIA ════════════ -->
+<section id="anatomia">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>Anatomia de um documento</h2>
+    <span class="tag">a moldura de toda página</span>
+  </div>
+
+  <p class="prose">
+    Toda página HTML segue o mesmo molde. O navegador lê de cima para baixo: primeiro o
+    <code>&lt;!DOCTYPE html&gt;</code> (diz "isto é HTML5"), depois o <code>&lt;head&gt;</code> com
+    <strong>informações sobre</strong> a página (que não aparecem na tela), e por fim o
+    <code>&lt;body&gt;</code> com o <strong>conteúdo visível</strong>.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">index.html</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Minha primeira página&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Olá, mundo!&lt;/h1&gt;
+    &lt;p&gt;Meu primeiro parágrafo em HTML.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">resultado no navegador</div>
+    <div class="ld-stage">
+      <h1 style="font-size:1.6rem;margin:0 0 .5em;">Olá, mundo!</h1>
+      <p>Meu primeiro parágrafo em HTML.</p>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card purple"><div class="ic-label">&lt;head&gt;</div><div class="ic-value" style="font-size:13px;line-height:1.5;">Metadados: título, idioma, codificação, links de CSS. Não aparece na página.</div></div>
+    <div class="info-card teal"><div class="ic-label">&lt;body&gt;</div><div class="ic-value" style="font-size:13px;line-height:1.5;">Tudo o que o usuário vê: textos, imagens, botões, formulários.</div></div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🔑 Tag, elemento e atributo</strong>
+    Uma <strong>tag</strong> é a marcação: <code>&lt;p&gt;</code> abre, <code>&lt;/p&gt;</code> fecha.
+    O <strong>elemento</strong> é a tag de abertura + conteúdo + fechamento. Um <strong>atributo</strong>
+    é uma configuração dentro da tag de abertura, no formato <code>nome="valor"</code> — como
+    <code>lang="pt-BR"</code> ou <code>href="..."</code>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · CONTEÚDO ════════════ -->
+<section id="conteudo">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>Tags de conteúdo essenciais</h2>
+    <span class="tag">texto · links · imagens · listas</span>
+  </div>
+
+  <p class="prose">
+    Com um punhado de tags você já monta a maior parte de uma página. Cada uma carrega um
+    <strong>significado</strong> — use a que descreve o conteúdo, não a que "parece bonita".
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">tags do dia a dia</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;h1&gt;Título principal&lt;/h1&gt;        &lt;!-- h1 a h6: hierarquia de títulos --&gt;
+&lt;h2&gt;Subtítulo&lt;/h2&gt;
+
+&lt;p&gt;Um parágrafo com texto &lt;strong&gt;importante&lt;/strong&gt;
+   e uma palavra com &lt;em&gt;ênfase&lt;/em&gt;.&lt;/p&gt;
+
+&lt;a href="https://maisprati.com.br"&gt;Um link&lt;/a&gt;
+
+&lt;img src="logo.png" alt="Logo do programa MaisPraTi" /&gt;
+
+&lt;ul&gt;                              &lt;!-- lista NÃO ordenada (bolinhas) --&gt;
+  &lt;li&gt;HTML&lt;/li&gt;
+  &lt;li&gt;CSS&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;                              &lt;!-- lista ORDENADA (números) --&gt;
+  &lt;li&gt;Primeiro passo&lt;/li&gt;
+  &lt;li&gt;Segundo passo&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">resultado no navegador</div>
+    <div class="ld-stage">
+      <h1 style="font-size:1.5rem;margin:0 0 .4em;">Título principal</h1>
+      <h2 style="font-size:1.15rem;margin:0 0 .6em;">Subtítulo</h2>
+      <p>Um parágrafo com texto <strong>importante</strong> e uma palavra com <em>ênfase</em>.</p>
+      <p><a href="#conteudo">Um link</a></p>
+      <ul><li>HTML</li><li>CSS</li></ul>
+      <ol><li>Primeiro passo</li><li>Segundo passo</li></ol>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 O atributo <code>alt</code> não é opcional</strong>
+    Em <code>&lt;img&gt;</code>, o <code>alt</code> descreve a imagem para quem usa leitor de tela e
+    aparece se a imagem não carregar. Imagem decorativa? Use <code>alt=""</code> (vazio, de propósito).
+    <code>&lt;img&gt;</code> e <code>&lt;br&gt;</code> não têm tag de fechamento — são elementos "vazios".
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · ID E CLASS ════════════ -->
+<section id="id-class">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>id e class: dando nome aos elementos</h2>
+    <span class="tag">ganchos para CSS e JS</span>
+  </div>
+
+  <p class="prose">
+    <code>id</code> e <code>class</code> são <strong>atributos globais</strong> — funcionam em qualquer
+    elemento. Sozinhos eles não mudam nada na tela; eles existem para você <strong>apontar</strong> para
+    o elemento depois e estilizá-lo (CSS) ou manipulá-lo (JavaScript). Pense neles como etiquetas.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th></th><th><code>class</code></th><th><code>id</code></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Para quê</td><td>Agrupar vários elementos parecidos</td><td>Marcar <strong>um</strong> elemento único</td></tr>
+      <tr><td>Repete na página?</td><td>Sim — quantos quiser</td><td>Não — deve ser único</td></tr>
+      <tr><td>Quantas por elemento</td><td>Várias (separadas por espaço)</td><td>Apenas uma</td></tr>
+      <tr><td>Seletor no CSS</td><td><code>.nome</code> (ponto)</td><td><code>#nome</code> (cerquilha)</td></tr>
+      <tr><td>Uso típico</td><td>Estilo reutilizável (<code>.botao</code>, <code>.card</code>)</td><td>Âncora de link, alvo de <code>&lt;label&gt;</code>, gancho de JS</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">marcando elementos</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;p class="destaque"&gt;Esta linha é especial.&lt;/p&gt;
+&lt;p&gt;Esta é comum.&lt;/p&gt;
+&lt;p class="destaque"&gt;Esta também é especial.&lt;/p&gt;
+
+&lt;div id="aviso" class="destaque caixa"&gt;
+  Tenho um id único E duas classes ao mesmo tempo.
+&lt;/div&gt;</code></pre>
+  </div>
+
+  <p class="prose">
+    Agora que os elementos têm etiquetas, o CSS consegue alcançá-los. O resultado abaixo já aplica um
+    pouco de estilo via <code>.destaque</code> e <code>#aviso</code> — você aprende a escrever essas regras
+    no tópico de <strong>CSS Básico</strong>.
+  </p>
+
+  <div class="live-demo">
+    <div class="ld-label">resultado no navegador (com CSS aplicado)</div>
+    <div class="ld-stage">
+      <div class="d-idclass">
+        <style>
+          .d-idclass .destaque { color:#0062c0; font-weight:700; }
+          .d-idclass #aviso { background:#fff4d6; border:1px solid #e0b400; border-radius:8px; padding:10px 14px; margin-top:10px; }
+        </style>
+        <p class="destaque" style="margin:0 0 .4em;">Esta linha é especial.</p>
+        <p style="margin:0 0 .4em;">Esta é comum.</p>
+        <p class="destaque" style="margin:0;">Esta também é especial.</p>
+        <div id="aviso" class="destaque caixa">Tenho um id único E duas classes ao mesmo tempo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ Regras do <code>id</code></strong>
+    Um <code>id</code> deve ser <strong>único na página inteira</strong>, não pode ter espaços e, por
+    convenção, não começa com número. Repetir o mesmo <code>id</code> em dois elementos é HTML inválido e
+    quebra links de âncora, <code>&lt;label&gt;</code> e JavaScript.
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Regra prática: prefira <code>class</code></strong>
+    Use <code>class</code> para qualquer estilo que possa se repetir (a esmagadora maioria dos casos).
+    Reserve o <code>id</code> para quando você precisa de um alvo único: o destino de um link
+    (<code>&lt;a href="#aviso"&gt;</code>), o <code>for</code> de um rótulo de formulário, ou um elemento
+    que o JavaScript vai buscar com <code>getElementById</code>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · TABELAS ════════════ -->
+<section id="tabelas">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Tabelas</h2>
+    <span class="tag">dados em linhas e colunas</span>
+  </div>
+
+  <p class="prose">
+    Tabela serve para <strong>dados tabulares</strong> — uma planilha, um placar, preços. Ela
+    <em>não</em> serve para fazer layout da página (isso é trabalho do CSS, no próximo tópico). A estrutura
+    encaixa de fora para dentro: <code>&lt;table&gt;</code> contém linhas <code>&lt;tr&gt;</code>, que contêm
+    células de cabeçalho <code>&lt;th&gt;</code> ou de dado <code>&lt;td&gt;</code>.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">uma tabela completa</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;table&gt;
+  &lt;caption&gt;Notas da turma&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;Aluno&lt;/th&gt;
+      &lt;th scope="col"&gt;Módulo&lt;/th&gt;
+      &lt;th scope="col"&gt;Nota&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Ana&lt;/td&gt;
+      &lt;td&gt;HTML&lt;/td&gt;
+      &lt;td&gt;9,5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bruno&lt;/td&gt;
+      &lt;td&gt;CSS&lt;/td&gt;
+      &lt;td&gt;8,0&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+  </div>
+
+  <p class="prose">
+    Uma tabela "crua" aparece <strong>sem bordas</strong> — quem desenha as linhas e o espaçamento é o CSS.
+    Abaixo já aplicamos um estilo simples (<code>border</code> e <code>padding</code>) para ficar legível:
+  </p>
+
+  <div class="live-demo">
+    <div class="ld-label">resultado no navegador (com CSS aplicado)</div>
+    <div class="ld-stage">
+      <div class="d-tbl">
+        <style>
+          .d-tbl table { border-collapse: collapse; }
+          .d-tbl caption { text-align:left; font-weight:700; padding-bottom:6px; }
+          .d-tbl th, .d-tbl td { border:1px solid #b9c6d8; padding:6px 14px; text-align:left; }
+          .d-tbl thead th { background:#eef2f7; }
+        </style>
+        <table>
+          <caption>Notas da turma</caption>
+          <thead>
+            <tr><th scope="col">Aluno</th><th scope="col">Módulo</th><th scope="col">Nota</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Ana</td><td>HTML</td><td>9,5</td></tr>
+            <tr><td>Bruno</td><td>CSS</td><td>8,0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card pink"><div class="ic-label">&lt;th&gt; vs &lt;td&gt;</div><div class="ic-value" style="font-size:13px;line-height:1.5;"><code>th</code> = cabeçalho (negrito, centralizado); <code>td</code> = dado comum.</div></div>
+    <div class="info-card teal"><div class="ic-label">scope</div><div class="ic-value" style="font-size:13px;line-height:1.5;"><code>scope="col"</code> ou <code>"row"</code> diz a quem o cabeçalho se refere — leitores de tela agradecem.</div></div>
+    <div class="info-card yellow"><div class="ic-label">colspan / rowspan</div><div class="ic-value" style="font-size:13px;line-height:1.5;">Fazem uma célula ocupar várias colunas ou linhas.</div></div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📐 thead, tbody (e tfoot)</strong>
+    Separar o cabeçalho (<code>thead</code>) do corpo (<code>tbody</code>) não muda a aparência, mas organiza
+    a tabela semanticamente — facilita estilizar, ordenar e dá pistas para tecnologias assistivas.
+    Use sempre <code>&lt;caption&gt;</code> para dar um título à tabela.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · FORMULÁRIOS ════════════ -->
+<section id="formularios">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>Formulários</h2>
+    <span class="tag">coletando dados do usuário</span>
+  </div>
+
+  <p class="prose">
+    Um formulário (<code>&lt;form&gt;</code>) reúne <strong>controles</strong> onde o usuário digita ou
+    escolhe algo: <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;select&gt;</code> e
+    <code>&lt;button&gt;</code>. A peça-chave da acessibilidade é o <code>&lt;label&gt;</code>: o
+    <code>for</code> dele aponta para o <code>id</code> do campo — exatamente o uso de <code>id</code> que
+    vimos no tópico 03.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">um formulário simples</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;form&gt;
+  &lt;label for="nome"&gt;Nome&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome" placeholder="Seu nome" required /&gt;
+
+  &lt;label for="email"&gt;E-mail&lt;/label&gt;
+  &lt;input type="email" id="email" name="email" /&gt;
+
+  &lt;label for="senha"&gt;Senha&lt;/label&gt;
+  &lt;input type="password" id="senha" name="senha" /&gt;
+
+  &lt;label for="curso"&gt;Curso&lt;/label&gt;
+  &lt;select id="curso" name="curso"&gt;
+    &lt;option value="fs"&gt;Full Stack&lt;/option&gt;
+    &lt;option value="data"&gt;Dados&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;label for="msg"&gt;Mensagem&lt;/label&gt;
+  &lt;textarea id="msg" name="msg" rows="3"&gt;&lt;/textarea&gt;
+
+  &lt;label&gt;&lt;input type="checkbox" name="termos" /&gt; Aceito os termos&lt;/label&gt;
+
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">resultado no navegador</div>
+    <div class="ld-stage">
+      <form class="d-form" onsubmit="return false">
+        <style>
+          .d-form { display:grid; gap:4px; max-width:340px; }
+          .d-form label { font-weight:600; margin-top:8px; }
+          .d-form label:first-child { margin-top:0; }
+          .d-form input, .d-form select, .d-form textarea {
+            font:inherit; padding:7px 9px; border:1px solid #9fb1c7; border-radius:6px;
+          }
+          .d-form .inline { display:flex; align-items:center; gap:8px; font-weight:400; margin-top:10px; }
+          .d-form button {
+            margin-top:12px; justify-self:start; font:inherit; font-weight:700; cursor:pointer;
+            padding:8px 18px; border:0; border-radius:6px; background:#0062c0; color:#fff;
+          }
+        </style>
+        <label for="f-nome">Nome</label>
+        <input type="text" id="f-nome" name="nome" placeholder="Seu nome" required />
+        <label for="f-email">E-mail</label>
+        <input type="email" id="f-email" name="email" />
+        <label for="f-senha">Senha</label>
+        <input type="password" id="f-senha" name="senha" />
+        <label for="f-curso">Curso</label>
+        <select id="f-curso" name="curso">
+          <option value="fs">Full Stack</option>
+          <option value="data">Dados</option>
+        </select>
+        <label for="f-msg">Mensagem</label>
+        <textarea id="f-msg" name="msg" rows="3"></textarea>
+        <label class="inline"><input type="checkbox" name="termos" /> Aceito os termos</label>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="subhead">O atributo <code>type</code> muda tudo no <code>&lt;input&gt;</code></div>
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead><tr><th>type</th><th>O que vira</th></tr></thead>
+    <tbody>
+      <tr><td><code>text</code></td><td>Campo de texto comum (o padrão)</td></tr>
+      <tr><td><code>email</code></td><td>Texto que valida formato de e-mail</td></tr>
+      <tr><td><code>password</code></td><td>Esconde os caracteres digitados</td></tr>
+      <tr><td><code>number</code></td><td>Só números, com setinhas</td></tr>
+      <tr><td><code>date</code></td><td>Seletor de data do navegador</td></tr>
+      <tr><td><code>checkbox</code></td><td>Caixa de marcar (múltipla escolha)</td></tr>
+      <tr><td><code>radio</code></td><td>Bolinha de escolha única (mesmo <code>name</code>)</td></tr>
+      <tr><td><code>submit</code></td><td>Botão que envia o formulário</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Sempre conecte <code>&lt;label&gt;</code> ao campo</strong>
+    O <code>for</code> do rótulo deve bater com o <code>id</code> do input. Assim, clicar no texto já foca o
+    campo, e leitores de tela anunciam o nome correto. Como atalho, você pode "embrulhar" o input dentro do
+    próprio <code>&lt;label&gt;</code> (como no "Aceito os termos" acima).
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🏷️ <code>name</code> vs <code>id</code> num formulário</strong>
+    O <code>id</code> é o gancho de CSS/JS e o alvo do <code>label</code> <em>dentro da página</em>. O
+    <code>name</code> é a <strong>chave</strong> com que o dado é enviado ao servidor (vira
+    <code>nome=Ana&amp;email=...</code>). Sem <code>name</code>, o campo não é enviado. Use os dois.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 06 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">06</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar. Escreva o HTML num arquivo e abra no navegador.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">id ou class?</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você tem 5 botões de "comprar" iguais e 1 cabeçalho de página que aparece uma vez só. O que recebe
+      <code>class</code> e o que recebe <code>id</code>? Por quê?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;">Os 5 botões recebem a mesma <code>class="comprar"</code> —
+        é um estilo que se repete. O cabeçalho recebe um <code>id="topo"</code> — é único e pode virar destino
+        de um link <code>&lt;a href="#topo"&gt;</code>. Regra: repetiu, é <code>class</code>; é único, pode ser <code>id</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">Tabela de produtos</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Monte uma tabela com cabeçalho "Produto" e "Preço" e duas linhas de dados. Qual a estrutura mínima de tags?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_2</span></div>
+          <pre class="language-html"><code class="language-html">&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th scope="col"&gt;Produto&lt;/th&gt;&lt;th scope="col"&gt;Preço&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Caneca&lt;/td&gt;&lt;td&gt;R$ 30&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Camiseta&lt;/td&gt;&lt;td&gt;R$ 60&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">Rótulo que não clica</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Um colega escreveu <code>&lt;label for="email"&gt;E-mail&lt;/label&gt;</code> seguido de
+      <code>&lt;input type="email" id="e-mail" /&gt;</code>, e clicar no rótulo não foca o campo. Qual o erro?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">O <code>for="email"</code> não bate com o
+        <code>id="e-mail"</code> (um tem hífen, o outro não). Eles precisam ser <strong>idênticos</strong>.
+        Corrija para <code>id="email"</code> — e lembre que <code>id</code> não aceita espaços e diferencia
+        maiúsculas de minúsculas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>HTML</strong> · estrutura · <strong>id</strong> &amp; <strong>class</strong> · tabelas · formulários</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

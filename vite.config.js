@@ -22,6 +22,8 @@ export default defineConfig({
         // Module 02 — Frontend & Git
         'fe-hub':             resolve(__dirname, 'modules/02-frontend/index.html'),
         'fe-git':             resolve(__dirname, 'modules/02-frontend/pages/git-github.html'),
+        'fe-html':            resolve(__dirname, 'modules/02-frontend/pages/html-basico.html'),
+        'fe-css':             resolve(__dirname, 'modules/02-frontend/pages/css-basico.html'),
       },
     },
   },

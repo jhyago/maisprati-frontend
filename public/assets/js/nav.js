@@ -33,7 +33,9 @@
       label: 'Frontend & Git',
       hub: '/modules/02-frontend/index.html',
       topics: [
-        { id: 'git-github', label: 'Git & GitHub', href: 'git-github.html' },
+        { id: 'git-github',  label: 'Git & GitHub', href: 'git-github.html' },
+        { id: 'html-basico', label: 'HTML Básico',  href: 'html-basico.html' },
+        { id: 'css-basico',  label: 'CSS Básico',   href: 'css-basico.html' },
       ],
     },
   };
