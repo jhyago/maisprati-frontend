@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Unidades de Medida — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="unidades" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Medidas &amp; Proporções</div>
+  <h1>Unidades de Medida</h1>
+  <p>Todo valor de tamanho no CSS carrega uma unidade — e a escolha errada é o que faz um layout quebrar no celular. Aqui você entende a diferença entre unidades <strong>absolutas</strong> (<code>px</code>) e <strong>relativas</strong> (<code>%</code>, <code>em</code>, <code>rem</code>, <code>vw</code>, <code>vh</code>) e aprende qual usar em cada situação.</p>
+</div>
+
+<!-- ════════════ 01 · ABSOLUTO VS RELATIVO ════════════ -->
+<section id="tipos">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>Absoluto vs relativo</h2>
+    <span class="tag">a pergunta: relativo a quê?</span>
+  </div>
+
+  <p class="prose">
+    Uma unidade <strong>absoluta</strong> vale sempre a mesma coisa: <code>16px</code> são 16 pixels, ponto.
+    Uma unidade <strong>relativa</strong> depende de uma referência — e a pergunta que destrava tudo é:
+    <em>"relativo a quê?"</em>. Cada unidade relativa responde de um jeito:
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Unidade</th><th>Relativa a quê?</th><th>Exemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>px</code></td><td>Nada — valor fixo</td><td><code>border: 1px</code> → sempre 1 pixel</td></tr>
+      <tr><td><code>%</code></td><td>O <strong>elemento pai</strong></td><td><code>width: 50%</code> → metade do pai</td></tr>
+      <tr><td><code>em</code></td><td>O <code>font-size</code> <strong>do próprio elemento/pai</strong></td><td><code>padding: 1em</code> → 1× a fonte atual</td></tr>
+      <tr><td><code>rem</code></td><td>O <code>font-size</code> da <strong>raiz</strong> (<code>html</code>, 16px por padrão)</td><td><code>font-size: 1.5rem</code> → 24px</td></tr>
+      <tr><td><code>vw</code></td><td>A <strong>largura da janela</strong> (1vw = 1%)</td><td><code>width: 100vw</code> → tela inteira</td></tr>
+      <tr><td><code>vh</code></td><td>A <strong>altura da janela</strong> (1vh = 1%)</td><td><code>height: 100vh</code> → altura inteira</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📐 Por que não usar só px?</strong>
+    Com tudo em <code>px</code>, nada se adapta: nem ao tamanho da tela, nem ao zoom, nem à fonte maior que um
+    usuário configura no navegador por acessibilidade. Unidades relativas fazem o layout <strong>escalar
+    sozinho</strong> — é a base do design responsivo.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · PX ════════════ -->
+<section id="px">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>px — o pixel</h2>
+    <span class="tag">fixo e previsível</span>
+  </div>
+
+  <p class="prose">
+    O <code>px</code> é a unidade mais intuitiva: o valor que você escreve é o valor que aparece.
+    Essa previsibilidade é ótima para detalhes finos que <em>não devem</em> escalar:
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">bons usos de px</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.card {
+  border: 1px solid #ccc;      /* bordas finas: sempre px */
+  border-radius: 8px;          /* cantos arredondados */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);  /* sombras */
+}</code></pre>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ Onde o px atrapalha</strong>
+    <code>font-size</code> em px ignora a preferência de fonte do usuário, e <code>width</code> fixo em px
+    estoura em telas pequenas. Regra prática: <strong>px para detalhes</strong> (borda, raio, sombra),
+    <strong>unidades relativas para texto e layout</strong>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · PORCENTAGEM ════════════ -->
+<section id="porcentagem">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>% — relativo ao pai</h2>
+    <span class="tag">width: 50% = metade do pai</span>
+  </div>
+
+  <p class="prose">
+    A porcentagem sempre olha para o <strong>elemento pai</strong>. Se o pai tem 600px de largura, um filho com
+    <code>width: 50%</code> mede 300px. Se o pai encolher, o filho encolhe junto — por isso é a unidade clássica
+    de colunas fluidas.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">colunas fluidas</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.coluna-principal { width: 70%; }
+.coluna-lateral   { width: 30%; }
+/* juntas sempre somam 100% do pai, em qualquer tela */</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">resultado no navegador — redimensione a janela</div>
+    <div class="ld-stage">
+      <div class="d-pct">
+        <style>
+          .d-pct .linha { display:flex; font-family:monospace; font-size:12px; }
+          .d-pct .c70 { width:70%; background:#e8f0fb; border:1px solid #0062c0; padding:10px; box-sizing:border-box; }
+          .d-pct .c30 { width:30%; background:#ffe7dc; border:1px solid #c84a20; padding:10px; box-sizing:border-box; }
+        </style>
+        <div class="linha">
+          <div class="c70">70% do pai</div>
+          <div class="c30">30%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 A pegadinha do <code>height: 100%</code></strong>
+    Porcentagem de <em>altura</em> só funciona se o <strong>pai tiver altura definida</strong>. Sem isso, o
+    navegador não tem referência e ignora o valor. Para ocupar a tela inteira, o caminho mais simples é
+    <code>height: 100vh</code> — que não depende do pai.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · EM VS REM ════════════ -->
+<section id="em-rem">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>em vs rem — a dupla que confunde</h2>
+    <span class="tag">local vs raiz</span>
+  </div>
+
+  <p class="prose">
+    As duas são relativas a um <code>font-size</code> — a diferença é <strong>qual</strong>:
+    <code>em</code> usa o tamanho da fonte <em>onde você está</em> (do elemento, herdado do pai);
+    <code>rem</code> (<em>root em</em>) usa sempre o da <strong>raiz</strong> do documento
+    (<code>&lt;html&gt;</code>, 16px por padrão). Parece detalhe, mas muda tudo quando há aninhamento:
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">o efeito composto do em</span>
+    </div>
+    <pre class="language-css"><code class="language-css">/* html { font-size: 16px; }  ← a raiz */
+
+.lista        { font-size: 1.2em; }  /* 16 × 1.2 = 19.2px */
+.lista .lista { font-size: 1.2em; }  /* 19.2 × 1.2 = 23px — compôs! */
+
+/* com rem não há surpresa: */
+.lista-rem    { font-size: 1.2rem; } /* sempre 16 × 1.2 = 19.2px */</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">listas aninhadas: em compõe, rem não</div>
+    <div class="ld-stage">
+      <div class="d-emrem">
+        <style>
+          .d-emrem { display:flex; gap:24px; flex-wrap:wrap; font-size:14px; }
+          .d-emrem ul { margin:4px 0 0 18px; padding:0; }
+          .d-emrem .com-em  ul { font-size: 1.2em; }
+          .d-emrem .com-rem ul { font-size: 1.2rem; }
+          .d-emrem strong { font-family:monospace; font-size:12px; display:block; margin-bottom:4px; }
+        </style>
+        <div class="com-em">
+          <strong>font-size: 1.2em</strong>
+          <ul><li>nível 1
+            <ul><li>nível 2 (maior)
+              <ul><li>nível 3 (maior ainda!)</li></ul>
+            </li></ul>
+          </li></ul>
+        </div>
+        <div class="com-rem">
+          <strong>font-size: 1.2rem</strong>
+          <ul><li>nível 1
+            <ul><li>nível 2 (igual)
+              <ul><li>nível 3 (igual)</li></ul>
+            </li></ul>
+          </li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Regra prática</strong>
+    <code>rem</code> para <strong>tamanho de fonte e espaçamentos do layout</strong> — previsível e acessível
+    (escala se o usuário aumentar a fonte do navegador). <code>em</code> para o que deve ser
+    <strong>proporcional ao texto local</strong> — como o <code>padding</code> de um botão, que cresce junto se
+    a fonte do botão crescer.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · VW E VH ════════════ -->
+<section id="viewport">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>vw e vh — a janela como régua</h2>
+    <span class="tag">1vw = 1% da largura da tela</span>
+  </div>
+
+  <p class="prose">
+    As unidades de <strong>viewport</strong> medem a janela do navegador, não importa onde o elemento esteja
+    aninhado: <code>1vw</code> é 1% da largura visível, <code>1vh</code> é 1% da altura. São perfeitas para
+    seções que devem ocupar a tela:
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">usos clássicos</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.hero {
+  height: 100vh;   /* a seção de abertura ocupa a tela inteira */
+}
+
+h1 {
+  /* fonte fluida: nunca menor que 2rem, nunca maior que 4rem,
+     e entre os dois limites escala com a tela (5vw) */
+  font-size: clamp(2rem, 5vw, 4rem);
+}</code></pre>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ Cuidado com <code>width: 100vw</code></strong>
+    <code>100vw</code> inclui a área da <strong>barra de rolagem</strong> vertical — quando ela existe, o
+    elemento fica alguns pixels mais largo que a página e cria uma rolagem horizontal indesejada. Para largura
+    total, prefira <code>width: 100%</code>; reserve <code>vw</code>/<code>vh</code> para alturas e fontes fluidas.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 06 · QUAL USAR ════════════ -->
+<section id="qual-usar">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-blue">06</div>
+    <h2>Qual unidade usar?</h2>
+    <span class="tag">guia de bolso</span>
+  </div>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Quero definir…</th><th>Use</th><th>Por quê</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Tamanho de fonte</td><td><code>rem</code></td><td>Escala com a preferência do usuário, sem compor</td></tr>
+      <tr><td>Margens e paddings do layout</td><td><code>rem</code></td><td>Espaçamento consistente no site todo</td></tr>
+      <tr><td>Padding interno de botão/badge</td><td><code>em</code></td><td>Cresce junto com a fonte do componente</td></tr>
+      <tr><td>Bordas, raios, sombras</td><td><code>px</code></td><td>Detalhes finos não devem escalar</td></tr>
+      <tr><td>Largura de colunas</td><td><code>%</code></td><td>Fluem com o container pai</td></tr>
+      <tr><td>Seção de tela cheia</td><td><code>vh</code></td><td>Mede a janela, não o pai</td></tr>
+      <tr><td>Fonte de título fluida</td><td><code>clamp() + vw</code></td><td>Escala com a tela, com limites</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📏 max-width: o parceiro das unidades relativas</strong>
+    O padrão mais comum da web combina os dois mundos:
+    <code>width: 100%; max-width: 1100px; margin: 0 auto;</code> — o conteúdo flui em telas pequenas
+    (<code>%</code>) mas para de esticar no desktop (<code>px</code>) e fica centralizado.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 07 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">07</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">Quantos pixels?</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>O <code>html</code> está com o padrão de <code>16px</code>. Quantos pixels tem um título com
+      <code>font-size: 2rem</code>? E um com <code>font-size: 2em</code> dentro de uma div com
+      <code>font-size: 20px</code>?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;"><strong>32px e 40px.</strong> O <code>rem</code> multiplica a
+        raiz (16 × 2 = 32px). O <code>em</code> multiplica a fonte herdada do pai (20 × 2 = 40px).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">O height que não funciona</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você quer que a seção de abertura do site ocupe a tela inteira e escreve
+      <code>.hero { height: 100%; }</code> — mas nada acontece. Por quê, e qual a correção mais simples?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <p class="prose" style="margin-top:10px;"><code>height: 100%</code> é relativo ao <strong>pai</strong> —
+        e o pai (<code>body</code>) não tem altura definida, então o navegador ignora. A correção:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_2</span></div>
+          <pre class="language-css"><code class="language-css">.hero { height: 100vh; }  /* mede a janela, não o pai */</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">O texto que cresceu demais</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Num menu com submenus aninhados, cada nível está visivelmente maior que o anterior, sem que ninguém
+      tenha pedido isso. O CSS tem <code>.menu li { font-size: 1.1em; }</code>. O que está acontecendo e como corrigir?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">É o <strong>efeito composto do <code>em</code></strong>: cada
+        <code>li</code> aninhado herda a fonte já aumentada do pai e multiplica por 1.1 de novo
+        (1.1 → 1.21 → 1.33…). Trocar para <code>rem</code> ancora tudo na raiz:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-css"><code class="language-css">.menu li { font-size: 1.1rem; }  /* sempre 1.1 × a raiz, em qualquer nível */</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>CSS</strong> · px · % · <strong>em · rem</strong> · vw · vh</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

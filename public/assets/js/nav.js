@@ -33,9 +33,13 @@
       label: 'Frontend & Git',
       hub: '/modules/02-frontend/index.html',
       topics: [
-        { id: 'git-github',  label: 'Git & GitHub', href: 'git-github.html' },
-        { id: 'html-basico', label: 'HTML Básico',  href: 'html-basico.html' },
-        { id: 'css-basico',  label: 'CSS Básico',   href: 'css-basico.html' },
+        { id: 'git-github',     label: 'Git & GitHub',   href: 'git-github.html' },
+        { id: 'html-basico',    label: 'HTML Básico',    href: 'html-basico.html' },
+        { id: 'css-basico',     label: 'CSS Básico',     href: 'css-basico.html' },
+        { id: 'unidades',       label: 'Unidades',       href: 'unidades.html' },
+        { id: 'box-model',      label: 'Box Model',      href: 'box-model.html' },
+        { id: 'posicionamento', label: 'Posicionamento', href: 'posicionamento.html' },
+        { id: 'flexbox',        label: 'Flexbox',        href: 'flexbox.html' },
       ],
     },
   };

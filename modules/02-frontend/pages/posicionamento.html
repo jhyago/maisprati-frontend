@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Posicionamento — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="posicionamento" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Camadas &amp; Fluxo</div>
+  <h1>Posicionamento a fundo</h1>
+  <p>O <a href="css-basico.html">CSS Básico</a> apresentou os cinco valores de <code>position</code> — aqui você os domina na prática: quem é a <strong>referência</strong> de cada um, como o <code>z-index</code> realmente decide quem fica na frente, e as três construções que aparecem em todo site: <strong>navbar fixa</strong>, <strong>badge sobre card</strong> e <strong>modal centralizado</strong>.</p>
+</div>
+
+<!-- ════════════ 01 · FLUXO E OS 5 POSITION ════════════ -->
+<section id="fluxo">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>O fluxo e os cinco valores</h2>
+    <span class="tag">static · relative · absolute · fixed · sticky</span>
+  </div>
+
+  <p class="prose">
+    Sem CSS de posicionamento, o navegador empilha as caixas na ordem do HTML — o <strong>fluxo normal</strong>.
+    Os valores de <code>position</code> são formas de negociar com esse fluxo. A pergunta-chave para cada um é:
+    <em>"a caixa sai do fluxo? E quem é a referência do <code>top/left</code>?"</em> Reveja no visualizador
+    (role a moldura para sentir <code>sticky</code> e <code>absolute</code>):
+  </p>
+
+  <div class="viz" data-viz="position"></div>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>position</th><th>Sai do fluxo?</th><th>Referência</th><th>Rola com a página?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>static</code></td><td>Não</td><td>— (offsets ignorados)</td><td>Sim</td></tr>
+      <tr><td><code>relative</code></td><td>Não (o espaço fica reservado)</td><td>A própria posição original</td><td>Sim</td></tr>
+      <tr><td><code>absolute</code></td><td>Sim</td><td>Ancestral <strong>posicionado</strong> mais próximo</td><td>Junto com o ancestral</td></tr>
+      <tr><td><code>fixed</code></td><td>Sim</td><td>A janela (viewport)</td><td><strong>Não</strong> — fica parado</td></tr>
+      <tr><td><code>sticky</code></td><td>Não, até grudar</td><td>O container que rola</td><td>Sim, até atingir o offset</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🧭 "Ancestral posicionado" — a definição exata</strong>
+    É qualquer ancestral com <code>position</code> diferente de <code>static</code>. O <code>absolute</code>
+    sobe na árvore procurando o primeiro assim; se não achar nenhum, ancora no documento inteiro. Dar
+    <code>position: relative</code> a um container (sem offsets) é a forma padrão de dizer:
+    <em>"os absolutes daqui de dentro se ancoram em mim"</em>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · Z-INDEX ════════════ -->
+<section id="z-index">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>z-index e o contexto de empilhamento</h2>
+    <span class="tag">quem fica na frente?</span>
+  </div>
+
+  <p class="prose">
+    Quando caixas se sobrepõem, o <code>z-index</code> decide a ordem das camadas — maior valor fica na frente.
+    Duas regras que pegam todo mundo: ele <strong>só funciona em elementos posicionados</strong> (qualquer
+    <code>position</code> ≠ <code>static</code>), e ele compete <strong>dentro do mesmo contexto de
+    empilhamento</strong>:
+  </p>
+
+  <div class="live-demo">
+    <div class="ld-label">três cartas posicionadas com z-index</div>
+    <div class="ld-stage">
+      <div class="d-zi">
+        <style>
+          .d-zi { position:relative; height:120px; font-family:monospace; font-size:12px; }
+          .d-zi .carta { position:absolute; width:130px; height:84px; border-radius:8px; padding:8px; color:#fff; box-shadow:0 4px 14px rgba(0,0,0,0.25); }
+          .d-zi .c1 { background:#0062c0; top:0;   left:0;    z-index:1; }
+          .d-zi .c2 { background:#c84a20; top:18px; left:90px;  z-index:2; }
+          .d-zi .c3 { background:#059669; top:36px; left:180px; z-index:3; }
+        </style>
+        <div class="carta c1">z-index: 1</div>
+        <div class="carta c2">z-index: 2</div>
+        <div class="carta c3">z-index: 3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ O mistério do "z-index: 9999 que não funciona"</strong>
+    Certas propriedades (como <code>opacity</code> menor que 1, <code>transform</code>, <code>filter</code>, ou
+    um pai posicionado com <code>z-index</code> definido) criam um <strong>contexto de empilhamento</strong> —
+    uma "bolha" de camadas. Filhos competem só <em>dentro</em> da bolha: um <code>z-index: 9999</code> dentro de
+    uma bolha que vale 1 perde para qualquer caixa de fora com <code>z-index: 2</code>. Quando um z-index gigante
+    não resolver, procure no DevTools qual ancestral criou a bolha.
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Escala de camadas com sanidade</strong>
+    Em vez de uma corrida armamentista (999, 9999, 99999…), projetos maduros definem uma escala:
+    <code>1–10</code> elementos comuns, <code>100</code> dropdowns, <code>1000</code> modais. Poucos valores,
+    com significado.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · RECEITAS ════════════ -->
+<section id="receitas">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>As três receitas de todo site</h2>
+    <span class="tag">navbar · badge · modal</span>
+  </div>
+
+  <p class="prose"><strong>1 — Navbar que acompanha a rolagem.</strong> <code>sticky</code> quando ela faz parte
+  do fluxo (não cobre nada ao carregar); <code>fixed</code> quando deve flutuar sempre por cima:</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">navbar</span>
+    </div>
+    <pre class="language-css"><code class="language-css">/* opção A — sticky: ocupa o lugar no topo e gruda ao rolar */
+.navbar {
+  position: sticky;
+  top: 0;              /* sem um offset, sticky não gruda! */
+  z-index: 100;
+}
+
+/* opção B — fixed: flutua sobre o conteúdo desde o início */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+}
+body { padding-top: 64px; }  /* compensa a altura, senão a navbar cobre o conteúdo */</code></pre>
+  </div>
+
+  <p class="prose"><strong>2 — Badge no canto do card.</strong> O combo <code>relative</code> (pai) +
+  <code>absolute</code> (filho) que você viu no básico — agora entendendo o porquê: o pai vira o
+  <em>ancestral posicionado</em> que ancora o filho.</p>
+
+  <p class="prose"><strong>3 — Modal centralizado.</strong> <code>fixed</code> cobrindo a tela toda
+  (o fundo escurecido) + flex para centralizar a caixa:</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">modal</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.overlay {
+  position: fixed;
+  inset: 0;                      /* atalho para top/right/bottom/left: 0 */
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+
+  display: flex;                 /* centraliza o filho .modal */
+  align-items: center;
+  justify-content: center;
+}
+.modal { background: #fff; border-radius: 12px; padding: 24px; }</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">modal em miniatura (overlay fixed → flex center)</div>
+    <div class="ld-stage">
+      <div class="d-modal">
+        <style>
+          .d-modal .mini { position:relative; height:150px; background:#dde6f2; border-radius:8px; overflow:hidden; font-family:monospace; font-size:11px; }
+          .d-modal .ov { position:absolute; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; }
+          .d-modal .md { background:#fff; color:#1a2433; border-radius:8px; padding:14px 18px; box-shadow:0 10px 30px rgba(0,0,0,0.35); }
+        </style>
+        <div class="mini">
+          <p style="padding:10px;">conteúdo da página atrás…</p>
+          <div class="ov">
+            <div class="md"><strong>Modal</strong> — centralizado com flex</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 <code>inset: 0</code></strong>
+    É o atalho moderno para <code>top: 0; right: 0; bottom: 0; left: 0;</code> — quatro declarações em uma.
+    Combinado com <code>position: fixed</code> ou <code>absolute</code>, estica o elemento até as quatro bordas
+    da referência.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">sticky que não gruda</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você escreveu <code>.titulo { position: sticky; }</code> e nada aconteceu ao rolar.
+      O que está faltando?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;">Falta o <strong>offset</strong>: <code>sticky</code> precisa
+        saber <em>onde</em> grudar — <code>top: 0</code>, por exemplo. Sem um lado definido, ele se comporta como
+        <code>static</code>. (E o elemento também não pode estar preso dentro de um ancestral com
+        <code>overflow: hidden</code>.)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">fixed ou sticky?</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Com <code>position: fixed</code> na navbar, o topo do conteúdo da página some atrás dela.
+      Com <code>sticky</code>, isso não acontece. Explique a diferença de comportamento.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <p class="prose" style="margin-top:10px;"><code>fixed</code> <strong>sai do fluxo</strong>: a navbar
+        deixa de ocupar espaço e o conteúdo sobe para o lugar dela — por isso a compensação manual
+        (<code>padding-top</code> no body). <code>sticky</code> <strong>permanece no fluxo</strong>: ela ocupa o
+        próprio espaço no topo e só "gruda" quando a rolagem a alcançaria — nada fica coberto ao carregar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">O z-index gigante que perde</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Um tooltip com <code>position: absolute; z-index: 9999</code> aparece <em>atrás</em> de um banner que
+      tem apenas <code>z-index: 2</code>. O pai do tooltip tem <code>position: relative; z-index: 1;</code>.
+      Por que o 9999 perde para o 2, e como corrigir?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">O pai (posicionado e com <code>z-index: 1</code>) criou um
+        <strong>contexto de empilhamento</strong>. O tooltip compete com o mundo externo "encapsulado" no valor
+        do pai: 1. Como 1 &lt; 2, o banner vence — o 9999 só vale <em>dentro</em> da bolha. Correções: subir o
+        <code>z-index</code> <strong>do pai</strong> (ex.: 10), ou remover o <code>z-index: 1</code> do pai para
+        não criar a bolha:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-css"><code class="language-css">.pai     { position: relative; }   /* sem z-index → sem bolha */
+.tooltip { position: absolute; z-index: 10; }</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>CSS</strong> · position · <strong>z-index</strong> · stacking context · receitas</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

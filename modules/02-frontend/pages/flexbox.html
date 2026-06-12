@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Flexbox — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="flexbox" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Layout Moderno</div>
+  <h1>Flexbox</h1>
+  <p>Alinhar caixas era a maior dor do CSS — até o <code>display: flex</code>. Com uma linha, o container ganha superpoderes para <strong>distribuir</strong>, <strong>alinhar</strong> e <strong>redimensionar</strong> os filhos. Aqui você aprende os dois eixos, as propriedades do container e dos itens, e as receitas que resolvem 90% dos layouts.</p>
+</div>
+
+<!-- ════════════ 01 · CONTAINER, ITENS E EIXOS ════════════ -->
+<section id="eixos">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>Container, itens e os dois eixos</h2>
+    <span class="tag">main axis · cross axis</span>
+  </div>
+
+  <p class="prose">
+    O Flexbox tem dois papéis: o <strong>container</strong> (quem recebe <code>display: flex</code>) e os
+    <strong>itens</strong> (os filhos diretos dele). O container organiza os itens ao longo de dois eixos:
+  </p>
+
+  <div class="info-grid">
+    <div class="info-card blue"><div class="ic-label">eixo principal (main)</div><div class="ic-value" style="font-size:13px;">a direção do <code>flex-direction</code> — onde os itens se enfileiram</div></div>
+    <div class="info-card teal"><div class="ic-label">eixo cruzado (cross)</div><div class="ic-value" style="font-size:13px;">o perpendicular — onde os itens se alinham na "altura" da linha</div></div>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">flex-direction: row → main = horizontal, cross = vertical</div>
+    <div class="ld-stage">
+      <div class="d-axes">
+        <style>
+          .d-axes .wrap { position:relative; border:2px dashed #0062c0; border-radius:8px; padding:26px 16px 16px; }
+          .d-axes .row { display:flex; gap:10px; }
+          .d-axes .it { background:#ffe7dc; border:2px solid #c84a20; border-radius:6px; padding:14px 18px; font-family:monospace; font-size:12px; }
+          .d-axes .lbl-main { position:absolute; top:4px; left:16px; font-family:monospace; font-size:10.5px; color:#0062c0; font-weight:700; }
+          .d-axes .lbl-cross { position:absolute; top:34px; right:6px; writing-mode:vertical-rl; font-family:monospace; font-size:10.5px; color:#059669; font-weight:700; }
+        </style>
+        <div class="wrap">
+          <span class="lbl-main">main axis ⟶</span>
+          <span class="lbl-cross">cross axis ⟶</span>
+          <div class="row">
+            <div class="it">item 1</div>
+            <div class="it">item 2</div>
+            <div class="it">item 3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🧭 A chave para nunca mais confundir justify e align</strong>
+    <code>justify-content</code> distribui no eixo <strong>principal</strong>; <code>align-items</code> alinha
+    no eixo <strong>cruzado</strong>. Quando <code>flex-direction: column</code>, os eixos giram — e o
+    justify passa a ser vertical. Por isso decorar "justify = horizontal" falha: o certo é
+    <em>"justify = eixo principal, seja ele qual for"</em>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · PLAYGROUND ════════════ -->
+<section id="playground">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>Playground do container</h2>
+    <span class="tag">experimente cada propriedade</span>
+  </div>
+
+  <p class="prose">
+    As cinco propriedades do container, ao vivo. Sugestão de roteiro: mude o <code>justify-content</code> com
+    <code>row</code>; troque para <code>column</code> e veja os eixos girarem; adicione itens até precisar do
+    <code>flex-wrap: wrap</code>; e termine comparando os <code>gap</code>:
+  </p>
+
+  <div class="viz" data-viz="flexbox"></div>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Propriedade</th><th>Controla</th><th>Valores mais usados</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>flex-direction</code></td><td>A direção do eixo principal</td><td><code>row</code> (padrão), <code>column</code></td></tr>
+      <tr><td><code>justify-content</code></td><td>Distribuição no eixo <strong>principal</strong></td><td><code>center</code>, <code>space-between</code></td></tr>
+      <tr><td><code>align-items</code></td><td>Alinhamento no eixo <strong>cruzado</strong></td><td><code>stretch</code> (padrão), <code>center</code></td></tr>
+      <tr><td><code>flex-wrap</code></td><td>Quebrar linha quando não cabe</td><td><code>nowrap</code> (padrão), <code>wrap</code></td></tr>
+      <tr><td><code>gap</code></td><td>Espaço <strong>entre</strong> os itens</td><td><code>8px</code>, <code>16px</code>, <code>1rem</code>…</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 gap &gt; margin</strong>
+    Antes do <code>gap</code>, espaçar itens exigia margin em cada um + remover da última posição. O
+    <code>gap</code> só existe <em>entre</em> os itens: sem sobra nas pontas, sem colapso de margens, uma
+    declaração só.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · PROPRIEDADES DOS ITENS ════════════ -->
+<section id="itens">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>As propriedades dos itens</h2>
+    <span class="tag">flex-grow · flex-shrink · flex-basis</span>
+  </div>
+
+  <p class="prose">
+    O container manda na distribuição geral, mas cada item pode negociar seu <strong>próprio tamanho</strong>
+    com três propriedades — quase sempre escritas juntas no atalho <code>flex</code>:
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Propriedade</th><th>Pergunta que responde</th><th>Padrão</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>flex-grow</code></td><td>Sobrou espaço — quanto eu <strong>cresço</strong>?</td><td><code>0</code> (não cresce)</td></tr>
+      <tr><td><code>flex-shrink</code></td><td>Faltou espaço — quanto eu <strong>encolho</strong>?</td><td><code>1</code> (encolhe)</td></tr>
+      <tr><td><code>flex-basis</code></td><td>Qual meu <strong>tamanho inicial</strong> antes de crescer/encolher?</td><td><code>auto</code> (do conteúdo)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">o atalho flex</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.item { flex: 1; }            /* = grow 1, shrink 1, basis 0 → divide igual */
+.item { flex: 2; }            /* cresce 2× mais que um flex: 1 */
+.item { flex: 0 0 200px; }    /* não cresce, não encolhe: 200px fixos */
+.item { flex: 1 1 300px; }    /* parte de 300px e flexiona */</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">flex-grow em ação: 1 · 2 · 1</div>
+    <div class="ld-stage">
+      <div class="d-grow">
+        <style>
+          .d-grow .row { display:flex; gap:8px; font-family:monospace; font-size:12px; }
+          .d-grow .g { background:#e8f0fb; border:2px solid #0062c0; border-radius:6px; padding:10px; text-align:center; }
+          .d-grow .g1 { flex:1; }
+          .d-grow .g2 { flex:2; background:#ffe7dc; border-color:#c84a20; }
+        </style>
+        <div class="row">
+          <div class="g g1">flex: 1</div>
+          <div class="g g2">flex: 2 — o dobro do espaço livre</div>
+          <div class="g g1">flex: 1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="prose">Dois ajustes finos que completam o kit dos itens:</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">align-self e order</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.destaque {
+  align-self: flex-end;  /* este item ignora o align-items do container */
+  order: -1;             /* aparece primeiro, sem mudar o HTML */
+}</code></pre>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ <code>order</code> muda só o visual</strong>
+    Leitores de tela e a navegação por <code>Tab</code> continuam seguindo a ordem do <strong>HTML</strong>.
+    Use <code>order</code> para ajustes pontuais; se a ordem lógica do conteúdo mudou, mude o HTML.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · RECEITAS ════════════ -->
+<section id="receitas">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Receitas prontas</h2>
+    <span class="tag">os layouts de todo dia</span>
+  </div>
+
+  <p class="prose"><strong>1 — Centralizar perfeitamente</strong> (a pergunta mais feita da história do CSS):</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">centro absoluto</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.container {
+  display: flex;
+  justify-content: center;  /* centro do eixo principal */
+  align-items: center;      /* centro do eixo cruzado */
+  min-height: 100vh;        /* precisa de altura para centralizar verticalmente */
+}</code></pre>
+  </div>
+
+  <p class="prose"><strong>2 — Navbar: logo à esquerda, links à direita.</strong>
+  O <code>space-between</code> empurra os extremos:</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">navbar</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.navbar {
+  display: flex;
+  justify-content: space-between;  /* logo ⟷ links */
+  align-items: center;             /* tudo alinhado na vertical */
+  padding: 0 24px;
+}
+.nav-links { display: flex; gap: 16px; }</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">navbar com space-between</div>
+    <div class="ld-stage">
+      <div class="d-nav">
+        <style>
+          .d-nav .bar { display:flex; justify-content:space-between; align-items:center; background:#1a2433; color:#fff; border-radius:8px; padding:10px 16px; font-family:monospace; font-size:12px; }
+          .d-nav .links { display:flex; gap:14px; }
+          .d-nav .links span { opacity:0.85; }
+        </style>
+        <div class="bar">
+          <strong>+PraTi</strong>
+          <div class="links"><span>Início</span><span>Módulos</span><span>Sobre</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="prose"><strong>3 — Cards de mesma largura que quebram linha:</strong></p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">grade de cards</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.card {
+  flex: 1 1 250px;   /* parte de 250px, flexiona, quebra linha quando não cabe */
+}</code></pre>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📦 E quando usar Grid?</strong>
+    Flexbox distribui itens em <strong>uma dimensão</strong> (uma linha <em>ou</em> uma coluna — mesmo com wrap,
+    cada linha é independente). Quando você precisa alinhar em <strong>linhas e colunas ao mesmo tempo</strong>
+    (um painel, uma galeria rígida), a ferramenta é o <code>display: grid</code> — próximo passo depois desta página.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">Eixos girados</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Um container tem <code>display: flex; flex-direction: column; justify-content: center;</code>.
+      O conteúdo fica centralizado na <strong>horizontal</strong> ou na <strong>vertical</strong>?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;"><strong>Na vertical.</strong> Com <code>column</code>, o eixo
+        principal aponta para baixo — e <code>justify-content</code> sempre trabalha no eixo principal. Para
+        centralizar na horizontal nesse caso, o papel é do <code>align-items: center</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">Sidebar fixa + conteúdo flexível</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você quer um layout com sidebar de exatamente <code>240px</code> e o conteúdo ocupando todo o resto da
+      largura. Escreva o CSS usando o atalho <code>flex</code> nos dois itens.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_2</span></div>
+          <pre class="language-css"><code class="language-css">.layout   { display: flex; }
+.sidebar  { flex: 0 0 240px; }  /* não cresce, não encolhe, 240px fixos */
+.conteudo { flex: 1; }          /* absorve todo o espaço restante */</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">O item que esmagou</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Numa navbar flex, o logo tem <code>width: 150px</code>, mas em telas estreitas ele aparece espremido com
+      uns 80px. Ninguém escreveu <code>flex-shrink</code> em lugar nenhum. Por que ele encolheu, e como impedir?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">Porque o padrão de todo item flex é
+        <strong><code>flex-shrink: 1</code></strong> — quando falta espaço, todos encolhem proporcionalmente,
+        mesmo com <code>width</code> definido (o width vira só o tamanho <em>inicial</em>). Para travar:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-css"><code class="language-css">.logo { flex-shrink: 0; }      /* este item não negocia: 150px sempre */
+/* ou, no atalho: */
+.logo { flex: 0 0 150px; }</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>CSS</strong> · flexbox · <strong>eixos</strong> · flex-grow · receitas</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

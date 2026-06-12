@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Box Model — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="box-model" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">A Caixa</div>
+  <h1>Box Model a fundo</h1>
+  <p>Você já viu as quatro camadas no <a href="css-basico.html">CSS Básico</a> — agora é hora de dominar a caixa de verdade: o cálculo do tamanho real, o reset universal de <code>box-sizing</code>, o misterioso <strong>colapso de margens</strong> e o que acontece quando o conteúdo <strong>transborda</strong>.</p>
+</div>
+
+<!-- ════════════ 01 · O VISUALIZADOR ════════════ -->
+<section id="camadas">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>As camadas, ao vivo</h2>
+    <span class="tag">content · padding · border · margin</span>
+  </div>
+
+  <p class="prose">
+    Relembrando de dentro para fora: <strong>content</strong> (o conteúdo), <strong>padding</strong> (respiro
+    interno), <strong>border</strong> (a moldura) e <strong>margin</strong> (distância dos vizinhos).
+    Arraste os controles e observe duas coisas: como cada camada cresce, e como o <strong>tamanho total</strong>
+    muda — ou não — dependendo do <code>box-sizing</code>:
+  </p>
+
+  <div class="viz" data-viz="box-model"></div>
+
+  <div class="callout callout-info">
+    <strong>🔍 Veja isso no DevTools</strong>
+    Aperte <code>F12</code> no navegador, selecione qualquer elemento e procure o diagrama colorido na aba
+    <em>Computed</em>: é exatamente este box model, com os valores reais do elemento. É a primeira ferramenta
+    para investigar "por que tem esse espaço aqui?".
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · O CÁLCULO ════════════ -->
+<section id="calculo">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>O cálculo do tamanho real</h2>
+    <span class="tag">box-sizing: border-box</span>
+  </div>
+
+  <p class="prose">
+    No modo padrão (<code>content-box</code>), o <code>width</code> que você escreve mede <strong>só o
+    conteúdo</strong>. O espaço real ocupado é a soma de tudo:
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">a conta do content-box</span>
+    </div>
+    <pre class="language-css"><code class="language-css">.card {
+  width: 300px;
+  padding: 20px;
+  border: 2px solid;
+}
+/* largura real = 300 + 20+20 (padding) + 2+2 (border) = 344px
+   o margin empurra os vizinhos, mas não entra na largura da caixa */</code></pre>
+  </div>
+
+  <p class="prose">
+    Com <code>box-sizing: border-box</code>, a conta inverte: o <code>width</code> passa a ser o tamanho
+    <strong>final</strong> da caixa, e o navegador espreme padding e borda <em>para dentro</em> dele. Por isso
+    praticamente todo projeto começa com o <strong>reset universal</strong>:
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">o reset que todo projeto usa</span>
+    </div>
+    <pre class="language-css"><code class="language-css">*,
+*::before,
+*::after {
+  box-sizing: border-box;   /* width = tamanho final, sempre */
+}</code></pre>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Por que border-box venceu</strong>
+    Com <code>border-box</code>, "quero um card de 300px" vira simplesmente <code>width: 300px</code> — ajuste o
+    padding à vontade que a caixa não muda de tamanho. Layouts em colunas (<code>width: 50%</code> + padding)
+    só funcionam sem dor de cabeça nesse modo.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · MARGIN COLLAPSE ════════════ -->
+<section id="margin-collapse">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>Colapso de margens</h2>
+    <span class="tag">1 + 1 = 1?</span>
+  </div>
+
+  <p class="prose">
+    Surpresa clássica do CSS: quando duas margens <strong>verticais</strong> se encontram, elas
+    <strong>não se somam</strong> — a maior "engole" a menor. Um parágrafo com
+    <code>margin-bottom: 24px</code> seguido de outro com <code>margin-top: 16px</code> fica a
+    <strong>24px</strong> de distância, não 40px:
+  </p>
+
+  <div class="live-demo">
+    <div class="ld-label">as margens colapsam: vale a maior (24px), não a soma (40px)</div>
+    <div class="ld-stage">
+      <div class="d-mc">
+        <style>
+          .d-mc { font-family:monospace; font-size:12px; }
+          .d-mc p { background:#e8f0fb; border:1px solid #0062c0; padding:8px; }
+          .d-mc .a { margin: 0 0 24px; }
+          .d-mc .b { margin: 16px 0 0; }
+        </style>
+        <p class="a">margin-bottom: 24px ↓</p>
+        <p class="b">↑ margin-top: 16px — distância real: 24px</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="prose">Pontos para guardar sobre o colapso:</p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Situação</th><th>Colapsa?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Margens verticais de irmãos (um sobre o outro)</td><td>✅ Sim — vale a maior</td></tr>
+      <tr><td>Margens <strong>horizontais</strong> (lado a lado)</td><td>❌ Nunca — sempre somam</td></tr>
+      <tr><td>Pai sem padding/border e o primeiro filho</td><td>✅ Sim — a margem do filho "vaza" para fora do pai</td></tr>
+      <tr><td>Itens dentro de <code>display: flex</code> ou <code>grid</code></td><td>❌ Não — flex/grid desligam o colapso</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Como evitar a briga de margens</strong>
+    A convenção mais comum: defina a margem em <strong>uma direção só</strong> (por exemplo, todos os elementos
+    usam apenas <code>margin-bottom</code>). E quando os elementos estão num container flex,
+    prefira <code>gap</code> — espaçamento sem nenhum colapso. O <code>gap</code> você domina na página de
+    <a href="flexbox.html">Flexbox</a>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · OVERFLOW ════════════ -->
+<section id="overflow">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Overflow — quando o conteúdo não cabe</h2>
+    <span class="tag">visible · hidden · scroll · auto</span>
+  </div>
+
+  <p class="prose">
+    A caixa tem tamanho definido, mas o conteúdo é maior. E agora? A propriedade <code>overflow</code> decide:
+  </p>
+
+  <div class="live-demo">
+    <div class="ld-label">a mesma caixa de 90px de altura com cada overflow</div>
+    <div class="ld-stage">
+      <div class="d-ov">
+        <style>
+          .d-ov { display:flex; gap:14px; flex-wrap:wrap; font-family:monospace; font-size:11px; }
+          .d-ov .box { width:130px; height:90px; padding:8px; border:2px solid #0062c0; background:#e8f0fb; box-sizing:border-box; }
+          .d-ov .vis { overflow:visible; }
+          .d-ov .hid { overflow:hidden; }
+          .d-ov .aut { overflow:auto; }
+          .d-ov strong { display:block; margin-bottom:24px; }
+        </style>
+        <div>
+          <strong>visible (padrão)</strong>
+          <div class="box vis">O texto vaza para fora da caixa e pode atropelar o vizinho de baixo. Quase nunca é o que você quer.</div>
+        </div>
+        <div>
+          <strong>hidden</strong>
+          <div class="box hid">O que não cabe é simplesmente cortado, sem aviso. Bom para decorações; cuidado com texto.</div>
+        </div>
+        <div>
+          <strong>auto</strong>
+          <div class="box aut">A barra de rolagem aparece só quando precisa. É a escolha segura para áreas de conteúdo dinâmico.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📜 visible · hidden · scroll · auto</strong>
+    <code>visible</code> deixa vazar (padrão); <code>hidden</code> corta; <code>scroll</code> mostra barras de
+    rolagem <em>sempre</em> (mesmo sem precisar); <code>auto</code> mostra <em>só quando precisa</em> — na
+    dúvida, use <code>auto</code>.
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ Borda ocupa espaço, outline não</strong>
+    Prima da borda, a <code>outline</code> é desenhada <em>por cima</em> da caixa sem entrar no cálculo de
+    tamanho — por isso é o que o navegador usa no anel de foco (<code>:focus</code>) de botões e inputs.
+    Nunca remova o outline sem dar um substituto visível: é ele que permite navegar com o teclado.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">A conta da caixa</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Sem <code>box-sizing</code> declarado, qual a largura real de
+      <code>.foto { width: 250px; padding: 15px; border: 5px solid; margin: 10px; }</code>?
+      E com <code>box-sizing: border-box</code>?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;"><strong>290px e 250px.</strong> No padrão content-box:
+        250 + 15×2 + 5×2 = 290px. Com border-box, os 250px já incluem padding e borda. O margin nunca entra na
+        largura da caixa — ele só afasta os vizinhos (totalizando 310px e 270px de espaço ocupado).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">O espaço que sumiu</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Dois cards empilhados têm <code>margin: 20px 0</code> cada. Você esperava 40px entre eles, mas o
+      DevTools mostra 20px. O que está acontecendo e cite duas formas de obter os 40px.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <p class="prose" style="margin-top:10px;">É o <strong>colapso de margens</strong>: margens verticais de
+        irmãos não somam, vale a maior (20px). Para ter 40px: (1) usar <code>margin-bottom: 40px</code> numa
+        direção só; ou (2) colocar os cards num container <code>display: flex; flex-direction: column;</code>
+        com <code>gap: 40px</code> — flex desliga o colapso.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">A margem que vazou</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você dá <code>margin-top: 32px</code> ao <code>&lt;h2&gt;</code> que é o primeiro filho de uma
+      <code>&lt;section&gt;</code> — mas em vez de empurrar o título para baixo <em>dentro</em> da section,
+      a section <strong>inteira</strong> desce 32px na página. Por quê, e como prender a margem dentro dela?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">Colapso entre <strong>pai e primeiro filho</strong>: como a
+        section não tem padding nem borda no topo, a margem do h2 "vaza" e vira margem da section. Qualquer
+        barreira entre os dois resolve:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-css"><code class="language-css">/* opção 1: respiro interno na section (a mais comum) */
+section { padding-top: 1px; }     /* ou um padding de verdade */
+
+/* opção 2: trocar a margem do filho por padding do pai */
+section { padding-top: 32px; }
+h2      { margin-top: 0; }</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>CSS</strong> · box model · <strong>box-sizing</strong> · margin collapse · overflow</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="/assets/js/viz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

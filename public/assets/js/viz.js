@@ -633,6 +633,176 @@
     apply('static');
   }
 
+  // ─────────────────────────────────────────────────────────
+  //  FLEXBOX — interactive playground: pick container property
+  //  values from dropdowns and watch the items rearrange.
+  // ─────────────────────────────────────────────────────────
+  function flexPlayground(root) {
+    const OPTIONS = [
+      { prop: 'flex-direction',  values: ['row', 'row-reverse', 'column', 'column-reverse'] },
+      { prop: 'justify-content', values: ['flex-start', 'center', 'flex-end', 'space-between', 'space-around', 'space-evenly'] },
+      { prop: 'align-items',     values: ['stretch', 'flex-start', 'center', 'flex-end'] },
+      { prop: 'flex-wrap',       values: ['nowrap', 'wrap', 'wrap-reverse'] },
+      { prop: 'gap',             values: ['0px', '8px', '16px', '32px'] },
+    ];
+
+    root.innerHTML = '';
+    const bar = el('div', 'viz-bar');
+    bar.appendChild(el('span', 'viz-title', 'Flexbox — playground'));
+    const bAdd   = el('button', 'viz-btn', '+ item');
+    const bDel   = el('button', 'viz-btn pink', '− item');
+    const bReset = el('button', 'viz-btn ghost', 'resetar');
+    bar.appendChild(bAdd); bar.appendChild(bDel); bar.appendChild(bReset);
+
+    const controls = el('div', 'flex-controls');
+    const selects = {};
+    OPTIONS.forEach(({ prop, values }) => {
+      const group = el('label', 'flex-control');
+      group.appendChild(el('span', 'fc-label', prop));
+      const sel = el('select', 'flex-select');
+      values.forEach(v => {
+        const o = el('option', null, v);
+        o.value = v;
+        sel.appendChild(o);
+      });
+      sel.addEventListener('change', apply);
+      group.appendChild(sel);
+      selects[prop] = sel;
+      controls.appendChild(group);
+    });
+
+    const stage = el('div', 'viz-stage');
+    const container = el('div', 'flex-playground');
+    stage.appendChild(container);
+    const log = el('div', 'viz-log');
+
+    let count = 0;
+    function addItem() {
+      if (count >= 8) return;
+      count++;
+      const item = el('div', 'flex-item', String(count));
+      // Different min-heights so align-items differences are visible.
+      item.style.minHeight = (34 + (count % 3) * 16) + 'px';
+      container.appendChild(item);
+    }
+    function removeItem() {
+      if (count <= 1) return;
+      count--;
+      container.removeChild(container.lastChild);
+    }
+
+    function apply() {
+      OPTIONS.forEach(({ prop }) => {
+        container.style.setProperty(prop, selects[prop].value);
+      });
+      const css = OPTIONS
+        .map(({ prop }) => `${prop}: ${selects[prop].value};`)
+        .join(' ');
+      log.textContent = `.container { display: flex; ${css} }`;
+    }
+
+    function reset() {
+      OPTIONS.forEach(({ prop, values }) => { selects[prop].value = values[0]; });
+      container.innerHTML = '';
+      count = 0;
+      for (let i = 0; i < 3; i++) addItem();
+      apply();
+    }
+
+    bAdd.addEventListener('click', () => { addItem(); });
+    bDel.addEventListener('click', () => { removeItem(); });
+    bReset.addEventListener('click', reset);
+
+    root.appendChild(bar);
+    root.appendChild(controls);
+    root.appendChild(stage);
+    root.appendChild(log);
+    reset();
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  BOX MODEL — sliders for padding/border/margin and a
+  //  box-sizing toggle; shows the real occupied width live.
+  // ─────────────────────────────────────────────────────────
+  function boxModelViz(root) {
+    const WIDTH = 200; // declared CSS width of the box under inspection
+    const state = { padding: 20, border: 4, margin: 16, sizing: 'content-box' };
+    const SLIDERS = [
+      { key: 'padding', max: 40 },
+      { key: 'border',  max: 12 },
+      { key: 'margin',  max: 40 },
+    ];
+
+    root.innerHTML = '';
+    const bar = el('div', 'viz-bar');
+    bar.appendChild(el('span', 'viz-title', 'Box model — interativo'));
+    const bContent = el('button', 'viz-btn', 'content-box');
+    const bBorder  = el('button', 'viz-btn', 'border-box');
+    bar.appendChild(bContent); bar.appendChild(bBorder);
+
+    const controls = el('div', 'flex-controls');
+    SLIDERS.forEach(s => {
+      const group = el('label', 'flex-control');
+      s.labelEl = el('span', 'fc-label', `${s.key}: ${state[s.key]}px`);
+      group.appendChild(s.labelEl);
+      const input = el('input', 'bmv-range');
+      input.type = 'range';
+      input.min = 0;
+      input.max = s.max;
+      input.value = state[s.key];
+      input.addEventListener('input', () => {
+        state[s.key] = parseInt(input.value, 10);
+        render();
+      });
+      group.appendChild(input);
+      controls.appendChild(group);
+    });
+
+    const stage = el('div', 'viz-stage');
+    const log = el('div', 'viz-log');
+
+    function render() {
+      SLIDERS.forEach(s => { s.labelEl.textContent = `${s.key}: ${state[s.key]}px`; });
+      bContent.classList.toggle('teal', state.sizing === 'content-box');
+      bBorder.classList.toggle('teal', state.sizing === 'border-box');
+
+      const { padding, border, margin, sizing } = state;
+      const contentW = sizing === 'content-box'
+        ? WIDTH
+        : Math.max(0, WIDTH - 2 * padding - 2 * border);
+      const boxW = contentW + 2 * padding + 2 * border;
+
+      stage.innerHTML = '';
+      const mBox = el('div', 'bmv-margin');
+      mBox.style.padding = margin + 'px';
+      mBox.appendChild(el('span', 'bmv-tag', `margin ${margin}`));
+      const bBox = el('div', 'bmv-border');
+      bBox.style.borderWidth = border + 'px';
+      const pBox = el('div', 'bmv-padding');
+      pBox.style.padding = padding + 'px';
+      pBox.appendChild(el('span', 'bmv-tag', `padding ${padding}`));
+      const cBox = el('div', 'bmv-content', `content ${contentW}px`);
+      cBox.style.width = contentW + 'px';
+      pBox.appendChild(cBox);
+      bBox.appendChild(pBox);
+      mBox.appendChild(bBox);
+      stage.appendChild(mBox);
+
+      log.textContent = sizing === 'content-box'
+        ? `content-box: caixa = ${WIDTH} (width) + 2×${padding} (padding) + 2×${border} (border) = ${boxW}px · com margin: ${boxW + 2 * margin}px`
+        : `border-box: caixa = ${WIDTH}px (width já inclui padding e borda) · conteúdo útil = ${contentW}px · com margin: ${boxW + 2 * margin}px`;
+    }
+
+    bContent.addEventListener('click', () => { state.sizing = 'content-box'; render(); });
+    bBorder.addEventListener('click',  () => { state.sizing = 'border-box';  render(); });
+
+    root.appendChild(bar);
+    root.appendChild(controls);
+    root.appendChild(stage);
+    root.appendChild(log);
+    render();
+  }
+
   const builders = {
     'linked-list':  linkedList,
     'stack':        stack,
@@ -640,6 +810,8 @@
     'bubble-sort':  bubbleSortViz,
     'git-flow':     gitFlow,
     'position':     positionViz,
+    'flexbox':      flexPlayground,
+    'box-model':    boxModelViz,
   };
 
   document.addEventListener('DOMContentLoaded', () => {
