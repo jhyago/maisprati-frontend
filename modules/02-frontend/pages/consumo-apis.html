@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Consumo de APIs — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="consumo-apis" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">JavaScript no Navegador</div>
+  <h1>Consumo de APIs</h1>
+  <p>Sua página raramente vive sozinha — ela busca dados de <strong>servidores</strong>: o clima, um CEP, uma lista de produtos. Esses servidores expõem <strong>APIs</strong>, e o JavaScript conversa com elas via <code>fetch</code> pela rede, recebendo <strong>JSON</strong> de volta. Aqui você aprende o fluxo completo e o coroa consultando o <strong>ViaCEP</strong> de verdade.</p>
+</div>
+
+<!-- ════════════ 01 · API, HTTP, JSON ════════════ -->
+<section id="conceitos">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>API, HTTP e JSON</h2>
+    <span class="tag">o vocabulário</span>
+  </div>
+
+  <p class="prose">
+    Uma <strong>API</strong> (Application Programming Interface) é um "balcão de atendimento" de um servidor: você
+    faz um <strong>pedido</strong> (request) para uma URL e recebe uma <strong>resposta</strong> (response). A
+    conversa segue o protocolo <strong>HTTP</strong>, e os dados quase sempre voltam em <strong>JSON</strong> — um
+    texto com a mesma cara de um objeto JavaScript.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead><tr><th>Método HTTP</th><th>Intenção</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET</code></td><td>Buscar/ler dados (não muda nada no servidor)</td></tr>
+      <tr><td><code>POST</code></td><td>Criar um novo recurso</td></tr>
+      <tr><td><code>PUT</code> / <code>PATCH</code></td><td>Atualizar um recurso existente</td></tr>
+      <tr><td><code>DELETE</code></td><td>Remover um recurso</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📌 Códigos de status</strong>
+    Toda resposta traz um número que resume o que aconteceu: <code>2xx</code> = deu certo (ex.: <code>200 OK</code>),
+    <code>4xx</code> = erro do cliente (ex.: <code>404 Não encontrado</code>), <code>5xx</code> = erro no servidor.
+    Você vai checar isso no código.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · FETCH ════════════ -->
+<section id="fetch">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>fetch + async/await</h2>
+    <span class="tag">a requisição</span>
+  </div>
+
+  <p class="prose">
+    O <code>fetch(url)</code> dispara a requisição e devolve uma <strong>Promise</strong> — uma "promessa" de
+    resposta que chega <em>no futuro</em>, porque a rede leva tempo. A forma mais legível de esperar por ela é
+    <code>async/await</code>: o <code>await</code> "pausa" a função até a promessa resolver.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">GET com async/await</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">async function buscarUsuario() {
+  const resposta = await fetch('https://api.exemplo.com/users/1');  // 1) requisição
+  const dados = await resposta.json();   // 2) lê o corpo e converte JSON → objeto
+  console.log(dados.nome);               // 3) usa os dados
+}
+buscarUsuario();</code></pre>
+  </div>
+
+  <p class="prose">São <strong>dois</strong> <code>await</code>: um para a resposta chegar, outro para ler o corpo. O mesmo código com <code>.then()</code> seria:</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">a mesma coisa com .then()</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">fetch('https://api.exemplo.com/users/1')
+  .then(resposta =&gt; resposta.json())
+  .then(dados =&gt; console.log(dados.nome));</code></pre>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Prefira <code>async/await</code></strong>
+    Os dois fazem o mesmo, mas <code>async/await</code> lê de cima para baixo, como código normal, e combina com
+    <code>try/catch</code> para tratar erros. É o estilo recomendado hoje.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · ERROS ════════════ -->
+<section id="erros">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>Tratando erros</h2>
+    <span class="tag">try/catch · response.ok</span>
+  </div>
+
+  <p class="prose">
+    A rede falha: o servidor pode estar fora, o usuário sem internet, a URL errada. Código de API <strong>sempre</strong>
+    precisa prever isso. Há duas armadilhas clássicas que pegam todo iniciante:
+  </p>
+
+  <div class="callout callout-danger">
+    <strong>🚨 <code>fetch</code> NÃO rejeita em 404/500</strong>
+    Surpresa: para o <code>fetch</code>, receber um <code>404</code> ainda é uma resposta que "chegou com sucesso".
+    Ele só cai no <code>catch</code> em falha de <strong>rede</strong>. Para tratar status de erro, você precisa
+    checar <code>resposta.ok</code> (que é <code>true</code> só para 2xx) <strong>você mesmo</strong>.
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">o padrão robusto</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">async function buscar(url) {
+  try {
+    const resposta = await fetch(url);
+
+    if (!resposta.ok) {                        // checa 4xx/5xx manualmente
+      throw new Error('HTTP ' + resposta.status);
+    }
+
+    const dados = await resposta.json();
+    return dados;
+  } catch (erro) {
+    console.log('Falhou:', erro.message);      // rede caiu OU status ruim
+    return null;
+  }
+}</code></pre>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · VIACEP ════════════ -->
+<section id="viacep">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Exemplo real: ViaCEP</h2>
+    <span class="tag">fetch de verdade</span>
+  </div>
+
+  <p class="prose">
+    O <a href="https://viacep.com.br" target="_blank" rel="noopener">ViaCEP</a> é uma API pública e gratuita que,
+    dado um CEP, devolve o endereço. O formato da URL é simples:
+    <code>https://viacep.com.br/ws/<strong>{cep}</strong>/json/</code>. Vamos usá-la para
+    <strong>autopreencher</strong> um formulário de endereço — o caso de uso mais comum em checkout de e-commerce.
+  </p>
+
+  <div class="live-demo">
+    <div class="ld-label">busca de CEP ao vivo (requisição real à internet)</div>
+    <div class="ld-stage">
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <input id="cep-input" type="text" inputmode="numeric" maxlength="9" placeholder="Digite um CEP (ex: 01001-000)"
+               style="flex:1;padding:9px 12px;border-radius:8px;border:1px solid #cdd8e6;font-family:inherit;">
+        <button id="cep-btn" class="run-btn" style="margin:0;">Buscar</button>
+      </div>
+      <div id="cep-status" style="font-size:13px;color:#64748b;min-height:18px;margin-bottom:10px;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <label style="font-size:12px;color:#64748b;">Logradouro
+          <input id="cep-log" readonly style="width:100%;margin-top:3px;padding:8px 10px;border-radius:8px;border:1px solid #cdd8e6;font-family:inherit;background:#f6f9fd;">
+        </label>
+        <label style="font-size:12px;color:#64748b;">Bairro
+          <input id="cep-bairro" readonly style="width:100%;margin-top:3px;padding:8px 10px;border-radius:8px;border:1px solid #cdd8e6;font-family:inherit;background:#f6f9fd;">
+        </label>
+        <label style="font-size:12px;color:#64748b;">Cidade
+          <input id="cep-cidade" readonly style="width:100%;margin-top:3px;padding:8px 10px;border-radius:8px;border:1px solid #cdd8e6;font-family:inherit;background:#f6f9fd;">
+        </label>
+        <label style="font-size:12px;color:#64748b;">UF
+          <input id="cep-uf" readonly style="width:100%;margin-top:3px;padding:8px 10px;border-radius:8px;border:1px solid #cdd8e6;font-family:inherit;background:#f6f9fd;">
+        </label>
+      </div>
+      <p style="font-size:12px;color:#94a3b8;margin:10px 0 0;">Experimente: <code>01001-000</code> · <code>20040-002</code> · <code>30130-010</code></p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">buscarCep.js — o código real desta página</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">async function buscarCep(cep) {
+  // 1) Limpa: o ViaCEP quer só os 8 dígitos
+  const limpo = cep.replace(/\D/g, '');
+  if (limpo.length !== 8) throw new Error('CEP deve ter 8 dígitos');
+
+  // 2) Requisição
+  const resposta = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
+  if (!resposta.ok) throw new Error('Erro de rede: ' + resposta.status);
+
+  // 3) Converte JSON → objeto
+  const dados = await resposta.json();
+
+  // 4) Pegadinha do ViaCEP: CEP inexistente NÃO dá 404 —
+  //    vem 200 com { "erro": true }. Trate isso!
+  if (dados.erro) throw new Error('CEP não encontrado');
+
+  return dados;   // { logradouro, bairro, localidade, uf, ... }
+}</code></pre>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ Duas pegadinhas do ViaCEP</strong>
+    (1) Ele espera o CEP só com <strong>números</strong> — tire o hífen antes. (2) Um CEP que não existe volta com
+    status <code>200</code> e corpo <code>{ "erro": true }</code>, e <strong>não</strong> um <code>404</code>. Por
+    isso, além do <code>resposta.ok</code>, você precisa checar <code>dados.erro</code>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · POST ════════════ -->
+<section id="post">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>Enviando dados (POST)</h2>
+    <span class="tag">além do GET</span>
+  </div>
+
+  <p class="prose">
+    Para <strong>criar</strong> ou <strong>enviar</strong> algo (um cadastro, um comentário), use <code>POST</code>.
+    Aí o <code>fetch</code> ganha um segundo argumento de opções: o método, os cabeçalhos e o corpo (que vai como
+    string JSON).
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">POST com corpo JSON</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">const resposta = await fetch('https://api.exemplo.com/usuarios', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },   // "estou enviando JSON"
+  body: JSON.stringify({ nome: 'Ana', email: 'ana@mail.com' }),
+});
+const criado = await resposta.json();
+console.log('Criado com id', criado.id);</code></pre>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📌 <code>body</code> é sempre texto</strong>
+    O corpo da requisição precisa ser uma string — por isso o <code>JSON.stringify</code>. E o cabeçalho
+    <code>Content-Type: application/json</code> avisa o servidor de como interpretar esse texto.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 06 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">06</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">Os dois await</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>No fluxo <code>const r = await fetch(url); const d = await r.json();</code>, por que são necessários
+      <strong>dois</strong> <code>await</code>?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;">O primeiro espera a <strong>resposta chegar</strong> pela rede
+        (cabeçalhos, status). O segundo espera o <strong>corpo ser lido e convertido</strong> de JSON para objeto —
+        <code>r.json()</code> também é assíncrono porque o corpo pode chegar em pedaços.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">O 404 silencioso</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Um colega diz: "meu <code>try/catch</code> envolve o <code>fetch</code>, então qualquer erro da API cai no
+      <code>catch</code>". A afirmação está correta? Justifique.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <p class="prose" style="margin-top:10px;"><strong>Não.</strong> O <code>fetch</code> só rejeita (cai no
+        <code>catch</code>) em falha de <strong>rede</strong>. Um <code>404</code> ou <code>500</code> é
+        considerado uma resposta bem-sucedida pelo <code>fetch</code>. Para tratá-los, é preciso checar
+        <code>resposta.ok</code> e lançar o erro manualmente com <code>throw</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">CEP "válido" que falhou</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você busca <code>99999-999</code> no ViaCEP. A resposta vem com status <code>200</code> e
+      <code>resposta.ok</code> é <code>true</code> — mas o endereço não existe. Como seu código detecta esse caso?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">O ViaCEP devolve <code>200</code> com o corpo
+        <code>{ "erro": true }</code> para CEPs inexistentes. Como o status é "ok", <code>resposta.ok</code> não
+        ajuda — é preciso inspecionar o <strong>corpo</strong>:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-javascript"><code class="language-javascript">const dados = await resposta.json();
+if (dados.erro) throw new Error('CEP não encontrado');</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>fetch</strong> · async/await · JSON · <strong>ViaCEP</strong></footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+
+<script>
+// ── Busca de CEP real (ViaCEP) usada na seção 04 ───────
+(function () {
+  const input  = document.getElementById('cep-input');
+  const btn    = document.getElementById('cep-btn');
+  const status = document.getElementById('cep-status');
+  const fLog    = document.getElementById('cep-log');
+  const fBairro = document.getElementById('cep-bairro');
+  const fCidade = document.getElementById('cep-cidade');
+  const fUf     = document.getElementById('cep-uf');
+
+  function limparCampos() {
+    fLog.value = fBairro.value = fCidade.value = fUf.value = '';
+  }
+
+  async function buscarCep(cep) {
+    const limpo = cep.replace(/\D/g, '');
+    if (limpo.length !== 8) throw new Error('CEP deve ter 8 dígitos');
+
+    const resposta = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
+    if (!resposta.ok) throw new Error('Erro de rede: ' + resposta.status);
+
+    const dados = await resposta.json();
+    if (dados.erro) throw new Error('CEP não encontrado');
+    return dados;
+  }
+
+  async function handle() {
+    limparCampos();
+    status.style.color = '#64748b';
+    status.textContent = '⏳ Buscando…';
+    try {
+      const d = await buscarCep(input.value);
+      fLog.value    = d.logradouro || '—';
+      fBairro.value = d.bairro     || '—';
+      fCidade.value = d.localidade || '—';
+      fUf.value     = d.uf         || '—';
+      status.style.color = '#059669';
+      status.textContent = '✓ Endereço encontrado para o CEP ' + d.cep;
+    } catch (erro) {
+      status.style.color = '#be123c';
+      status.textContent = '✕ ' + erro.message;
+    }
+  }
+
+  btn.addEventListener('click', handle);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handle(); });
+
+  // Máscara simples 00000-000 enquanto digita
+  input.addEventListener('input', () => {
+    let v = input.value.replace(/\D/g, '').slice(0, 8);
+    if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
+    input.value = v;
+  });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

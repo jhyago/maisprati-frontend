@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>DOM &amp; BOM — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="dom-bom" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">JavaScript no Navegador</div>
+  <h1>DOM &amp; BOM</h1>
+  <p>O HTML monta a página uma vez; o <strong>JavaScript</strong> a torna viva. O <strong>DOM</strong> (Document Object Model) é a árvore de objetos que representa o seu HTML — é por ela que você lê, muda, cria e remove elementos em tempo real. O <strong>BOM</strong> (Browser Object Model) é tudo que está em volta da página: a janela, a URL, o histórico e o armazenamento local.</p>
+</div>
+
+<!-- ════════════ 01 · O QUE É O DOM ════════════ -->
+<section id="o-que-e">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>O que é o DOM</h2>
+    <span class="tag">document · árvore de nós</span>
+  </div>
+
+  <p class="prose">
+    Quando o navegador carrega uma página, ele lê o HTML e constrói uma <strong>árvore</strong> de objetos na
+    memória. Cada tag vira um <strong>nó</strong> (node); as tags aninhadas viram nós filhos. Essa árvore é o
+    <strong>DOM</strong>, e o ponto de entrada para ela é o objeto global <code>document</code>.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">o HTML…</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;body&gt;
+  &lt;h1&gt;Olá&lt;/h1&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Item&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;</code></pre>
+  </div>
+
+  <p class="prose">…vira esta árvore, que o JavaScript enxerga e pode percorrer:</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">a árvore do DOM</span>
+    </div>
+    <pre class="language-none"><code>document
+└─ html
+   └─ body
+      ├─ h1  → "Olá"
+      └─ ul
+         └─ li → "Item"</code></pre>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📌 HTML ≠ DOM</strong>
+    O HTML é o <em>texto inicial</em> que você escreveu no arquivo. O DOM é a <em>estrutura viva</em> em memória —
+    ela começa igual ao HTML, mas muda conforme o JavaScript a manipula. Quando você inspeciona o "Elements" no
+    DevTools, está vendo o DOM atual, não o HTML original.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · SELECIONAR ════════════ -->
+<section id="selecionar">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>Selecionar elementos</h2>
+    <span class="tag">querySelector · getElementById</span>
+  </div>
+
+  <p class="prose">
+    Antes de mexer em um elemento, você precisa <strong>encontrá-lo</strong> na árvore. Os métodos modernos
+    <code>querySelector</code> e <code>querySelectorAll</code> usam a mesma sintaxe de seletores do CSS — o que
+    você já aprendeu lá vale aqui.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead>
+      <tr><th>Método</th><th>Retorna</th><th>Exemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>getElementById('x')</code></td><td>O elemento com <code>id="x"</code> (ou <code>null</code>)</td><td><code>document.getElementById('titulo')</code></td></tr>
+      <tr><td><code>querySelector('sel')</code></td><td>O <strong>primeiro</strong> que casa o seletor CSS</td><td><code>document.querySelector('.card')</code></td></tr>
+      <tr><td><code>querySelectorAll('sel')</code></td><td><strong>Todos</strong> que casam (uma NodeList)</td><td><code>document.querySelectorAll('li')</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">selecionando</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">const titulo = document.querySelector('h1');     // primeira &lt;h1&gt;
+const itens  = document.querySelectorAll('li');  // lista de todos os &lt;li&gt;
+
+console.log(titulo.textContent);  // o texto da h1
+console.log(itens.length);        // quantos li existem
+
+// querySelectorAll devolve algo iterável — dá pra usar forEach:
+itens.forEach((li, i) =&gt; console.log(i, li.textContent));</code></pre>
+  </div>
+
+  <button class="run-btn" onclick="runCode('ex-select')">▶ Executar</button>
+  <div class="console" id="ex-select-console"></div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ <code>querySelectorAll</code> não é um Array de verdade</strong>
+    Ele devolve uma <code>NodeList</code>. Ela tem <code>forEach</code>, mas <strong>não</strong> tem
+    <code>map</code>/<code>filter</code>. Quando precisar desses, converta primeiro:
+    <code>[...document.querySelectorAll('li')]</code> ou <code>Array.from(...)</code>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · MANIPULAR ════════════ -->
+<section id="manipular">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>Ler e mudar conteúdo, classes e estilo</h2>
+    <span class="tag">textContent · classList · style</span>
+  </div>
+
+  <p class="prose">
+    Com o elemento em mãos, você lê e altera suas propriedades. As três mais usadas: o <strong>texto</strong>, as
+    <strong>classes</strong> (para ligar/desligar estilos do CSS) e o <strong>estilo inline</strong>.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead><tr><th>Propriedade</th><th>Para quê</th></tr></thead>
+    <tbody>
+      <tr><td><code>el.textContent</code></td><td>Ler/trocar só o texto (seguro — não interpreta HTML)</td></tr>
+      <tr><td><code>el.innerHTML</code></td><td>Ler/trocar o HTML interno (poderoso e perigoso — veja o aviso)</td></tr>
+      <tr><td><code>el.classList.add/remove/toggle</code></td><td>Ligar/desligar classes CSS</td></tr>
+      <tr><td><code>el.setAttribute('href', …)</code></td><td>Mudar qualquer atributo</td></tr>
+      <tr><td><code>el.style.color = 'red'</code></td><td>Aplicar um estilo inline pontual</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">mudando o elemento</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">const el = document.querySelector('#aviso');
+
+el.textContent = 'Texto novo';        // troca o texto
+el.classList.add('destaque');         // liga a classe .destaque do CSS
+el.classList.toggle('aberto');        // liga se estava desligada e vice-versa
+el.style.color = 'crimson';           // estilo inline pontual
+el.setAttribute('title', 'Dica!');    // qualquer atributo</code></pre>
+  </div>
+
+  <div class="callout callout-danger">
+    <strong>🚨 <code>innerHTML</code> com dados do usuário = risco de XSS</strong>
+    <code>innerHTML</code> interpreta o texto como HTML. Se você jogar ali algo digitado por um usuário, um
+    <code>&lt;script&gt;</code> escondido pode rodar na sua página. Para mostrar <em>texto</em>, prefira sempre
+    <code>textContent</code>. Use <code>innerHTML</code> só com HTML que <strong>você</strong> controla.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · CRIAR E REMOVER ════════════ -->
+<section id="criar">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Criar, inserir e remover nós</h2>
+    <span class="tag">createElement · append · remove</span>
+  </div>
+
+  <p class="prose">
+    O DOM não é só leitura: você cria elementos do zero e os encaixa na árvore. O fluxo é sempre o mesmo:
+    <strong>1)</strong> crie o nó, <strong>2)</strong> configure-o, <strong>3)</strong> anexe-o a um pai.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">criando do zero</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">const lista = document.querySelector('ul');
+
+const li = document.createElement('li');  // 1) cria o nó (ainda solto)
+li.textContent = 'Novo item';             // 2) configura
+lista.append(li);                         // 3) anexa como último filho
+
+li.remove();                              // e para remover, basta isto</code></pre>
+  </div>
+
+  <p class="prose">
+    Veja funcionando de verdade — este mini "to-do" cria e remove <code>&lt;li&gt;</code> reais no DOM desta página:
+  </p>
+
+  <div class="live-demo">
+    <div class="ld-label">to-do ao vivo</div>
+    <div class="ld-stage">
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <input id="todo-input" type="text" placeholder="Digite uma tarefa…"
+               style="flex:1;padding:8px 10px;border-radius:8px;border:1px solid #cdd8e6;font-family:inherit;">
+        <button id="todo-add" class="run-btn" style="margin:0;">Adicionar</button>
+      </div>
+      <ul id="todo-list" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;"></ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Performance: cuidado com loops grandes</strong>
+    Cada <code>append</code> pode forçar o navegador a recalcular o layout. Ao inserir muitos itens de uma vez,
+    monte tudo num <code>DocumentFragment</code> e anexe-o <strong>uma vez só</strong> — o navegador desenha apenas
+    no final.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · EVENTOS ════════════ -->
+<section id="eventos">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>Eventos</h2>
+    <span class="tag">addEventListener · click · input</span>
+  </div>
+
+  <p class="prose">
+    Páginas interativas <strong>reagem</strong> ao usuário: um clique, uma tecla, o envio de um formulário. Você
+    "escuta" esses acontecimentos com <code>addEventListener('tipo', função)</code>. A função recebe um objeto
+    <code>event</code> com detalhes do que aconteceu.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">ouvindo eventos</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">const botao = document.querySelector('#meu-botao');
+
+botao.addEventListener('click', (event) =&gt; {
+  console.log('Clicaram em', event.target);
+});
+
+// Em formulários, evite o recarregamento padrão da página:
+form.addEventListener('submit', (e) =&gt; {
+  e.preventDefault();   // cancela o comportamento nativo
+  // …seu código aqui
+});</code></pre>
+  </div>
+
+  <div class="live-demo">
+    <div class="ld-label">contador de cliques ao vivo</div>
+    <div class="ld-stage">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button id="counter-btn" class="run-btn" style="margin:0;">Cliquei <span id="counter-val">0</span> vez(es)</button>
+        <button id="counter-reset" class="show-sol-btn" style="margin:0;">Zerar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>🎯 Delegação de eventos</strong>
+    Em vez de pôr um listener em cada <code>&lt;li&gt;</code>, ponha <strong>um só</strong> no <code>&lt;ul&gt;</code>
+    pai e descubra quem foi clicado por <code>event.target</code>. Como os eventos "sobem" pela árvore (bubbling),
+    o pai escuta os cliques dos filhos — inclusive os criados <em>depois</em>. Menos listeners, mais performance.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 06 · BOM ════════════ -->
+<section id="bom">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">06</div>
+    <h2>BOM — o navegador em volta da página</h2>
+    <span class="tag">window · location · localStorage</span>
+  </div>
+
+  <p class="prose">
+    Se o DOM é a <em>página</em>, o <strong>BOM</strong> é o <em>navegador</em> ao redor dela. O objeto global é a
+    <code>window</code> — tudo que é global vive nela (inclusive o <code>document</code>). Dela saem objetos úteis
+    para tarefas do dia a dia:
+  </p>
+
+  <div class="info-grid">
+    <div class="info-card blue"><div class="ic-label">window.location</div><div class="ic-value" style="font-size:13px;">a URL atual; redirecionar a página</div></div>
+    <div class="info-card teal"><div class="ic-label">window.history</div><div class="ic-value" style="font-size:13px;">voltar/avançar na navegação</div></div>
+    <div class="info-card pink"><div class="ic-label">window.navigator</div><div class="ic-value" style="font-size:13px;">dados do browser e do dispositivo</div></div>
+    <div class="info-card yellow"><div class="ic-label">localStorage</div><div class="ic-value" style="font-size:13px;">guardar dados que sobrevivem ao reload</div></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">BOM na prática</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">console.log(window.location.href);     // URL completa da página
+// window.location.href = '/index.html'; // navega para outra página
+// window.history.back();                 // volta uma página
+
+// localStorage só guarda STRINGS — serialize objetos com JSON:
+localStorage.setItem('tema', 'dark');
+const tema = localStorage.getItem('tema');   // 'dark'
+
+localStorage.setItem('user', JSON.stringify({ nome: 'Ana', nivel: 3 }));
+const user = JSON.parse(localStorage.getItem('user'));   // objeto de volta
+
+// Temporizadores também fazem parte do BOM:
+setTimeout(() =&gt; console.log('1 segundo depois'), 1000);</code></pre>
+  </div>
+
+  <button class="run-btn" onclick="runCode('ex-bom')">▶ Executar</button>
+  <div class="console" id="ex-bom-console"></div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Você já usou o BOM neste site</strong>
+    O botão de tema claro/escuro (☀️/🌙) salva sua escolha em <code>localStorage</code> e a reaplica a cada visita.
+    É exatamente o padrão <code>setItem</code> / <code>getItem</code> acima.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 07 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">07</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">textContent ou innerHTML?</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você vai mostrar na tela um comentário <strong>digitado por um usuário</strong>. Qual propriedade usar
+      para escrever esse texto num elemento, e por quê?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;"><strong><code>textContent</code>.</strong> Ele trata o valor como
+        texto puro, então um <code>&lt;script&gt;</code> escondido no comentário <em>não</em> roda. Usar
+        <code>innerHTML</code> com dado de usuário abre brecha de XSS.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">Pinte os pares</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Complete o código para que <strong>cada <code>&lt;li&gt;</code> de índice par</strong> da lista receba a
+      classe <code>par</code>. Use <code>querySelectorAll</code> e <code>classList</code>.</p>
+      <textarea class="code-editor" id="exA-editor">const itens = document.querySelectorAll('li');
+itens.forEach((li, i) => {
+  // se i for par, adicione a classe "par"
+});
+console.log('itens marcados!');</textarea>
+      <div class="editor-label"><button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+      <div class="ex-output" id="exA-output"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('qA')">Ver solução</button>
+      <div class="solution-block" id="qA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução</span></div>
+          <pre class="language-javascript"><code class="language-javascript">itens.forEach((li, i) =&gt; {
+  if (i % 2 === 0) li.classList.add('par');
+});</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">Lembrar do usuário</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você quer guardar <code>{ nome: 'Ana', favoritos: [1, 2] }</code> no <code>localStorage</code> e ler de
+      volta como objeto na próxima visita. Mostre as duas linhas (gravar e ler).</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">O <code>localStorage</code> só guarda strings, então serialize com
+        <code>JSON.stringify</code> ao gravar e <code>JSON.parse</code> ao ler:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-javascript"><code class="language-javascript">localStorage.setItem('dados', JSON.stringify({ nome: 'Ana', favoritos: [1, 2] }));
+const dados = JSON.parse(localStorage.getItem('dados'));   // objeto de volta</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>DOM</strong> · seleção · eventos · <strong>BOM</strong> · localStorage</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+
+<script>
+// ── Demos de console (runner.js) ───────────────────────
+window.demos = {
+  'ex-select': () => {
+    // Simula uma lista para o exemplo
+    const itens = ['Maçã', 'Banana', 'Caju'];
+    console.log('Título: Frutas');
+    console.log('Quantos li:', itens.length);
+    itens.forEach((txt, i) => console.log(i, txt));
+  },
+  'ex-bom': () => {
+    console.log('URL atual:', window.location.href);
+    console.log('Navegador online?', window.navigator.onLine);
+    localStorage.setItem('demo-tema', 'dark');
+    console.log('Tema salvo e lido:', localStorage.getItem('demo-tema'));
+    const user = { nome: 'Ana', nivel: 3 };
+    localStorage.setItem('demo-user', JSON.stringify(user));
+    console.log('Objeto de volta:', JSON.parse(localStorage.getItem('demo-user')));
+  },
+};
+
+// ── To-do ao vivo (criar/remover nós reais) ────────────
+(function () {
+  const input = document.getElementById('todo-input');
+  const addBtn = document.getElementById('todo-add');
+  const list = document.getElementById('todo-list');
+
+  function addTodo() {
+    const texto = input.value.trim();
+    if (!texto) return;
+
+    const li = document.createElement('li');               // 1) cria
+    li.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border:1px solid #cdd8e6;border-radius:8px;background:#f6f9fd;color:#1a3a5c;font-size:14px;';
+
+    const span = document.createElement('span');
+    span.textContent = texto;                              // 2) textContent (seguro)
+
+    const del = document.createElement('button');
+    del.textContent = '✕';
+    del.style.cssText = 'border:none;background:transparent;color:#be123c;cursor:pointer;font-weight:700;';
+    del.addEventListener('click', () => li.remove());      // remove o nó
+
+    li.append(span, del);
+    list.append(li);                                       // 3) anexa
+    input.value = '';
+    input.focus();
+  }
+
+  addBtn.addEventListener('click', addTodo);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') addTodo(); });
+})();
+
+// ── Contador de cliques ao vivo ────────────────────────
+(function () {
+  const btn = document.getElementById('counter-btn');
+  const val = document.getElementById('counter-val');
+  const reset = document.getElementById('counter-reset');
+  let n = 0;
+  btn.addEventListener('click', () => { n++; val.textContent = n; });
+  reset.addEventListener('click', () => { n = 0; val.textContent = n; });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

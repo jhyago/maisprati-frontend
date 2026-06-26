@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Exercícios — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="exercicios" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">Pratique tudo</div>
+  <h1>Exercícios — Frontend</h1>
+  <p>24 desafios para fixar o módulo inteiro: <strong>HTML &amp; CSS</strong>, <strong>DOM &amp; BOM</strong>, <strong>Promises</strong> e <strong>Consumo de APIs / Web Components</strong>. Tente resolver de cabeça antes de revelar a resposta — alguns trazem um editor para você rodar o código na hora.</p>
+</div>
+
+<!-- ════════════ A · HTML & CSS ════════════ -->
+<section id="html-css">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">A</div>
+    <h2>HTML &amp; CSS</h2>
+    <span class="tag">6 exercícios</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">id ou class?</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você tem <strong>vários</strong> botões que precisam do mesmo estilo, e <strong>um</strong> cabeçalho
+      único que será alvo de um link âncora. Qual atributo usar em cada caso?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('hc1')">Ver resposta</button>
+      <div class="solution-block" id="hc1">
+        <p class="prose" style="margin-top:10px;"><strong><code>class</code></strong> nos botões (repetível, agrupa
+        vários elementos) e <strong><code>id</code></strong> no cabeçalho (único na página, serve de alvo para
+        <code>#ancora</code>). Regra: <code>id</code> é único; <code>class</code> se repete.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">Quem vence a especificidade?</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>HTML: <code>&lt;p class="texto" id="intro"&gt;Oi&lt;/p&gt;</code>. CSS: <code>p { color: black }</code>,
+      <code>.texto { color: blue }</code> e <code>#intro { color: red }</code>. De que cor fica o texto?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('hc2')">Ver resposta</button>
+      <div class="solution-block" id="hc2">
+        <p class="prose" style="margin-top:10px;"><strong>Vermelho.</strong> Ordem de especificidade:
+        <code>#id</code> &gt; <code>.classe</code> &gt; <code>elemento</code>. O <code>#intro</code> ganha,
+        independentemente da ordem no arquivo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">A caixa estourou</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Um card com <code>width: 300px</code> e <code>padding: 20px</code> passou a ocupar 340px e quebrou o
+      layout. Como mantê-lo em 300px reais <strong>sem</strong> remover o padding?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('hc3')">Ver resposta</button>
+      <div class="solution-block" id="hc3">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-css"><code class="language-css">.card { width: 300px; padding: 20px; box-sizing: border-box; }
+/* border-box faz o width JÁ incluir padding e borda */</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">4</span><span class="ex-title">Centralizar com Flexbox</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Escreva o CSS para centralizar um filho <strong>horizontal e verticalmente</strong> dentro de um
+      container usando Flexbox.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('hc4')">Ver resposta</button>
+      <div class="solution-block" id="hc4">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-css"><code class="language-css">.container {
+  display: flex;
+  justify-content: center;  /* eixo principal (horizontal) */
+  align-items: center;      /* eixo cruzado (vertical) */
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">5</span><span class="ex-title">em vs rem</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Qual a diferença entre <code>1em</code> e <code>1rem</code>? Em que situação <code>em</code> pode causar
+      um efeito "bola de neve" indesejado?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('hc5')">Ver resposta</button>
+      <div class="solution-block" id="hc5">
+        <p class="prose" style="margin-top:10px;"><code>rem</code> é sempre relativo à fonte da
+        <strong>raiz</strong> (<code>&lt;html&gt;</code>) — estável. <code>em</code> é relativo à fonte do
+        <strong>próprio elemento/pai</strong>. Aninhando elementos com <code>font-size: 1.2em</code>, cada nível
+        multiplica o anterior (1.2 → 1.44 → 1.728…), crescendo descontroladamente. Para tamanhos previsíveis,
+        prefira <code>rem</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">6</span><span class="ex-title">O selo no canto</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Um selo <code>position: absolute</code> deveria ficar no canto de um card, mas foi parar no canto da
+      <em>página</em>. Por quê, e qual a correção?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('hc6')">Ver resposta</button>
+      <div class="solution-block" id="hc6">
+        <p class="prose" style="margin-top:10px;">O <code>absolute</code> se ancora no ancestral
+        <strong>posicionado</strong> mais próximo; sem nenhum, usa a página. Dê <code>position: relative</code> ao
+        card (o pai) para torná-lo a referência:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-css"><code class="language-css">.card { position: relative; }
+.selo { position: absolute; top: -10px; right: -10px; }</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ B · DOM & BOM ════════════ -->
+<section id="dom-bom">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">B</div>
+    <h2>DOM &amp; BOM</h2>
+    <span class="tag">6 exercícios</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">7</span><span class="ex-title">Selecionar o primeiro</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Qual método pega o <strong>primeiro</strong> elemento com a classe <code>ativo</code>? E qual pega
+      <strong>todos</strong>?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('db7')">Ver resposta</button>
+      <div class="solution-block" id="db7">
+        <p class="prose" style="margin-top:10px;"><code>document.querySelector('.ativo')</code> pega o primeiro;
+        <code>document.querySelectorAll('.ativo')</code> pega todos (uma <code>NodeList</code>).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">8</span><span class="ex-title">textContent ou innerHTML?</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Vai exibir um comentário <strong>digitado por um usuário</strong>. Qual propriedade usar, e por quê?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('db8')">Ver resposta</button>
+      <div class="solution-block" id="db8">
+        <p class="prose" style="margin-top:10px;"><strong><code>textContent</code></strong> — trata o valor como
+        texto puro, então um <code>&lt;script&gt;</code> escondido não roda. <code>innerHTML</code> com dado de
+        usuário abre brecha de <strong>XSS</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">9</span><span class="ex-title">Marque os pares</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Complete: para cada número de 0 a 5, registre no console se o índice é "par" ou "ímpar" usando
+      <code>forEach</code>.</p>
+      <textarea class="code-editor" id="exB-editor">[0,1,2,3,4,5].forEach((n, i) => {
+  // imprima `${i}: par` ou `${i}: ímpar`
+});</textarea>
+      <div class="editor-label"><button class="run-ex-btn" onclick="runExercise('exB')">▶ Executar</button></div>
+      <div class="ex-output" id="exB-output"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('db9')">Ver solução</button>
+      <div class="solution-block" id="db9">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução</span></div>
+          <pre class="language-javascript"><code class="language-javascript">[0,1,2,3,4,5].forEach((n, i) =&gt; {
+  console.log(`${i}: ${i % 2 === 0 ? 'par' : 'ímpar'}`);
+});</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">10</span><span class="ex-title">Criar e anexar um nó</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Escreva as três linhas que criam um <code>&lt;li&gt;</code> com o texto "Novo" e o anexam como último
+      filho de uma <code>&lt;ul&gt;</code> guardada em <code>lista</code>.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('db10')">Ver resposta</button>
+      <div class="solution-block" id="db10">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">const li = document.createElement('li');  // 1) cria
+li.textContent = 'Novo';                   // 2) configura
+lista.append(li);                          // 3) anexa</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">11</span><span class="ex-title">Delegação de eventos</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você tem uma lista que ganha novos <code>&lt;li&gt;</code> dinamicamente e quer reagir a cliques em
+      qualquer um deles, inclusive nos criados <em>depois</em>. Por que pôr um listener em cada <code>&lt;li&gt;</code>
+      é ruim, e qual a alternativa?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('db11')">Ver resposta</button>
+      <div class="solution-block" id="db11">
+        <p class="prose" style="margin-top:10px;">Listeners individuais não pegam os <code>&lt;li&gt;</code> futuros
+        e desperdiçam memória. Use <strong>delegação</strong>: um único listener no <code>&lt;ul&gt;</code> pai e
+        identifique o alvo por <code>event.target</code> (graças ao <em>bubbling</em>).</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">ul.addEventListener('click', (e) =&gt; {
+  if (e.target.tagName === 'LI') console.log('clicou em', e.target.textContent);
+});</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">12</span><span class="ex-title">Guardar um objeto</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Salve <code>{ nome: 'Ana', favoritos: [1, 2] }</code> no <code>localStorage</code> e leia de volta como
+      objeto. Por que não dá para guardar o objeto diretamente?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('db12')">Ver resposta</button>
+      <div class="solution-block" id="db12">
+        <p class="prose" style="margin-top:10px;">O <code>localStorage</code> só guarda <strong>strings</strong>.
+        Serialize com <code>JSON.stringify</code> ao gravar e <code>JSON.parse</code> ao ler:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">localStorage.setItem('u', JSON.stringify({ nome: 'Ana', favoritos: [1, 2] }));
+const u = JSON.parse(localStorage.getItem('u'));</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ C · PROMISES & ASYNC ════════════ -->
+<section id="promises">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">C</div>
+    <h2>Promises &amp; Async</h2>
+    <span class="tag">6 exercícios</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">13</span><span class="ex-title">Os três estados</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Quais são os três estados possíveis de uma Promise, e o que significa "settled"?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('pr13')">Ver resposta</button>
+      <div class="solution-block" id="pr13">
+        <p class="prose" style="margin-top:10px;"><code>pending</code> (pendente), <code>fulfilled</code>
+        (resolvida) e <code>rejected</code> (rejeitada). "Settled" = já se decidiu (fulfilled ou rejected) — e esse
+        estado final é <strong>imutável</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">14</span><span class="ex-title">Adivinhe a ordem</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>O que imprime? Rode mentalmente e depois confira no editor.</p>
+      <textarea class="code-editor" id="exC-editor">console.log('A');
+Promise.resolve().then(() => console.log('B'));
+console.log('C');</textarea>
+      <div class="editor-label"><button class="run-ex-btn" onclick="runExercise('exC')">▶ Executar</button></div>
+      <div class="ex-output" id="exC-output"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('pr14')">Ver resposta</button>
+      <div class="solution-block" id="pr14">
+        <p class="prose" style="margin-top:10px;"><strong>A, C, B.</strong> Os logs síncronos saem primeiro; o
+        <code>.then</code> é uma microtarefa que só roda quando a thread principal esvazia.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">15</span><span class="ex-title">.then → async/await</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Reescreva <code>fetchDados().then(d =&gt; console.log(d)).catch(e =&gt; console.log(e))</code> usando
+      <code>async/await</code> com <code>try/catch</code>.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('pr15')">Ver resposta</button>
+      <div class="solution-block" id="pr15">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">async function run() {
+  try {
+    const d = await fetchDados();
+    console.log(d);
+  } catch (e) {
+    console.log(e);
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">16</span><span class="ex-title">Paralelo vs sequencial</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Três requisições independentes levam 300ms, 500ms e 200ms. Quanto tempo leva o conjunto se você usar dois
+      <code>await</code> seguidos vs <code>Promise.all</code>? Qual escolher?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('pr16')">Ver resposta</button>
+      <div class="solution-block" id="pr16">
+        <p class="prose" style="margin-top:10px;"><code>await</code> em sequência <strong>soma</strong>:
+        300+500+200 = ~1000ms. <code>Promise.all</code> dispara tudo junto: leva o tempo da mais lenta, ~500ms.
+        Para tarefas independentes, use <code>Promise.all</code>.</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">const [a, b, c] = await Promise.all([req1(), req2(), req3()]);</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">17</span><span class="ex-title">all que não pode falhar</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você quer o resultado de 4 Promises mesmo que algumas rejeitem, sem uma falha derrubar as outras. Qual
+      combinador, e qual o formato do retorno?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('pr17')">Ver resposta</button>
+      <div class="solution-block" id="pr17">
+        <p class="prose" style="margin-top:10px;"><strong><code>Promise.allSettled</code>.</strong> Devolve um array
+        de objetos: <code>{ status: 'fulfilled', value }</code> ou <code>{ status: 'rejected', reason }</code> para
+        cada Promise — nenhuma falha interrompe as demais.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">18</span><span class="ex-title">Promise com timeout</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Escreva uma função <code>comTimeout(promise, ms)</code> que resolve com a <code>promise</code> se ela
+      terminar a tempo, ou rejeita com "timeout" se estourar o tempo. Dica: <code>Promise.race</code>.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('pr18')">Ver resposta</button>
+      <div class="solution-block" id="pr18">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">function comTimeout(promise, ms) {
+  const limite = new Promise((_, reject) =&gt;
+    setTimeout(() =&gt; reject(new Error('timeout')), ms)
+  );
+  return Promise.race([promise, limite]);  // o que terminar primeiro vence
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ D · APIs & WEB COMPONENTS ════════════ -->
+<section id="apis-wc">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">D</div>
+    <h2>APIs &amp; Web Components</h2>
+    <span class="tag">6 exercícios</span>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">19</span><span class="ex-title">Os dois await do fetch</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Por que <code>const r = await fetch(url); const d = await r.json();</code> precisa de <strong>dois</strong>
+      <code>await</code>?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('aw19')">Ver resposta</button>
+      <div class="solution-block" id="aw19">
+        <p class="prose" style="margin-top:10px;">O primeiro espera a <strong>resposta chegar</strong> (status,
+        cabeçalhos); o segundo espera o <strong>corpo ser lido e convertido</strong> de JSON para objeto —
+        <code>r.json()</code> também é assíncrono.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">20</span><span class="ex-title">O 404 silencioso</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>"Meu <code>try/catch</code> em volta do <code>fetch</code> pega qualquer erro da API." Verdadeiro ou
+      falso? Justifique.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('aw20')">Ver resposta</button>
+      <div class="solution-block" id="aw20">
+        <p class="prose" style="margin-top:10px;"><strong>Falso.</strong> O <code>fetch</code> só rejeita em falha
+        de <strong>rede</strong>. Um <code>404</code>/<code>500</code> é uma resposta "bem-sucedida" para ele —
+        cheque <code>resposta.ok</code> e dê <code>throw</code> manualmente.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">21</span><span class="ex-title">A pegadinha do ViaCEP</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você busca <code>99999-999</code> no ViaCEP. Vem status <code>200</code> e <code>resposta.ok === true</code>,
+      mas o CEP não existe. Como detectar esse caso?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('aw21')">Ver resposta</button>
+      <div class="solution-block" id="aw21">
+        <p class="prose" style="margin-top:10px;">O ViaCEP devolve <code>200</code> com corpo
+        <code>{ "erro": true }</code> para CEP inexistente. Inspecione o <strong>corpo</strong>:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">const dados = await resposta.json();
+if (dados.erro) throw new Error('CEP não encontrado');</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">22</span><span class="ex-title">Montar um POST</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Escreva um <code>fetch</code> que envie <code>{ nome: 'Ana' }</code> por <code>POST</code> para
+      <code>/usuarios</code> como JSON. Não esqueça o cabeçalho.</p>
+      <button class="show-sol-btn" onclick="toggleSolution('aw22')">Ver resposta</button>
+      <div class="solution-block" id="aw22">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">await fetch('/usuarios', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ nome: 'Ana' }),
+});</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">23</span><span class="ex-title">O nome inválido</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Por que <code>customElements.define('counter', Counter)</code> dá erro, mas <code>'click-counter'</code>
+      funciona?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('aw23')">Ver resposta</button>
+      <div class="solution-block" id="aw23">
+        <p class="prose" style="margin-top:10px;">O nome de um Custom Element <strong>precisa ter um hífen</strong>,
+        para nunca colidir com tags nativas (que não têm). <code>counter</code> é inválido.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">24</span><span class="ex-title">CSS que vazou</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>O <code>p { color: red }</code> dentro de um Web Component está afetando a página inteira. O que faltou, e
+      como o Shadow DOM resolve?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('aw24')">Ver resposta</button>
+      <div class="solution-block" id="aw24">
+        <p class="prose" style="margin-top:10px;">Faltou o <strong>Shadow DOM</strong>. Sem
+        <code>attachShadow</code>, o <code>&lt;style&gt;</code> vive no DOM normal e vaza. Renderize dentro da
+        árvore-sombra para isolar o CSS:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta</span></div>
+          <pre class="language-javascript"><code class="language-javascript">constructor() { super(); this.attachShadow({ mode: 'open' }); }
+connectedCallback() {
+  this.shadowRoot.innerHTML = `&lt;style&gt;p { color: red }&lt;/style&gt;&lt;p&gt;…&lt;/p&gt;`;
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>24 exercícios</strong> · HTML/CSS · DOM/BOM · Promises · APIs · Web Components</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

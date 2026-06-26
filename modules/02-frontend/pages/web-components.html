@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Web Components — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="web-components" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">JavaScript no Navegador</div>
+  <h1>Web Components</h1>
+  <p>E se você pudesse criar suas <strong>próprias tags HTML</strong> — como <code>&lt;user-card&gt;</code> ou <code>&lt;click-counter&gt;</code> — reutilizáveis em qualquer página, com estilo isolado que nunca vaza? Isso é <strong>Web Components</strong>: um padrão nativo do navegador (sem framework) feito de três pilares — <strong>Custom Elements</strong>, <strong>Shadow DOM</strong> e <strong>&lt;template&gt;</strong>.</p>
+</div>
+
+<!-- ════════════ 01 · OS TRÊS PILARES ════════════ -->
+<section id="pilares">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>Os três pilares</h2>
+    <span class="tag">a base do padrão</span>
+  </div>
+
+  <p class="prose">
+    "Web Components" é um nome guarda-chuva para três tecnologias que trabalham juntas. Você pode usar uma sem as
+    outras, mas combinadas elas entregam componentes encapsulados de verdade.
+  </p>
+
+  <div class="info-grid">
+    <div class="info-card blue"><div class="ic-label">Custom Elements</div><div class="ic-value" style="font-size:13px;">define tags novas com comportamento próprio</div></div>
+    <div class="info-card teal"><div class="ic-label">Shadow DOM</div><div class="ic-value" style="font-size:13px;">isola o HTML e o CSS internos do componente</div></div>
+    <div class="info-card pink"><div class="ic-label">&lt;template&gt; &amp; &lt;slot&gt;</div><div class="ic-value" style="font-size:13px;">molde de marcação reaproveitável + encaixes</div></div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📌 Por que isso importa?</strong>
+    O grande problema do frontend é o <strong>vazamento</strong>: um <code>.botao</code> do seu CSS pode, sem querer,
+    estilizar o <code>.botao</code> de outra parte do site. Web Components resolvem isso de forma nativa —
+    o componente vira uma "caixa-preta" com fronteiras reais.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · CUSTOM ELEMENTS ════════════ -->
+<section id="custom-elements">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>Custom Elements</h2>
+    <span class="tag">class extends HTMLElement</span>
+  </div>
+
+  <p class="prose">
+    Um Custom Element é uma <strong>classe</strong> que estende <code>HTMLElement</code> e é registrada com um
+    nome. A única regra do nome: precisa ter um <strong>hífen</strong> (<code>click-counter</code>, não
+    <code>counter</code>) — assim o navegador nunca confunde com uma tag nativa futura.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">um elemento mínimo</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">class SaudacaoPrati extends HTMLElement {
+  // Chamado quando o elemento entra na página:
+  connectedCallback() {
+    this.innerHTML = `&lt;strong&gt;Olá da +PraTi! 👋&lt;/strong&gt;`;
+  }
+}
+
+// Registra a tag &lt;saudacao-prati&gt; (precisa do hífen!)
+customElements.define('saudacao-prati', SaudacaoPrati);</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">…e usar como qualquer tag</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;saudacao-prati&gt;&lt;/saudacao-prati&gt;</code></pre>
+  </div>
+
+  <p class="prose">A classe tem métodos de <strong>ciclo de vida</strong> que o navegador chama automaticamente:</p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead><tr><th>Callback</th><th>Quando dispara</th></tr></thead>
+    <tbody>
+      <tr><td><code>constructor()</code></td><td>Na criação do elemento (antes de entrar na página)</td></tr>
+      <tr><td><code>connectedCallback()</code></td><td>Quando o elemento é inserido no DOM — ótimo para montar conteúdo</td></tr>
+      <tr><td><code>disconnectedCallback()</code></td><td>Quando é removido do DOM — ótimo para limpeza</td></tr>
+      <tr><td><code>attributeChangedCallback()</code></td><td>Quando um atributo observado muda</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · SHADOW DOM ════════════ -->
+<section id="shadow-dom">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>Shadow DOM — o encapsulamento</h2>
+    <span class="tag">attachShadow</span>
+  </div>
+
+  <p class="prose">
+    O <strong>Shadow DOM</strong> dá ao componente uma árvore <strong>privada</strong>. O CSS que você escreve lá
+    dentro <strong>não</strong> escapa para a página, e o CSS da página <strong>não</strong> entra. É a fronteira
+    que faz o componente ser realmente reutilizável.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">com Shadow DOM</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">class CartaoPrati extends HTMLElement {
+  constructor() {
+    super();
+    // Cria a árvore-sombra (modo "open" permite inspecioná-la):
+    this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
+    this.shadowRoot.innerHTML = `
+      &lt;style&gt;
+        /* Este CSS fica PRESO aqui dentro — não vaza! */
+        .box { padding: 14px; border-radius: 10px; background: #0080ED; color: #fff; }
+      &lt;/style&gt;
+      &lt;div class="box"&gt;Estou isolado do resto da página.&lt;/div&gt;
+    `;
+  }
+}
+customElements.define('cartao-prati', CartaoPrati);</code></pre>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 <code>:host</code> estiliza o próprio componente</strong>
+    Dentro do Shadow DOM, o seletor <code>:host</code> aponta para a tag do componente em si
+    (<code>&lt;cartao-prati&gt;</code>). Use-o para definir <code>display</code>, margens e o "exterior" do
+    componente.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · TEMPLATE E SLOT ════════════ -->
+<section id="template">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>&lt;template&gt; e &lt;slot&gt;</h2>
+    <span class="tag">molde + encaixes</span>
+  </div>
+
+  <p class="prose">
+    Um <code>&lt;template&gt;</code> é um pedaço de HTML que o navegador <strong>não renderiza</strong> — fica
+    guardado, pronto para ser clonado quantas vezes você quiser. Já o <code>&lt;slot&gt;</code> é um "buraco"
+    onde o conteúdo escrito entre as tags do componente é encaixado.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">slot: conteúdo de fora entra no componente</span>
+    </div>
+    <pre class="language-html"><code class="language-html">&lt;!-- No Shadow DOM do componente: --&gt;
+&lt;p&gt;Título fixo&lt;/p&gt;
+&lt;slot&gt;Texto padrão se nada for passado&lt;/slot&gt;
+
+&lt;!-- No uso: "Olá!" cai dentro do &lt;slot&gt; --&gt;
+&lt;meu-cartao&gt;Olá!&lt;/meu-cartao&gt;</code></pre>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>📦 <code>&lt;template&gt;</code> + <code>cloneNode</code></strong>
+    Em vez de montar uma string de HTML toda vez, defina o molde uma vez num <code>&lt;template&gt;</code> e use
+    <code>template.content.cloneNode(true)</code> a cada instância. É mais rápido e mantém a marcação fora do
+    JavaScript.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · EXEMPLO COMPLETO ════════════ -->
+<section id="exemplo">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>Exemplo completo: &lt;click-counter&gt;</h2>
+    <span class="tag">tudo junto, funcionando</span>
+  </div>
+
+  <p class="prose">
+    Vamos juntar os três pilares num componente real. Ele tem estado próprio (a contagem), estilo isolado via
+    Shadow DOM, e um atributo <code>label</code> configurável. As três instâncias abaixo são <strong>de verdade</strong>
+    e cada uma tem seu próprio contador — clique nelas:
+  </p>
+
+  <div class="live-demo">
+    <div class="ld-label">componentes ao vivo</div>
+    <div class="ld-stage">
+      <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        <click-counter label="Curtidas 👍"></click-counter>
+        <click-counter label="Estrelas ⭐"></click-counter>
+        <click-counter></click-counter>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">click-counter.js — o código real desta página</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">class ClickCounter extends HTMLElement {
+  constructor() {
+    super();
+    this.count = 0;
+    this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
+    const label = this.getAttribute('label') || 'Cliques';
+    this.shadowRoot.innerHTML = `
+      &lt;style&gt;
+        button { font: inherit; cursor: pointer; padding: 10px 16px;
+                 border: none; border-radius: 10px;
+                 background: #0080ED; color: #fff; font-weight: 600; }
+        button:hover { background: #0a6fd0; }
+        .n { background: rgba(255,255,255,.25); border-radius: 6px;
+             padding: 1px 8px; margin-left: 8px; }
+      &lt;/style&gt;
+      &lt;button&gt;${label} &lt;span class="n"&gt;0&lt;/span&gt;&lt;/button&gt;
+    `;
+    const btn = this.shadowRoot.querySelector('button');
+    const n = this.shadowRoot.querySelector('.n');
+    btn.addEventListener('click', () =&gt; { this.count++; n.textContent = this.count; });
+  }
+}
+customElements.define('click-counter', ClickCounter);</code></pre>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Note o isolamento</strong>
+    O CSS <code>button { … }</code> dentro do componente é genérico de propósito — e mesmo assim
+    <strong>não afeta</strong> nenhum outro botão desta página (como o "Ver solução" abaixo). É o Shadow DOM
+    trabalhando.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 06 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">06</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">O nome inválido</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Por que <code>customElements.define('counter', Counter)</code> dá erro, mas
+      <code>customElements.define('click-counter', Counter)</code> funciona?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;">O nome de um Custom Element <strong>precisa ter um hífen</strong>.
+        É a regra que garante que ele nunca colida com uma tag nativa do HTML (que nunca têm hífen).
+        <code>counter</code> é inválido; <code>click-counter</code> é válido.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">Onde montar o conteúdo?</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você quer ler um atributo da tag e renderizar o HTML do componente com base nele. Em qual callback do
+      ciclo de vida esse código deve ficar — <code>constructor</code> ou <code>connectedCallback</code>? Por quê?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q2')">Ver resposta</button>
+      <div class="solution-block" id="q2">
+        <p class="prose" style="margin-top:10px;">No <strong><code>connectedCallback</code></strong>. No
+        <code>constructor</code> o elemento ainda não está no DOM e nem sempre seus atributos/filhos estão
+        disponíveis; mexer no conteúdo ali é desencorajado. O <code>connectedCallback</code> roda quando o elemento
+        já entrou na página — é o lugar certo para ler atributos e montar a UI.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">CSS que não vaza</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Um colega reclama que o <code>p { color: red }</code> definido <em>dentro</em> do componente dele está
+      deixando todos os parágrafos da página vermelhos. O que provavelmente faltou, e como resolver?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;">Faltou o <strong>Shadow DOM</strong>. Sem
+        <code>attachShadow</code>, o <code>&lt;style&gt;</code> do componente vive no DOM normal e vaza para a
+        página inteira. A correção é criar a árvore-sombra no construtor e renderizar dentro dela:</p>
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">resposta_3</span></div>
+          <pre class="language-javascript"><code class="language-javascript">constructor() {
+  super();
+  this.attachShadow({ mode: 'open' });   // cria a fronteira
+}
+connectedCallback() {
+  this.shadowRoot.innerHTML = `&lt;style&gt;p { color: red }&lt;/style&gt;&lt;p&gt;…&lt;/p&gt;`;
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>Web Components</strong> · Custom Elements · Shadow DOM · <strong>&lt;template&gt;</strong></footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+
+<script>
+// ── Componente real usado na seção 05 ──────────────────
+class ClickCounter extends HTMLElement {
+  constructor() {
+    super();
+    this.count = 0;
+    this.attachShadow({ mode: 'open' });
+  }
+  connectedCallback() {
+    const label = this.getAttribute('label') || 'Cliques';
+    this.shadowRoot.innerHTML = `
+      <style>
+        button { font: inherit; cursor: pointer; padding: 10px 16px;
+                 border: none; border-radius: 10px;
+                 background: #0080ED; color: #fff; font-weight: 600; }
+        button:hover { background: #0a6fd0; }
+        .n { background: rgba(255,255,255,.25); border-radius: 6px;
+             padding: 1px 8px; margin-left: 8px; }
+      </style>
+      <button>${label} <span class="n">0</span></button>
+    `;
+    const btn = this.shadowRoot.querySelector('button');
+    const n = this.shadowRoot.querySelector('.n');
+    btn.addEventListener('click', () => { this.count++; n.textContent = this.count; });
+  }
+}
+customElements.define('click-counter', ClickCounter);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

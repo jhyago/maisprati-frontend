@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var t=localStorage.getItem('jstheme');if(t)document.documentElement.setAttribute('data-theme',t);}());</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>Promises — Estudos +PraTi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+
+<nav data-page="promises" data-module="02-frontend"></nav>
+
+<div class="hero">
+  <div class="hero-badge">JavaScript no Navegador</div>
+  <h1>Promises &amp; Assincronia</h1>
+  <p>Algumas tarefas <strong>demoram</strong>: buscar dados na rede, ler um arquivo, esperar um temporizador. O JavaScript não fica parado esperando — ele segue em frente e te entrega uma <strong>Promise</strong>: a <em>promessa</em> de um resultado que chega no futuro. Entender Promises é o que destrava o <code>fetch</code>, o <code>async/await</code> e quase toda API moderna.</p>
+</div>
+
+<!-- ════════════ 01 · SÍNCRONO VS ASSÍNCRONO ════════════ -->
+<section id="sincrono">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">01</div>
+    <h2>Síncrono vs assíncrono</h2>
+    <span class="tag">por que precisamos disso</span>
+  </div>
+
+  <p class="prose">
+    JavaScript roda em <strong>uma única thread</strong>: uma linha por vez, de cima para baixo. Se uma tarefa
+    demorada bloqueasse essa thread, a página <strong>inteira congelaria</strong> — nada de rolar, clicar ou
+    digitar. A solução é o código <strong>assíncrono</strong>: a tarefa demorada roda "ao lado" e avisa quando
+    termina, deixando a página responsiva enquanto isso.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">a ordem surpreende quem está começando</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">console.log('1 — agora');
+setTimeout(() =&gt; console.log('2 — depois (assíncrono)'), 0);
+console.log('3 — agora também');
+
+// Saída: 1, 3, 2
+// Mesmo com 0ms, o setTimeout só roda quando a thread principal esvazia.</code></pre>
+  </div>
+
+  <button class="run-btn" onclick="runCode('ex-ordem')">▶ Executar</button>
+  <div class="console" id="ex-ordem-console"></div>
+
+  <div class="callout callout-info">
+    <strong>📌 Callback: o jeito antigo</strong>
+    Antes das Promises, passava-se uma <strong>função de retorno</strong> (callback) para rodar "quando terminar".
+    Aninhar muitos callbacks gerava o temido <em>callback hell</em> — código em forma de pirâmide, difícil de ler
+    e de tratar erros. As Promises nasceram para resolver exatamente isso.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 02 · OS TRÊS ESTADOS ════════════ -->
+<section id="estados">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">02</div>
+    <h2>Os três estados de uma Promise</h2>
+    <span class="tag">pending · fulfilled · rejected</span>
+  </div>
+
+  <p class="prose">
+    Uma Promise é um objeto que representa um valor <strong>ainda não disponível</strong>. Ela vive em um de três
+    estados — e, uma vez que "se decide" (settled), <strong>nunca mais muda</strong>:
+  </p>
+
+  <div class="info-grid">
+    <div class="info-card yellow"><div class="ic-label">⏳ pending</div><div class="ic-value" style="font-size:13px;">pendente — ainda esperando o resultado</div></div>
+    <div class="info-card teal"><div class="ic-label">✓ fulfilled</div><div class="ic-value" style="font-size:13px;">resolvida com sucesso (tem um valor)</div></div>
+    <div class="info-card pink"><div class="ic-label">✕ rejected</div><div class="ic-value" style="font-size:13px;">falhou (tem um motivo/erro)</div></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">o ciclo de vida</span>
+    </div>
+    <pre class="language-none"><code>          ┌──────────────► fulfilled  (resolve(valor))
+ pending ─┤
+          └──────────────► rejected   (reject(erro))
+
+  estado inicial            estado final (settled) — imutável</code></pre>
+  </div>
+
+  <p class="prose">Veja a transição acontecer ao vivo — esta Promise resolve depois de 1,2s:</p>
+
+  <div class="live-demo">
+    <div class="ld-label">estado de uma Promise ao vivo</div>
+    <div class="ld-stage">
+      <button id="prom-btn" class="run-btn" style="margin:0 0 10px;">Disparar Promise</button>
+      <div id="prom-state" style="font-family:'JetBrains Mono',monospace;font-size:14px;color:#64748b;">estado: —</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 03 · CRIAR ════════════ -->
+<section id="criar">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-orange">03</div>
+    <h2>Criando uma Promise</h2>
+    <span class="tag">new Promise(resolve, reject)</span>
+  </div>
+
+  <p class="prose">
+    Você raramente cria Promises na mão (o <code>fetch</code> já devolve uma), mas entender o construtor revela
+    como tudo funciona. Ele recebe uma função com dois "botões": <code>resolve</code> (deu certo) e
+    <code>reject</code> (deu errado).
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">uma Promise do zero</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">function esperar(ms) {
+  return new Promise((resolve, reject) =&gt; {
+    if (ms &lt; 0) {
+      reject(new Error('tempo inválido'));   // caminho de falha
+      return;
+    }
+    setTimeout(() =&gt; resolve(`esperei ${ms}ms`), ms);  // caminho de sucesso
+  });
+}
+
+esperar(500).then(msg =&gt; console.log(msg));   // "esperei 500ms"</code></pre>
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>💡 <code>resolve</code> e <code>reject</code> só contam uma vez</strong>
+    Depois que a Promise se decide, chamadas seguintes a <code>resolve</code>/<code>reject</code> são ignoradas.
+    Isso garante que um resultado é sempre <strong>definitivo</strong>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 04 · CONSUMIR ════════════ -->
+<section id="consumir">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-pink">04</div>
+    <h2>Consumindo: .then / .catch / .finally</h2>
+    <span class="tag">reagir ao resultado</span>
+  </div>
+
+  <p class="prose">
+    Para usar o valor de uma Promise, você se "inscreve" nela. Cada método trata um momento diferente:
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead><tr><th>Método</th><th>Roda quando…</th></tr></thead>
+    <tbody>
+      <tr><td><code>.then(valor =&gt; …)</code></td><td>a Promise <strong>resolve</strong> (sucesso)</td></tr>
+      <tr><td><code>.catch(erro =&gt; …)</code></td><td>a Promise <strong>rejeita</strong> (erro)</td></tr>
+      <tr><td><code>.finally(() =&gt; …)</code></td><td><strong>sempre</strong>, no fim — deu certo ou não</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">encadeando</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">esperar(300)
+  .then(msg =&gt; {
+    console.log('sucesso:', msg);
+    return msg.length;          // o que você retorna vira o valor do PRÓXIMO .then
+  })
+  .then(tamanho =&gt; console.log('tamanho:', tamanho))
+  .catch(erro =&gt; console.log('falhou:', erro.message))
+  .finally(() =&gt; console.log('acabou (sempre roda)'));</code></pre>
+  </div>
+
+  <button class="run-btn" onclick="runCode('ex-chain')">▶ Executar</button>
+  <div class="console" id="ex-chain-console"></div>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ O encadeamento é a mágica</strong>
+    O que você <code>return</code> dentro de um <code>.then</code> vira o valor do próximo. E se retornar
+    <strong>outra Promise</strong>, a cadeia espera ela resolver antes de seguir. Foi assim que as Promises mataram
+    o callback hell: pirâmide vira lista achatada de <code>.then</code>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 05 · ASYNC/AWAIT ════════════ -->
+<section id="async-await">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-yellow">05</div>
+    <h2>async / await — a forma moderna</h2>
+    <span class="tag">Promises com cara de código normal</span>
+  </div>
+
+  <p class="prose">
+    <code>async/await</code> é "açúcar sintático" sobre Promises: o mesmo motor por baixo, mas escrito como código
+    síncrono, de cima para baixo. Uma função <code>async</code> <strong>sempre</strong> devolve uma Promise; o
+    <code>await</code> "pausa" a função até a Promise resolver e te dá o valor direto.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">o mesmo código, dois estilos</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">// Com .then()
+function versaoThen() {
+  return esperar(200)
+    .then(msg =&gt; console.log(msg))
+    .catch(err =&gt; console.log(err.message));
+}
+
+// Com async/await — lê como texto comum
+async function versaoAsync() {
+  try {
+    const msg = await esperar(200);   // "pausa" aqui até resolver
+    console.log(msg);
+  } catch (err) {
+    console.log(err.message);         // o reject vira exceção no catch
+  }
+}</code></pre>
+  </div>
+
+  <button class="run-btn" onclick="runCode('ex-async')">▶ Executar</button>
+  <div class="console" id="ex-async-console"></div>
+
+  <div class="callout callout-danger">
+    <strong>🚨 <code>await</code> só funciona dentro de <code>async</code></strong>
+    Esquecer o <code>async</code> na função (ou usar <code>await</code> no topo de um script antigo) gera erro de
+    sintaxe. E lembre: o <code>reject</code> de uma Promise vira uma <strong>exceção</strong> — por isso o
+    <code>try/catch</code> substitui o <code>.catch</code>.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 06 · COMBINADORES ════════════ -->
+<section id="combinadores">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-purple">06</div>
+    <h2>Várias Promises ao mesmo tempo</h2>
+    <span class="tag">Promise.all · race · allSettled</span>
+  </div>
+
+  <p class="prose">
+    Quando você tem <strong>várias</strong> tarefas assíncronas, raramente quer esperá-las uma por uma. Os
+    combinadores rodam tudo em <strong>paralelo</strong> e juntam os resultados:
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="compare-table">
+    <thead><tr><th>Combinador</th><th>Resolve quando…</th><th>Uso típico</th></tr></thead>
+    <tbody>
+      <tr><td><code>Promise.all([…])</code></td><td><strong>todas</strong> resolverem (rejeita se uma falhar)</td><td>buscar 3 endpoints e só seguir com todos</td></tr>
+      <tr><td><code>Promise.allSettled([…])</code></td><td><strong>todas</strong> terminarem (sucesso ou falha)</td><td>quero o resultado de cada, mesmo se algumas falharem</td></tr>
+      <tr><td><code>Promise.race([…])</code></td><td>a <strong>primeira</strong> terminar (boa ou má)</td><td>timeout: "o que vier primeiro"</td></tr>
+      <tr><td><code>Promise.any([…])</code></td><td>a <strong>primeira que resolver</strong> com sucesso</td><td>vários espelhos, vale o mais rápido que der certo</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="code-title">paralelo com Promise.all</span>
+    </div>
+    <pre class="language-javascript"><code class="language-javascript">async function carregarTudo() {
+  // As três disparam JUNTAS — o tempo total é o da mais lenta, não a soma
+  const [a, b, c] = await Promise.all([
+    esperar(300),
+    esperar(500),
+    esperar(200),
+  ]);
+  console.log(a, '|', b, '|', c);
+}</code></pre>
+  </div>
+
+  <button class="run-btn" onclick="runCode('ex-all')">▶ Executar</button>
+  <div class="console" id="ex-all-console"></div>
+
+  <div class="callout callout-tip">
+    <strong>💡 Paralelo &gt; sequencial</strong>
+    Dois <code>await</code> seguidos rodam <em>um depois do outro</em> (somam o tempo). Se as tarefas são
+    independentes, dispare-as juntas com <code>Promise.all</code> — bem mais rápido.
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════ 07 · PRÁTICA ════════════ -->
+<section id="pratica">
+<div class="section">
+  <div class="section-header">
+    <div class="section-num num-teal">07</div>
+    <h2>Pratique</h2>
+    <span class="tag">fixe o conteúdo</span>
+  </div>
+
+  <p class="prose">Pense na resposta antes de revelar.</p>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">1</span><span class="ex-title">Qual a ordem?</span>
+      <span class="ex-diff diff-easy">◆ Fácil</span>
+    </div>
+    <div class="exercise-body">
+      <p>O que imprime <code>console.log('A'); Promise.resolve().then(() =&gt; console.log('B')); console.log('C');</code>?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q1')">Ver resposta</button>
+      <div class="solution-block" id="q1">
+        <p class="prose" style="margin-top:10px;"><strong>A, C, B.</strong> Os <code>console.log</code> síncronos
+        rodam primeiro (A, C). O <code>.then</code> é assíncrono: entra na fila de microtarefas e só roda quando a
+        thread principal esvazia — por isso B vem por último.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">2</span><span class="ex-title">Converta para async/await</span>
+      <span class="ex-diff diff-medium">◆ Médio</span>
+    </div>
+    <div class="exercise-body">
+      <p>Reescreva usando <code>async/await</code> e <code>try/catch</code>:</p>
+      <textarea class="code-editor" id="exA-editor">function pegar() {
+  return esperar(100)
+    .then(msg => console.log('ok:', msg))
+    .catch(e => console.log('erro:', e.message));
+}
+// Defina esperar() para testar:
+function esperar(ms){return new Promise(r=>setTimeout(()=>r(ms+'ms'),ms));}
+pegar();</textarea>
+      <div class="editor-label"><button class="run-ex-btn" onclick="runExercise('exA')">▶ Executar</button></div>
+      <div class="ex-output" id="exA-output"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('qA')">Ver solução</button>
+      <div class="solution-block" id="qA">
+        <div class="code-block" style="margin:8px 0 0;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-title">solução</span></div>
+          <pre class="language-javascript"><code class="language-javascript">async function pegar() {
+  try {
+    const msg = await esperar(100);
+    console.log('ok:', msg);
+  } catch (e) {
+    console.log('erro:', e.message);
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-block">
+    <div class="exercise-header">
+      <span class="ex-num">3</span><span class="ex-title">all ou allSettled?</span>
+      <span class="ex-diff diff-hard">◆ Difícil</span>
+    </div>
+    <div class="exercise-body">
+      <p>Você dispara 5 requisições e quer o resultado de <strong>cada uma</strong>, mesmo que algumas falhem —
+      sem que uma falha derrube as outras. Qual combinador usar, e por quê não o <code>Promise.all</code>?</p>
+      <button class="show-sol-btn" onclick="toggleSolution('q3')">Ver resposta</button>
+      <div class="solution-block" id="q3">
+        <p class="prose" style="margin-top:10px;"><strong><code>Promise.allSettled</code>.</strong> O
+        <code>Promise.all</code> rejeita <em>inteiro</em> assim que <strong>uma</strong> Promise falha (você perde
+        os resultados das que deram certo). Já o <code>allSettled</code> espera todas terminarem e devolve um array
+        com <code>{ status, value }</code> ou <code>{ status, reason }</code> para cada uma.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>Material didático · <strong>Promises</strong> · estados · .then/.catch · <strong>async/await</strong> · Promise.all</footer>
+
+<script src="/assets/js/nav.js"></script>
+<script src="/assets/js/runner.js"></script>
+
+<script>
+// Helper compartilhado pelos demos
+function esperar(ms) {
+  return new Promise((resolve, reject) => {
+    if (ms < 0) { reject(new Error('tempo inválido')); return; }
+    setTimeout(() => resolve('esperei ' + ms + 'ms'), ms);
+  });
+}
+
+window.demos = {
+  'ex-ordem': () => {
+    console.log('1 — agora');
+    setTimeout(() => console.log('2 — depois (assíncrono) [veja o console real do navegador]'), 0);
+    console.log('3 — agora também');
+    console.log('(o "2" sai por último, após a thread esvaziar)');
+  },
+  'ex-chain': () => {
+    console.log('disparando cadeia… (resultados aparecem no console do navegador)');
+    esperar(300)
+      .then(msg => { console.log('sucesso:', msg); return msg.length; })
+      .then(tam => console.log('tamanho:', tam))
+      .catch(err => console.log('falhou:', err.message))
+      .finally(() => console.log('acabou (sempre roda)'));
+  },
+  'ex-async': () => {
+    (async () => {
+      try {
+        const msg = await esperar(200);
+        console.log('async/await →', msg);
+      } catch (err) {
+        console.log(err.message);
+      }
+    })();
+    console.log('a função async já retornou; o resultado chega depois');
+  },
+  'ex-all': () => {
+    const t0 = Date.now();
+    Promise.all([esperar(300), esperar(500), esperar(200)])
+      .then(([a, b, c]) => console.log('todas prontas em ~' + (Date.now() - t0) + 'ms:', a, '|', b, '|', c));
+    console.log('três Promises disparadas em paralelo…');
+  },
+};
+
+// Visualizador de estado ao vivo
+(function () {
+  const btn = document.getElementById('prom-btn');
+  const out = document.getElementById('prom-state');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    out.style.color = '#d97706';
+    out.textContent = 'estado: ⏳ pending (esperando…)';
+    new Promise((resolve) => setTimeout(() => resolve('valor pronto!'), 1200))
+      .then((v) => {
+        out.style.color = '#059669';
+        out.textContent = 'estado: ✓ fulfilled → "' + v + '"';
+      });
+  });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+</body>
+</html>

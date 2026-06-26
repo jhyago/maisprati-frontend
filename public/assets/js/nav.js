@@ -40,6 +40,11 @@
         { id: 'box-model',      label: 'Box Model',      href: 'box-model.html' },
         { id: 'posicionamento', label: 'Posicionamento', href: 'posicionamento.html' },
         { id: 'flexbox',        label: 'Flexbox',        href: 'flexbox.html' },
+        { id: 'dom-bom',        label: 'DOM & BOM',      href: 'dom-bom.html' },
+        { id: 'web-components', label: 'Web Components', href: 'web-components.html' },
+        { id: 'promises',       label: 'Promises',       href: 'promises.html' },
+        { id: 'consumo-apis',   label: 'Consumo de APIs', href: 'consumo-apis.html' },
+        { id: 'exercicios',     label: 'Exercícios',     href: 'exercicios.html' },
       ],
     },
   };
